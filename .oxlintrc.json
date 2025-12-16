@@ -124,6 +124,7 @@
 		"eslint/sort-keys": "allow",
 		"eslint/func-style": "allow",
 		"eslint/sort-imports": "allow",
+		"eslint/prefer-destructuring": "allow",
 		"eslint/max-classes-per-file": "off",
 		"eslint/no-ternary": "allow",
 		"eslint/init-declarations": "allow",
