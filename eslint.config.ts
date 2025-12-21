@@ -93,7 +93,14 @@ export default defineConfig([
                     max: 1,
                 },
             ],
-            "@stylistic/object-property-newline":    ["error"],
+            "@stylistic/object-curly-newline": [
+                "error",
+                {
+                    consistent: true,
+                    multiline:  true,
+                },
+            ],
+            "@stylistic/object-property-newline":    ["error", { allowAllPropertiesOnSameLine: true }],
             "@stylistic/operator-linebreak":         ["error"],
             "@typescript-eslint/no-explicit-any":    ["off"], // Handled by oxlint
             "@typescript-eslint/no-require-imports": ["off"], // Handled by oxlint
