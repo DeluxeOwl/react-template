@@ -1,0 +1,67 @@
+{
+	"files.readonlyInclude": {
+		"**/*.gen.ts": true
+	},
+	"editor.formatOnSave": true,
+	"editor.insertSpaces": false,
+	"editor.foldingStrategy": "indentation",
+	"i18n-ally.localesPaths": [
+		"i18n",
+		"messages"
+	],
+	"files.exclude": {
+		".devbox": true
+	},
+	"editor.codeActionsOnSave": {
+		// Note: this being "never" doesn't clash with dangling comma, let perfectionist eslint handle imports
+		"source.organizeImports": "never",
+		"source.fixAll.eslint": "explicit"
+	},
+	"eslint.validate": [
+		"javascript",
+		"javascriptreact",
+		"typescript",
+		"typescriptreact",
+		"mjs"
+	],
+	"eslint.format.enable": true,
+	"[javascript]": {
+		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+		// Note: this prevents the weird discrepancy with the extension
+		"editor.insertSpaces": true
+	},
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+		// Note: this prevents the weird discrepancy with the extension
+		"editor.insertSpaces": true
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+		// Note: this prevents the weird discrepancy with the extension
+		"editor.insertSpaces": true
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+		"editor.insertSpaces": true
+	},
+	"[mjs]": {
+		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+		// Note: this prevents the weird discrepancy with the extension
+		"editor.insertSpaces": true
+	},
+	"tailwindCSS.experimental.classRegex": [
+		[
+			"cva\\(((?:[^()]|\\([^()]*\\))*)\\)",
+			"[\"'`]([^\"'`]*).*?[\"'`]"
+		],
+		[
+			"cx\\(((?:[^()]|\\([^()]*\\))*)\\)",
+			"(?:'|\"|`)([^']*)(?:'|\"|`)"
+		]
+	],
+	"typescript.preferences.autoImportSpecifierExcludeRegexes": [
+		"@radix-ui",
+		"^lucide-react/dist/lucide-react.suffixed$"
+	],
+	"oxc.trace.server": "verbose"
+}
