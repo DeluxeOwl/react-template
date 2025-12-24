@@ -16,6 +16,7 @@
 		"style": "error"
 	},
 	"rules": {
+		"eslint/no-warning-comments": "off",
 		"import/no-unassigned-import": "allow",
 		"import/no-namespace": "allow",
 		"import/no-named-export": "off",
