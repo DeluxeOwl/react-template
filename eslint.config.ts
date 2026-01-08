@@ -4,6 +4,7 @@ import globals from "globals"
 import tseslint from "typescript-eslint"
 import oxlint from "eslint-plugin-oxlint"
 import stylistic from "@stylistic/eslint-plugin"
+import importZod from "eslint-plugin-import-zod"
 import {
     defineConfig,
 } from "eslint/config"
@@ -47,6 +48,7 @@ export default defineConfig([
                 quotes:       "double",
             }),
             youMightNotNeedAnEffect.configs.recommended,
+            importZod.configs.recommended,
             // NOTE: Needs to be last
             ...oxlint.buildFromOxlintConfigFile("./.oxlintrc.json"),
         ],
