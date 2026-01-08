@@ -24,6 +24,7 @@
 		"typescriptreact",
 		"mjs"
 	],
+	"typescript.experimental.useTsgo": true,
 	"eslint.format.enable": true,
 	"[javascript]": {
 		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
