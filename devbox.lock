@@ -49,9 +49,105 @@
         }
       }
     },
+    "commitlint-rs@latest": {
+      "last_modified": "2025-12-31T03:27:36Z",
+      "resolved": "github:NixOS/nixpkgs/f665af0cdb70ed27e1bd8f9fdfecaf451260fc55#commitlint-rs",
+      "source": "devbox-search",
+      "version": "0.2.3",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/dwfii3nikydxqps632f4gprh45xm98v6-commitlint-rs-0.2.3",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/dwfii3nikydxqps632f4gprh45xm98v6-commitlint-rs-0.2.3"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/pl8p9021ra3amxh0jvwrc8j7kg8j2zk1-commitlint-rs-0.2.3",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/pl8p9021ra3amxh0jvwrc8j7kg8j2zk1-commitlint-rs-0.2.3"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/h4nvg3il4zf18l76bicizd35isf66lhr-commitlint-rs-0.2.3",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/h4nvg3il4zf18l76bicizd35isf66lhr-commitlint-rs-0.2.3"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/w7mzash5szjkl37z9v61sgcig0003849-commitlint-rs-0.2.3",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/w7mzash5szjkl37z9v61sgcig0003849-commitlint-rs-0.2.3"
+        }
+      }
+    },
     "github:NixOS/nixpkgs/nixpkgs-unstable": {
       "last_modified": "2025-12-11T04:04:52Z",
       "resolved": "github:NixOS/nixpkgs/5d6bdbddb4695a62f0d00a3620b37a15275a5093?lastModified=1765425892&narHash=sha256-jlQpSkg2sK6IJVzTQBDyRxQZgKADC2HKMRfGCSgNMHo%3D"
+    },
+    "lefthook@latest": {
+      "last_modified": "2025-12-31T03:27:36Z",
+      "resolved": "github:NixOS/nixpkgs/f665af0cdb70ed27e1bd8f9fdfecaf451260fc55#lefthook",
+      "source": "devbox-search",
+      "version": "2.0.12",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/fpj8c2iqmlxz0792km8dnl3xj04ss9js-lefthook-2.0.12",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/fpj8c2iqmlxz0792km8dnl3xj04ss9js-lefthook-2.0.12"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/zisq2b3kwvk6jpv0jllm9s3xl8jcj8g0-lefthook-2.0.12",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/zisq2b3kwvk6jpv0jllm9s3xl8jcj8g0-lefthook-2.0.12"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/2phw27jj90bdvy9f2bbqx79kiz02rh7p-lefthook-2.0.12",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/2phw27jj90bdvy9f2bbqx79kiz02rh7p-lefthook-2.0.12"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/sdn30imkqyldi9lmd8gap1acdxz6xcrl-lefthook-2.0.12",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/sdn30imkqyldi9lmd8gap1acdxz6xcrl-lefthook-2.0.12"
+        }
+      }
     }
   }
 }

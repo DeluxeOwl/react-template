@@ -63,5 +63,13 @@
 		"@radix-ui",
 		"^lucide-react/dist/lucide-react.suffixed$"
 	],
-	"oxc.trace.server": "verbose"
+	"oxc.trace.server": "verbose",
+	"yaml.schemas": {
+		"https://taskfile.dev/schema.json": [
+			"**/Taskfile.yml"
+		],
+		"https://gist.githubusercontent.com/sargunv/c2ca41a08391cd06feaad97aece309e4/raw/empty-json-schema.json": [
+			".commitlintrc.yml"
+		]
+	},
 }

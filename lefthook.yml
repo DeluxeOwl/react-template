@@ -1,0 +1,5 @@
+commit-msg:
+  commands:
+    "lint commit message":
+      use_stdin: true
+      run: cat {1} | commitlint
