@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 // @ts-check
 
 import globals from "globals"
@@ -37,7 +39,7 @@ export default defineConfig([
     {
         extends: [
             reactHooks.configs.flat.recommended,
-            tseslint.configs.recommended,
+            tseslint.configs.recommendedTypeChecked,
             eslintReact.configs["recommended-typescript"],
             perfectionist.configs["recommended-natural"],
             stylistic.configs.customize({
@@ -55,9 +57,15 @@ export default defineConfig([
         files: ["**/*.{mjs,js,jsx,ts,tsx}"],
 
         languageOptions: {
-            ecmaVersion: 2020,
-            globals:     globals.browser,
-            parser:      tseslint.parser,
+            ecmaVersion:   2020,
+            globals:       globals.browser,
+            parser:        tseslint.parser,
+            parserOptions: {
+                projectService: {
+                    allowDefaultProject: ["*.ts", "*.tsx"],
+                },
+                tsconfigRootDir: import.meta.dirname,
+            },
         },
 
         plugins: {
@@ -67,7 +75,8 @@ export default defineConfig([
         },
 
         rules: {
-            "@stylistic/curly-newline": [
+            "@eslint-react/no-leaked-conditional-rendering": ["error"],
+            "@stylistic/curly-newline":                      [
                 "error", {
                     minElements: 1,
                 },
