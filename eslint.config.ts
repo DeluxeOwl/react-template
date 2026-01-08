@@ -62,7 +62,8 @@ export default defineConfig([
             parser:        tseslint.parser,
             parserOptions: {
                 projectService: {
-                    allowDefaultProject: ["*.ts", "*.tsx"],
+                    // Extra files for the linting
+                    allowDefaultProject: ["eslint.config.ts", "*.d.ts"],
                 },
                 tsconfigRootDir: import.meta.dirname,
             },
@@ -116,6 +117,7 @@ export default defineConfig([
             "@typescript-eslint/no-explicit-any":    ["off"], // Handled by oxlint
             "@typescript-eslint/no-require-imports": ["off"], // Handled by oxlint
             "@typescript-eslint/no-unused-vars":     "off",
+            "react-hooks/todo":                      "error",
             "unused-imports/no-unused-imports":      "error",
             "unused-imports/no-unused-vars":         [
                 "warn",
