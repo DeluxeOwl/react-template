@@ -7,6 +7,9 @@
     "dev": "vite",
     "build": "tsgo -b && vite build",
     "typecheck": "tsgo -b --noEmit",
+    "lint:oxlint": "oxlint --fix .",
+    "lint:eslint": "eslint --fix .",
+    "format": "eslint --fix .",
     "lint": "eslint --fix . && oxlint --fix .",
     "preview": "vite preview"
   },
