@@ -1,4 +1,4 @@
-import { sum } from "math"
+import { sum } from "@react-template/math"
 
 function App() {
     return (
