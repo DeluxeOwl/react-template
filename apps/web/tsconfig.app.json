@@ -20,8 +20,6 @@
     "src"
   ],
   "references": [
-    {
-      "path": "../../packages/math"
-    }
+    { "path": "../../packages/math" }
   ]
 }

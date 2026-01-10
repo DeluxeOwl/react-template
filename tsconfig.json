@@ -1,6 +1,5 @@
 {
 	"files": [],
-	// TODO: sync references script, same in apps/web
 	"references": [
 		{
 			"path": "./apps/web"
