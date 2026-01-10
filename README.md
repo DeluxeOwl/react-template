@@ -11,4 +11,9 @@ TODO:
   - react is normal + react specific
 
 eslint apply to eslint package
+knip config
+ask for ADRs
 plop for creating packages
+turborepo
+
+any way to share the scripts better?

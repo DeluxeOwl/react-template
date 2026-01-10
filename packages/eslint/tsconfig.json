@@ -8,7 +8,11 @@
     "outDir": "./dist"
   },
   "include": [
-    "src",
+    "index.ts",
+    "react/**/*.ts",
     "../../reset.d.ts"
+  ],
+  "exclude": [
+    "eslint.config.ts"
   ]
 }

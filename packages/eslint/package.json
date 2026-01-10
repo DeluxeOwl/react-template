@@ -4,6 +4,8 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "lint:oxlint": "oxlint --fix .",
+    "lint:eslint": "eslint --fix .",
     "typecheck": "tsgo -b --noEmit"
   },
   "devDependencies": {

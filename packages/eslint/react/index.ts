@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 // @ts-check
 import tseslint from "typescript-eslint"
+import createConfig from "@react-template/eslint"
 import {
     defineConfig,
 } from "eslint/config"
@@ -9,7 +9,6 @@ import reactHooks from "eslint-plugin-react-hooks"
 import eslintReact from "@eslint-react/eslint-plugin"
 import eslintPluginReadableTailwind from "eslint-plugin-readable-tailwind"
 import youMightNotNeedAnEffect from "eslint-plugin-react-you-might-not-need-an-effect"
-import createConfig from '@react-template/eslint'
 
 // Depends on the default config
 export default function createReactConfig(rootDir: string) {
@@ -44,22 +43,22 @@ export default function createReactConfig(rootDir: string) {
                 parserOptions: {
                     projectService: {
                         // Extra files for the linting
-                        allowDefaultProject: ["*eslint.config.ts", "*.d.ts", "*.ts"],
-                        tsconfigRootDir: rootDir,
+                        allowDefaultProject: ["eslint.config.ts", "*.d.ts"],
+                        tsconfigRootDir:     rootDir,
                     },
                 },
             },
 
             plugins: {
-                "readable-tailwind":  eslintPluginReadableTailwind,
+                "readable-tailwind": eslintPluginReadableTailwind,
             },
 
             rules: {
                 "@eslint-react/no-leaked-conditional-rendering": ["error"],
-                "react-hooks/todo":                      "error",
+                "react-hooks/todo":                              "error",
                 ...eslintPluginReadableTailwind.configs.warning.rules,
                 ...eslintPluginReadableTailwind.configs.error.rules,
-                "readable-tailwind/multiline": ["off"],
+                "readable-tailwind/multiline":                   ["off"],
             },
         },
     ])

@@ -1,16 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 // @ts-check
 
+import tseslint from "typescript-eslint"
+import oxlint from "eslint-plugin-oxlint"
 import stylistic from "@stylistic/eslint-plugin"
 import importZod from "eslint-plugin-import-zod"
-import oxlint from "eslint-plugin-oxlint"
-import perfectionist from "eslint-plugin-perfectionist"
-import unusedImports from "eslint-plugin-unused-imports"
 import {
     defineConfig,
 } from "eslint/config"
-import tseslint from "typescript-eslint"
+import perfectionist from "eslint-plugin-perfectionist"
+import unusedImports from "eslint-plugin-unused-imports"
 
 // Using eslint for some rules that aren't available in oxlint
 export default function createConfig(rootDir: string) {
@@ -53,8 +52,8 @@ export default function createConfig(rootDir: string) {
                 parserOptions: {
                     projectService: {
                         // Extra files for the linting
-                        allowDefaultProject: ["*eslint.config.ts", "*.d.ts", "*.ts"],
-                        tsconfigRootDir: rootDir,
+                        allowDefaultProject: ["eslint.config.ts", "*.d.ts"],
+                        tsconfigRootDir:     rootDir,
                     },
                 },
             },
@@ -65,16 +64,57 @@ export default function createConfig(rootDir: string) {
             },
 
             rules: {
-                "@stylistic/curly-newline":                      [
+                // "@stylistic/max-len": ["error", { code: 80 }], this doesnt work https://github.com/eslint-stylistic/eslint-stylistic/issues/686
+                "@stylistic/array-bracket-newline": [
+                    "error",
+                    {
+                        multiline: true,
+                    },
+                ],
+                "@stylistic/array-element-newline": [
+                    "error",
+                    {
+                        ArrayExpression: "consistent",
+                        ArrayPattern:    {
+                            minItems: 3,
+                        },
+                    },
+                ],
+                "@stylistic/curly-newline": [
                     "error", {
                         minElements: 1,
                     },
                 ],
-                "@stylistic/jsx-closing-bracket-location": [
+                "@stylistic/function-call-argument-newline": ["error", "consistent"],
+                "@stylistic/jsx-closing-bracket-location":   [
                     "error",
                     {
                         nonEmpty:    "after-props",
                         selfClosing: "after-props",
+                    },
+                ],
+                "@stylistic/jsx-max-props-per-line": [
+                    "error",
+                    {
+                        maximum: 1,
+                        when:    "multiline",
+                    },
+                ],
+                "@stylistic/jsx-one-expression-per-line": "off",
+                "@stylistic/key-spacing":                 [
+                    "error",
+                    {
+                        align: {
+                            afterColon:  true,
+                            beforeColon: false,
+                            on:          "value",
+                        },
+                        mode: "strict",
+                    },
+                ],
+                "@stylistic/multiline-ternary": [
+                    "error", "always-multiline", {
+                        ignoreJSX: true,
                     },
                 ],
                 "@stylistic/no-multi-spaces": [
@@ -106,58 +146,7 @@ export default function createConfig(rootDir: string) {
                 "@typescript-eslint/no-explicit-any":    ["off"],
                 "@typescript-eslint/no-require-imports": ["off"],
                 "@typescript-eslint/no-unused-vars":     "off",
-                "unused-imports/no-unused-imports":      "error",
-                "unused-imports/no-unused-vars":         [
-                    "warn",
-                    {
-                        args:              "after-used",
-                        argsIgnorePattern: "^_",
-                        vars:              "all",
-                        varsIgnorePattern: "^_",
-                    },
-                ],
-                // "@stylistic/max-len": ["error", { code: 80 }], this doesnt work https://github.com/eslint-stylistic/eslint-stylistic/issues/686
-                "@stylistic/array-bracket-newline": [
-                    "error",
-                    {
-                        multiline: true,
-                    },
-                ],
-                "@stylistic/array-element-newline": [
-                    "error",
-                    {
-                        ArrayExpression: "consistent",
-                        ArrayPattern:    {
-                            minItems: 3,
-                        },
-                    },
-                ],
-                "@stylistic/function-call-argument-newline": ["error", "consistent"],
-                "@stylistic/jsx-max-props-per-line":         [
-                    "error",
-                    {
-                        maximum: 1,
-                        when:    "multiline",
-                    },
-                ],
-                "@stylistic/jsx-one-expression-per-line": "off",
-                "@stylistic/key-spacing":                 [
-                    "error",
-                    {
-                        align: {
-                            afterColon:  true,
-                            beforeColon: false,
-                            on:          "value",
-                        },
-                        mode: "strict",
-                    },
-                ],
-                "@stylistic/multiline-ternary": [
-                    "error", "always-multiline", {
-                        ignoreJSX: true,
-                    },
-                ],
-                "perfectionist/sort-imports": [
+                "perfectionist/sort-imports":            [
                     "error",
                     {
                         fallbackSort: {
@@ -185,6 +174,16 @@ export default function createConfig(rootDir: string) {
                             type:  "alphabetical",
                         },
                         type: "line-length",
+                    },
+                ],
+                "unused-imports/no-unused-imports": "error",
+                "unused-imports/no-unused-vars":    [
+                    "warn",
+                    {
+                        args:              "after-used",
+                        argsIgnorePattern: "^_",
+                        vars:              "all",
+                        varsIgnorePattern: "^_",
                     },
                 ],
             },
