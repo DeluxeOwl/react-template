@@ -6,5 +6,8 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "scripts": {
+    "lint:oxlint": "oxlint --fix ."
   }
 }

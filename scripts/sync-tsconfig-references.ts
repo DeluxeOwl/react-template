@@ -31,41 +31,45 @@ interface TsConfig {
 
 interface WorkspacePackage {
   name: string
-  path: string // relative to root, e.g., "apps/web"
+  /** Relative to root, e.g., "apps/web" */
+  path: string
   packageJson: PackageJson
-  tsconfigPaths: string[] // tsconfig files that have references
+  /** Tsconfig files that have references */
+  tsconfigPaths: string[]
+}
+
+async function getWorkspacePatterns(): Promise<string[]> {
+  const rootPkgContent = await readFile(join(ROOT, "package.json"), "utf8")
+  const rootPkg = JSON.parse(rootPkgContent) as PackageJson
+  return rootPkg.workspaces ?? []
+}
+
+async function parseWorkspacePackage(pkgJsonPath: string): Promise<WorkspacePackage | null> {
+  try {
+    const content = await readFile(pkgJsonPath, "utf8")
+    const packageJson = JSON.parse(content) as PackageJson
+    const pkgDir = dirname(pkgJsonPath)
+    const relativePath = relative(ROOT, pkgDir)
+    const tsconfigPaths = await findTsconfigsWithReferences(pkgDir)
+
+    return { name: packageJson.name, path: relativePath, packageJson, tsconfigPaths }
+  } catch {
+    // Skip if invalid package.json
+    return null
+  }
 }
 
 async function findWorkspacePackages(): Promise<WorkspacePackage[]> {
-  // Read workspace patterns from root package.json
-  const rootPkgContent = await readFile(join(ROOT, "package.json"), "utf-8")
-  const rootPkg = JSON.parse(rootPkgContent) as PackageJson
-  const workspacePatterns = rootPkg.workspaces ?? []
-
+  const workspacePatterns = await getWorkspacePatterns()
   const packages: WorkspacePackage[] = []
 
   for (const pattern of workspacePatterns) {
-    // Handle both glob patterns (apps/*) and direct paths (scripts)
     const glob = new Glob(join(pattern, "package.json"))
 
     for await (const pkgJsonPath of glob.scan({ cwd: ROOT, absolute: true })) {
-      try {
-        const content = await readFile(pkgJsonPath, "utf-8")
-        const packageJson = JSON.parse(content) as PackageJson
-        const pkgDir = dirname(pkgJsonPath)
-        const relativePath = relative(ROOT, pkgDir)
-
-        // Find all tsconfig files with references
-        const tsconfigPaths = await findTsconfigsWithReferences(pkgDir)
-
-        packages.push({
-          name: packageJson.name,
-          path: relativePath,
-          packageJson,
-          tsconfigPaths,
-        })
-      } catch {
-        // Skip if invalid package.json
+      const pkg = await parseWorkspacePackage(pkgJsonPath)
+      if (pkg) {
+        packages.push(pkg)
       }
     }
   }
@@ -73,48 +77,50 @@ async function findWorkspacePackages(): Promise<WorkspacePackage[]> {
   return packages
 }
 
-async function findTsconfigsWithReferences(dir: string): Promise<string[]> {
-  const results: string[] = []
-  let entries: string[]
+function isTsconfigFile(entry: string): boolean {
+  return entry.startsWith("tsconfig") && entry.endsWith(".json")
+}
 
+function hasTsconfigReferences(tsconfig: TsConfig): boolean {
+  return (
+    tsconfig.references !== undefined ||
+    (Array.isArray(tsconfig.files) && tsconfig.files.length === 0)
+  )
+}
+
+async function checkTsconfigHasReferences(fullPath: string): Promise<boolean> {
+  try {
+    const content = await readFile(fullPath, "utf8")
+    const tsconfig = parseJsonWithComments(content)
+    return hasTsconfigReferences(tsconfig)
+  } catch {
+    return false
+  }
+}
+
+async function findTsconfigsWithReferences(dir: string): Promise<string[]> {
+  let entries: string[]
   try {
     entries = await readdir(dir)
   } catch {
-    return results
+    return []
   }
 
-  for (const entry of entries) {
-    if (entry.startsWith("tsconfig") && entry.endsWith(".json")) {
-      const fullPath = join(dir, entry)
-      try {
-        const content = await readFile(fullPath, "utf-8")
-        const tsconfig = parseJsonWithComments(content)
-        // Include if it has references OR if it's a solution-style tsconfig (files: [])
-        if (
-          tsconfig.references !== undefined ||
-          (Array.isArray(tsconfig.files) && tsconfig.files.length === 0)
-        ) {
-          results.push(fullPath)
-        }
-      } catch {
-        // Skip invalid JSON
-      }
-    }
-  }
-
-  return results
+  const tsconfigFiles = entries.filter((e) => isTsconfigFile(e)).map((entry) => join(dir, entry))
+  const checks = await Promise.all(tsconfigFiles.map((f) => checkTsconfigHasReferences(f)))
+  return tsconfigFiles.filter((_, i) => checks[i])
 }
 
 function parseJsonWithComments(content: string): TsConfig {
   // Strip single-line comments and trailing commas for JSON.parse compatibility
   const stripped = content
-    .replace(/\/\/.*$/gm, "")
-    .replace(/,(\s*[}\]])/g, "$1")
+    .replaceAll(/\/\/.*$/gm, "")
+    .replaceAll(/,(\s*[}\]])/g, "$1")
   return JSON.parse(stripped)
 }
 
 async function readTsconfig(path: string): Promise<{ content: string; parsed: TsConfig }> {
-  const content = await readFile(path, "utf-8")
+  const content = await readFile(path, "utf8")
   const parsed = parseJsonWithComments(content)
   return { content, parsed }
 }
@@ -148,7 +154,7 @@ async function syncRootTsconfig(packages: WorkspacePackage[]): Promise<void> {
 
   // Root references all workspace packages
   const refs = packages
-    .sort((a, b) => a.path.localeCompare(b.path))
+    .toSorted((a, b) => a.path.localeCompare(b.path))
     .map((pkg) => ({ path: `./${pkg.path}` }))
 
   const updated = updateReferences(content, refs)
@@ -161,55 +167,63 @@ async function syncRootTsconfig(packages: WorkspacePackage[]): Promise<void> {
   }
 }
 
-async function syncPackageTsconfigs(
-  packages: WorkspacePackage[]
+function getWorkspaceDeps(
+  pkg: WorkspacePackage,
+  packageByName: Map<string, WorkspacePackage>
+): WorkspacePackage[] {
+  const allDeps = { ...pkg.packageJson.dependencies, ...pkg.packageJson.devDependencies }
+
+  return Object.entries(allDeps)
+    .filter(([_, version]) => version.startsWith("workspace:"))
+    .map(([name]) => packageByName.get(name))
+    .filter((dep): dep is WorkspacePackage => dep !== undefined)
+    .toSorted((a, b) => a.path.localeCompare(b.path))
+}
+
+function isSolutionStyleTsconfig(parsed: TsConfig): boolean {
+  return (
+    Array.isArray(parsed.files) &&
+    parsed.files.length === 0 &&
+    (parsed.references?.some((r) => r.path.startsWith("./tsconfig")) ?? false)
+  )
+}
+
+function buildTsconfigRefs(workspaceDeps: WorkspacePackage[], tsconfigDir: string) {
+  return workspaceDeps.map((dep) => {
+    const relPath = relative(tsconfigDir, join(ROOT, dep.path))
+    return { path: relPath.startsWith(".") ? relPath : `./${relPath}` }
+  })
+}
+
+async function syncSingleTsconfig(
+  tsconfigPath: string,
+  workspaceDeps: WorkspacePackage[]
 ): Promise<void> {
+  const { content, parsed } = await readTsconfig(tsconfigPath)
+
+  if (isSolutionStyleTsconfig(parsed)) {
+    console.log(`Skipped (solution-style): ${relative(ROOT, tsconfigPath)}`)
+    return
+  }
+
+  const refs = buildTsconfigRefs(workspaceDeps, dirname(tsconfigPath))
+  const updated = updateReferences(content, refs)
+
+  if (updated !== content) {
+    await writeFile(tsconfigPath, updated)
+    console.log(`Updated: ${relative(ROOT, tsconfigPath)}`)
+  } else {
+    console.log(`No changes: ${relative(ROOT, tsconfigPath)}`)
+  }
+}
+
+async function syncPackageTsconfigs(packages: WorkspacePackage[]): Promise<void> {
   const packageByName = new Map(packages.map((p) => [p.name, p]))
 
   for (const pkg of packages) {
-    // Get all workspace dependencies
-    const allDeps = {
-      ...pkg.packageJson.dependencies,
-      ...pkg.packageJson.devDependencies,
-    }
-
-    const workspaceDeps = Object.entries(allDeps)
-      .filter(([_, version]) => version.startsWith("workspace:"))
-      .map(([name]) => packageByName.get(name))
-      .filter((dep): dep is WorkspacePackage => dep !== undefined)
-      .sort((a, b) => a.path.localeCompare(b.path))
-
-    // Update each tsconfig that has references
+    const workspaceDeps = getWorkspaceDeps(pkg, packageByName)
     for (const tsconfigPath of pkg.tsconfigPaths) {
-      const { content, parsed } = await readTsconfig(tsconfigPath)
-      const tsconfigDir = dirname(tsconfigPath)
-
-      // Check if this is a solution-style tsconfig (references other tsconfigs in same dir)
-      const isSolutionStyle =
-        Array.isArray(parsed.files) &&
-        parsed.files.length === 0 &&
-        parsed.references?.some((r) => r.path.startsWith("./tsconfig"))
-
-      if (isSolutionStyle) {
-        // Don't modify solution-style tsconfigs - they reference local tsconfigs, not packages
-        console.log(`Skipped (solution-style): ${relative(ROOT, tsconfigPath)}`)
-        continue
-      }
-
-      // Calculate relative paths from this tsconfig to workspace deps
-      const refs = workspaceDeps.map((dep) => {
-        const relPath = relative(tsconfigDir, join(ROOT, dep.path))
-        return { path: relPath.startsWith(".") ? relPath : `./${relPath}` }
-      })
-
-      const updated = updateReferences(content, refs)
-
-      if (updated !== content) {
-        await writeFile(tsconfigPath, updated)
-        console.log(`Updated: ${relative(ROOT, tsconfigPath)}`)
-      } else {
-        console.log(`No changes: ${relative(ROOT, tsconfigPath)}`)
-      }
+      await syncSingleTsconfig(tsconfigPath, workspaceDeps)
     }
   }
 }
@@ -228,7 +242,9 @@ async function main() {
   console.log("\nDone!")
 }
 
-main().catch((err) => {
-  console.error(err)
+try {
+  await main()
+} catch (error) {
+  console.error(error)
   process.exit(1)
-})
+}
