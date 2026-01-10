@@ -7,11 +7,11 @@ TODO:
   - bun hoists dependencies and binaries
   - works for dev deps
 - explain inheritance, tsconfig, and oxlint
-- eslint normal handles the styling
-  - react is normal + react specific
+- eslint normal handles the styling ✅
+  - react is normal + react specific ✅
 
-eslint apply to eslint package
-knip config
+eslint apply to eslint package ✅
+knip config ✅
 ask for ADRs
 plop for creating packages
 turborepo

@@ -13,11 +13,13 @@
     "@types/bun": "latest",
     "@typescript/native-preview": "^7.0.0-dev.20260109.1",
     "eslint": "^9.39.2",
+    "knip": "^5.73.4",
     "oxlint": "^1.38.0"
   },
   "scripts": {
     "lint:oxlint": "bun run --filter '*' lint:oxlint",
     "lint:eslint": "bun run --filter '*' lint:eslint",
-    "typecheck": "bun run --filter '*' typecheck"
+    "typecheck": "bun run --filter '*' typecheck",
+    "deadcode": "knip"
   }
 }

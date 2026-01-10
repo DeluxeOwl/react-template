@@ -7,7 +7,8 @@ import {
 } from "eslint/config"
 import reactHooks from "eslint-plugin-react-hooks"
 import eslintReact from "@eslint-react/eslint-plugin"
-import eslintPluginReadableTailwind from "eslint-plugin-readable-tailwind"
+import reactRefresh from "eslint-plugin-react-refresh"
+import betterTailwindcss from "eslint-plugin-better-tailwindcss"
 import youMightNotNeedAnEffect from "eslint-plugin-react-you-might-not-need-an-effect"
 
 // Depends on the default config
@@ -31,6 +32,7 @@ export default function createReactConfig(rootDir: string) {
         },
         {
             extends: [
+                reactRefresh.configs.recommended,
                 reactHooks.configs.flat.recommended,
                 eslintReact.configs["recommended-typescript"],
                 youMightNotNeedAnEffect.configs.recommended,
@@ -50,15 +52,15 @@ export default function createReactConfig(rootDir: string) {
             },
 
             plugins: {
-                "readable-tailwind": eslintPluginReadableTailwind,
+                "better-tailwindcss": betterTailwindcss,
             },
 
             rules: {
-                "@eslint-react/no-leaked-conditional-rendering": ["error"],
-                "react-hooks/todo":                              "error",
-                ...eslintPluginReadableTailwind.configs.warning.rules,
-                ...eslintPluginReadableTailwind.configs.error.rules,
-                "readable-tailwind/multiline":                   ["off"],
+                "@eslint-react/no-leaked-conditional-rendering":       ["error"],
+                "react-hooks/todo":                                    "error",
+                ...betterTailwindcss.configs["stylistic-warn"].rules,
+                ...betterTailwindcss.configs["correctness-error"].rules,
+                "better-tailwindcss/enforce-consistent-line-wrapping": ["off"],
             },
         },
     ])

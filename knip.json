@@ -5,7 +5,8 @@
 		"type": true
 	},
 	"ignore": [
-		"components/ui/**"
+		"components/ui/**",
+		"scripts/**"
 	],
 	"tags": [
 		"-lintignore"
