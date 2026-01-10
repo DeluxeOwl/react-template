@@ -3,6 +3,9 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "typecheck": "tsgo -b --noEmit"
+  },
   "devDependencies": {
     "@eslint-react/eslint-plugin": "^2.3.13",
     "@eslint/js": "^9.39.1",

@@ -6,6 +6,7 @@
     "target": "ES2022",
     "useDefineForClassFields": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "jsx": "react-jsx",
     "lib": [
       "ES2022",
@@ -19,9 +20,5 @@
   "include": [
     "src",
     "../../reset.d.ts"
-  ],
-  "references": [
-    { "path": "../../packages/eslint" },
-    { "path": "../../packages/math" }
   ]
 }
