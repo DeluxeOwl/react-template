@@ -1,20 +1,6 @@
 {
-	"compilerOptions": {
-		"module": "ESNext",
-		"moduleResolution": "bundler",
-		"skipLibCheck": true,
-		"allowImportingTsExtensions": true,
-		"verbatimModuleSyntax": true,
-		"moduleDetection": "force",
-		"noEmit": true,
-		/* Linting & Strictness */
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"erasableSyntaxOnly": true,
-		"noFallthroughCasesInSwitch": true,
-		"noUncheckedSideEffectImports": true
-	},
+	"files": [],
+	// TODO: sync references script, same in apps/web
 	"references": [
 		{
 			"path": "./apps/web"
