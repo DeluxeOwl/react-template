@@ -2,7 +2,7 @@
  * Syncs TypeScript project references across the monorepo.
  *
  * This script:
- * 1. Discovers all workspace packages (apps/* and packages/*)
+ * 1. Discovers all workspace packages from root package.json workspaces field
  * 2. Builds a dependency graph from package.json files
  * 3. Updates tsconfig references in:
  *    - Root tsconfig.json (references all projects)
@@ -13,11 +13,13 @@
 
 import { readdir, readFile, writeFile } from "node:fs/promises"
 import { join, relative, dirname } from "node:path"
+import { Glob } from "bun"
 
 const ROOT = join(import.meta.dirname, "..")
 
 interface PackageJson {
   name: string
+  workspaces?: string[]
   dependencies?: Record<string, string>
   devDependencies?: Record<string, string>
 }
@@ -35,36 +37,35 @@ interface WorkspacePackage {
 }
 
 async function findWorkspacePackages(): Promise<WorkspacePackage[]> {
+  // Read workspace patterns from root package.json
+  const rootPkgContent = await readFile(join(ROOT, "package.json"), "utf-8")
+  const rootPkg = JSON.parse(rootPkgContent) as PackageJson
+  const workspacePatterns = rootPkg.workspaces ?? []
+
   const packages: WorkspacePackage[] = []
 
-  for (const dir of ["apps", "packages"]) {
-    const dirPath = join(ROOT, dir)
-    let entries: string[]
-    try {
-      entries = await readdir(dirPath)
-    } catch {
-      continue
-    }
+  for (const pattern of workspacePatterns) {
+    // Handle both glob patterns (apps/*) and direct paths (scripts)
+    const glob = new Glob(join(pattern, "package.json"))
 
-    for (const entry of entries) {
-      const pkgJsonPath = join(dirPath, entry, "package.json")
+    for await (const pkgJsonPath of glob.scan({ cwd: ROOT, absolute: true })) {
       try {
         const content = await readFile(pkgJsonPath, "utf-8")
         const packageJson = JSON.parse(content) as PackageJson
+        const pkgDir = dirname(pkgJsonPath)
+        const relativePath = relative(ROOT, pkgDir)
 
         // Find all tsconfig files with references
-        const tsconfigPaths = await findTsconfigsWithReferences(
-          join(dirPath, entry)
-        )
+        const tsconfigPaths = await findTsconfigsWithReferences(pkgDir)
 
         packages.push({
           name: packageJson.name,
-          path: `${dir}/${entry}`,
+          path: relativePath,
           packageJson,
           tsconfigPaths,
         })
       } catch {
-        // Skip if no package.json
+        // Skip if invalid package.json
       }
     }
   }
