@@ -11,6 +11,7 @@ import eslintPluginReadableTailwind from "eslint-plugin-readable-tailwind"
 import youMightNotNeedAnEffect from "eslint-plugin-react-you-might-not-need-an-effect"
 import createConfig from '@react-template/eslint'
 
+// Depends on the default config
 export default function createReactConfig(rootDir: string) {
     return defineConfig([
         {
