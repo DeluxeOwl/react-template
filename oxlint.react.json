@@ -4,7 +4,7 @@
 		"jsx-a11y"
 	],
 	"extends": [
-		"./oxlint-typescript.json"
+		"./oxlint.typescript.json"
 	],
 	"rules": {
 		"react/button-has-type": "warn",

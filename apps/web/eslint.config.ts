@@ -18,7 +18,6 @@ import eslintPluginReadableTailwind from "eslint-plugin-readable-tailwind"
 import youMightNotNeedAnEffect from "eslint-plugin-react-you-might-not-need-an-effect"
 
 // Using eslint for some rules that aren't available in oxlint
-// We don't use any tseslint rules, only the parser
 export default defineConfig([
     {
         ignores: [
