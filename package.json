@@ -17,6 +17,7 @@
     "oxlint": "^1.38.0"
   },
   "scripts": {
+    "sync:tsconfig": "bun scripts/sync-tsconfig-references.ts",
     "lint:oxlint": "bun run --filter '*' lint:oxlint",
     "lint:eslint": "bun run --filter '*' lint:eslint",
     "typecheck": "bun run --filter '*' typecheck",

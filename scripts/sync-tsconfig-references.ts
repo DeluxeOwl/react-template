@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 /**
  * Syncs TypeScript project references across the monorepo.
  *
@@ -8,7 +9,7 @@
  *    - Root tsconfig.json (references all projects)
  *    - Each project's tsconfig that has a "references" field (based on workspace deps)
  *
- * Run: bun run scripts/sync-tsconfig-references.ts
+ * Run: bun scripts/sync-tsconfig
  */
 
 import { readdir, readFile, writeFile } from "node:fs/promises"
