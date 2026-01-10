@@ -114,8 +114,9 @@ export default defineConfig([
             ],
             "@stylistic/object-property-newline":    ["error", { allowAllPropertiesOnSameLine: true }],
             "@stylistic/operator-linebreak":         ["error"],
-            "@typescript-eslint/no-explicit-any":    ["off"], // Handled by oxlint
-            "@typescript-eslint/no-require-imports": ["off"], // Handled by oxlint
+            // These 2 are handled by oxlint.
+            "@typescript-eslint/no-explicit-any":    ["off"],
+            "@typescript-eslint/no-require-imports": ["off"],
             "@typescript-eslint/no-unused-vars":     "off",
             "react-hooks/todo":                      "error",
             "unused-imports/no-unused-imports":      "error",
