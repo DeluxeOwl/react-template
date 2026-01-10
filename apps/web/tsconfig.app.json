@@ -21,6 +21,7 @@
     "../../reset.d.ts"
   ],
   "references": [
+    { "path": "../../packages/eslint" },
     { "path": "../../packages/math" }
   ]
 }

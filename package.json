@@ -8,11 +8,14 @@
   ],
   "type": "module",
   "devDependencies": {
+    "@react-template/eslint": "workspace:*",
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/bun": "latest",
-    "oxlint": "^1.38.0"
+    "oxlint": "^1.38.0",
+    "eslint": "^9.39.2"
   },
   "scripts": {
-    "lint:oxlint": "bun run --filter '*' lint:oxlint"
+    "lint:oxlint": "bun run --filter '*' lint:oxlint",
+    "lint:eslint": "bun run --filter '*' lint:eslint"
   }
 }

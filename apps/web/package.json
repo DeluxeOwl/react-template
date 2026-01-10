@@ -21,29 +21,14 @@
     "@react-template/math": "workspace:*"
   },
   "devDependencies": {
-    "@eslint-react/eslint-plugin": "^2.3.13",
-    "@eslint/js": "^9.39.1",
-    "@stylistic/eslint-plugin": "^5.6.1",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.49.0",
     "@typescript/native-preview": "^7.0.0-dev.20260109.1",
     "@vitejs/plugin-react": "^5.1.1",
     "babel-plugin-react-compiler": "^1.0.0",
-    "eslint": "^9.39.2",
-    "eslint-plugin-import-zod": "^1.2.1",
-    "eslint-plugin-oxlint": "^1.32.0",
-    "eslint-plugin-perfectionist": "^4.15.1",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.4.24",
-    "eslint-plugin-react-you-might-not-need-an-effect": "^0.7.0",
-    "eslint-plugin-readable-tailwind": "^3.0.0",
-    "eslint-plugin-unused-imports": "^4.3.0",
-    "globals": "^16.5.0",
     "knip": "^5.73.4",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4"
   }
 }
