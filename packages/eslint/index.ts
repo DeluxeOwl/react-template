@@ -2,74 +2,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 // @ts-check
 
-import globals from "globals"
-import tseslint from "typescript-eslint"
-import oxlint from "eslint-plugin-oxlint"
 import stylistic from "@stylistic/eslint-plugin"
 import importZod from "eslint-plugin-import-zod"
+import oxlint from "eslint-plugin-oxlint"
+import perfectionist from "eslint-plugin-perfectionist"
+import unusedImports from "eslint-plugin-unused-imports"
 import {
     defineConfig,
 } from "eslint/config"
-import reactHooks from "eslint-plugin-react-hooks"
-import eslintReact from "@eslint-react/eslint-plugin"
-import perfectionist from "eslint-plugin-perfectionist"
-import unusedImports from "eslint-plugin-unused-imports"
-import eslintPluginReadableTailwind from "eslint-plugin-readable-tailwind"
-import youMightNotNeedAnEffect from "eslint-plugin-react-you-might-not-need-an-effect"
-
-export function createReactConfig(rootDir: string) {
-    return defineConfig([
-        {
-            ignores: [
-                "dist/**",
-                "**/*.gen.ts",
-                ".vscode/**",
-                ".oxlintrc.json",
-                "build/**",
-                ".next/**",
-                "out/**",
-                "coverage/**",
-                "app/globals.css",
-                "node_modules/**",
-                "messages/**",
-                "public/**",
-            ],
-        },
-        {
-            extends: [
-                reactHooks.configs.flat.recommended,
-                eslintReact.configs["recommended-typescript"],
-                youMightNotNeedAnEffect.configs.recommended,
-            ],
-            files: ["**/*.{mjs,js,jsx,ts,tsx}"],
-
-            languageOptions: {
-                ecmaVersion:   2020,
-                globals:       globals.browser,
-                parser:        tseslint.parser,
-                parserOptions: {
-                    projectService: {
-                        // Extra files for the linting
-                        allowDefaultProject: ["*eslint.config.ts", "*.d.ts"],
-                        tsconfigRootDir: rootDir,
-                    },
-                },
-            },
-
-            plugins: {
-                "readable-tailwind":  eslintPluginReadableTailwind,
-            },
-
-            rules: {
-                "@eslint-react/no-leaked-conditional-rendering": ["error"],
-                "react-hooks/todo":                      "error",
-                ...eslintPluginReadableTailwind.configs.warning.rules,
-                ...eslintPluginReadableTailwind.configs.error.rules,
-                "readable-tailwind/multiline": ["off"],
-            },
-        },
-    ])
-}
+import tseslint from "typescript-eslint"
 
 // Using eslint for some rules that aren't available in oxlint
 export default function createConfig(rootDir: string) {
@@ -92,9 +33,7 @@ export default function createConfig(rootDir: string) {
         },
         {
             extends: [
-                reactHooks.configs.flat.recommended,
                 tseslint.configs.recommendedTypeChecked,
-                eslintReact.configs["recommended-typescript"],
                 perfectionist.configs["recommended-natural"],
                 stylistic.configs.customize({
                     arrowParens:  true,
@@ -103,7 +42,6 @@ export default function createConfig(rootDir: string) {
                     indent:       4,
                     quotes:       "double",
                 }),
-                youMightNotNeedAnEffect.configs.recommended,
                 importZod.configs.recommended,
                 // NOTE: Needs to be last
                 ...oxlint.buildFromOxlintConfigFile("./.oxlintrc.json"),
@@ -111,13 +49,11 @@ export default function createConfig(rootDir: string) {
             files: ["**/*.{mjs,js,jsx,ts,tsx}"],
 
             languageOptions: {
-                ecmaVersion:   2020,
-                globals:       globals.browser,
                 parser:        tseslint.parser,
                 parserOptions: {
                     projectService: {
                         // Extra files for the linting
-                        allowDefaultProject: ["*eslint.config.ts", "*.d.ts"],
+                        allowDefaultProject: ["*eslint.config.ts", "*.d.ts", "*.ts"],
                         tsconfigRootDir: rootDir,
                     },
                 },
@@ -125,12 +61,10 @@ export default function createConfig(rootDir: string) {
 
             plugins: {
                 "@typescript-eslint": tseslint.plugin,
-                "readable-tailwind":  eslintPluginReadableTailwind,
                 "unused-imports":     unusedImports,
             },
 
             rules: {
-                "@eslint-react/no-leaked-conditional-rendering": ["error"],
                 "@stylistic/curly-newline":                      [
                     "error", {
                         minElements: 1,
@@ -172,7 +106,6 @@ export default function createConfig(rootDir: string) {
                 "@typescript-eslint/no-explicit-any":    ["off"],
                 "@typescript-eslint/no-require-imports": ["off"],
                 "@typescript-eslint/no-unused-vars":     "off",
-                "react-hooks/todo":                      "error",
                 "unused-imports/no-unused-imports":      "error",
                 "unused-imports/no-unused-vars":         [
                     "warn",
@@ -183,8 +116,6 @@ export default function createConfig(rootDir: string) {
                         varsIgnorePattern: "^_",
                     },
                 ],
-                ...eslintPluginReadableTailwind.configs.warning.rules,
-                ...eslintPluginReadableTailwind.configs.error.rules,
                 // "@stylistic/max-len": ["error", { code: 80 }], this doesnt work https://github.com/eslint-stylistic/eslint-stylistic/issues/686
                 "@stylistic/array-bracket-newline": [
                     "error",
@@ -256,7 +187,6 @@ export default function createConfig(rootDir: string) {
                         type: "line-length",
                     },
                 ],
-                "readable-tailwind/multiline": ["off"],
             },
         },
     ])

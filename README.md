@@ -7,3 +7,5 @@ TODO:
   - bun hoists dependencies and binaries
   - works for dev deps
 - explain inheritance, tsconfig, and oxlint
+- eslint normal handles the styling
+  - react is normal + react specific

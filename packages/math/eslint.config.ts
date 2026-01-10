@@ -1,10 +1,10 @@
+import config from "@react-template/eslint"
 import {
     defineConfig,
 } from "eslint/config"
-import defaultEslintConfig from "@react-template/eslint"
 
 export default defineConfig([
     {
-        extends: [defaultEslintConfig(import.meta.dir)],
+        extends: [config(import.meta.dir)],
     },
 ])
