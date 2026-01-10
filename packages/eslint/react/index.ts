@@ -43,7 +43,7 @@ export default function createReactConfig(rootDir: string) {
                 parserOptions: {
                     projectService: {
                         // Extra files for the linting
-                        allowDefaultProject: ["*eslint.config.ts", "*.d.ts"],
+                        allowDefaultProject: ["*eslint.config.ts", "*.d.ts", "*.ts"],
                         tsconfigRootDir: rootDir,
                     },
                 },
