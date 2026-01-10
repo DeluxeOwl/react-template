@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "typecheck": "tsc --noEmit",
+    "build": "tsgo -b && vite build",
+    "typecheck": "tsgo -b --noEmit",
     "lint": "eslint --fix . && oxlint --fix .",
     "preview": "vite preview"
   },
@@ -25,6 +25,7 @@
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.49.0",
+    "@typescript/native-preview": "^7.0.0-dev.20260109.1",
     "@vitejs/plugin-react": "^5.1.1",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.39.2",
