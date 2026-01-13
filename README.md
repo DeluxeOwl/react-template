@@ -239,6 +239,15 @@ All packages extend from `tsconfig.base.json` at the root:
     // Treat all files as modules (not scripts)
     "moduleDetection": "force",
 
+    // Generate .d.ts files
+    "declaration": true,
+
+    // Source maps for declarations (better IDE navigation)
+    "declarationMap": true,
+
+    // Don't emit .js (Bun runs .ts directly)
+    "emitDeclarationOnly": true,
+
     // Maximum type safety
     "strict": true,
     "noUnusedLocals": true,
@@ -263,8 +272,8 @@ Each package extends this and adds its specific needs:
 ```
 tsconfig.base.json (shared compiler options)
        │
-       ├── packages/math/tsconfig.json      (adds: composite, declaration, outDir)
-       ├── packages/eslint/tsconfig.json    (adds: composite, declaration, outDir)
+       ├── packages/math/tsconfig.json      (adds: composite, outDir)
+       ├── packages/eslint/tsconfig.json    (adds: composite, outDir)
        ├── scripts/tsconfig.json            (adds: composite, lib: ESNext, types: bun)
        │
        └── apps/web/
@@ -305,9 +314,6 @@ For project references to work, each package needs `"composite": true` in its ts
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "composite": true,           // Required for project references
-    "declaration": true,         // Generate .d.ts files
-    "declarationMap": true,      // Source maps for declarations (better IDE navigation)
-    "emitDeclarationOnly": true, // Don't emit .js (Bun runs .ts directly)
     "outDir": "./dist"
   },
   "include": ["index.ts", "src", "../../reset.d.ts"]
@@ -366,9 +372,6 @@ Every package includes this file in its tsconfig:
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
-    "declaration": true,
-    "declarationMap": true,
-    "emitDeclarationOnly": true,
     "outDir": "./dist"
   },
   "include": ["index.ts", "src", "../../reset.d.ts"]
@@ -822,9 +825,6 @@ mkdir -p packages/utils
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
-    "declaration": true,
-    "declarationMap": true,
-    "emitDeclarationOnly": true,
     "outDir": "./dist"
   },
   "include": ["index.ts", "src", "../../reset.d.ts"],
