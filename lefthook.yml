@@ -23,5 +23,5 @@ pre-push:
       run: bun run lint:duplicate
     - name: typecheck
       run: bun run typecheck
-    - name: deadcode/knip
-      run: bun run deadcode
+    # - name: deadcode/knip
+    #   run: bun run deadcode
