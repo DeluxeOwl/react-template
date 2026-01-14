@@ -55,7 +55,15 @@ export default function createReactConfig(rootDir: string) {
             },
 
             rules: {
-                "@eslint-react/no-leaked-conditional-rendering":       ["error"],
+                "@eslint-react/no-leaked-conditional-rendering": ["error"],
+                "no-restricted-syntax":                          [
+                    "error",
+                    {
+                        message:  "Generic handler names (like 'handleClick' or 'onDelete') are forbidden. Please be specific about WHAT is being handled, e.g., 'handleUserDelete' or 'onEmailSubmit'.",
+                        // This selector looks for variable names and function names
+                        selector: "VariableDeclarator > Identifier[name=/^(handleClick|onClick|handleSubmit|onSubmit|handleEvent|onEvent|handleChange|onChange|handleDelete|onDelete|handleSelect|onSelect)$/], FunctionDeclaration > Identifier[name=/^(handleClick|onClick|handleSubmit|onSubmit|handleEvent|onEvent|handleChange|onChange|handleDelete|onDelete|handleSelect|onSelect)$/]",
+                    },
+                ],
                 "react-hooks/todo":                                    "error",
                 ...betterTailwindcss.configs["stylistic-warn"].rules,
                 ...betterTailwindcss.configs["correctness-error"].rules,
