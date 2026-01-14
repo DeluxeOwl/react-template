@@ -583,6 +583,9 @@ bun run lint  # Runs both
 
 # Runs the dprint formatter for json, yaml, markdown etc.
 bun run format:dprint
+
+# Runs the jscpd code duplication tool
+bun run lint:duplicate
 ```
 
 ---
@@ -730,14 +733,15 @@ rules:
 
 ### Root `package.json` scripts
 
-| Script          | Command                                   | Description                                                  |
-| --------------- | ----------------------------------------- | ------------------------------------------------------------ |
-| `sync:tsconfig` | `bun scripts/sync-tsconfig-references.ts` | Syncs tsconfig references based on package.json dependencies |
-| `lint:oxlint`   | `bun run --filter '*' lint:oxlint`        | Runs OxLint in all workspaces                                |
-| `lint:eslint`   | `bun run --filter '*' lint:eslint`        | Runs ESLint in all workspaces                                |
-| `typecheck`     | `bun run --filter '*' typecheck`          | Type-checks all workspaces with tsgo                         |
-| `deadcode`      | `knip`                                    | Finds unused code/dependencies                               |
-| `format:dprint` | `bun run dprint fmt`                      | Runs the dprint formatter for json, yaml etc.                |
+| Script           | Command                                   | Description                                                  |
+| ---------------- | ----------------------------------------- | ------------------------------------------------------------ |
+| `sync:tsconfig`  | `bun scripts/sync-tsconfig-references.ts` | Syncs tsconfig references based on package.json dependencies |
+| `lint:oxlint`    | `bun run --filter '*' lint:oxlint`        | Runs OxLint in all workspaces                                |
+| `lint:eslint`    | `bun run --filter '*' lint:eslint`        | Runs ESLint in all workspaces                                |
+| `typecheck`      | `bun run --filter '*' typecheck`          | Type-checks all workspaces with tsgo                         |
+| `deadcode`       | `knip`                                    | Finds unused code/dependencies                               |
+| `format:dprint`  | `bun run dprint fmt`                      | Runs the dprint formatter for json, yaml etc.                |
+| `lint:duplicate` | `bun run jscpd -c .jscpd.json`            | Runs the jscpd code duplication tool                         |
 
 The `--filter '*'` flag tells Bun to run the script in all workspace packages that have it.
 
