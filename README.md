@@ -103,12 +103,14 @@ react-template/
 A monorepo (monolithic repository) is a single Git repository that contains multiple projects. Instead of having separate repositories for your web app, mobile app, and shared utilities, everything lives together.
 
 **Benefits:**
+
 - Share code easily between projects (e.g., validation logic, types, utilities)
 - Make atomic changes across multiple packages in one commit
 - Single set of tooling configuration (linters, TypeScript, etc.)
 - Easier dependency management
 
 **In this template:**
+
 - `apps/` contains deployable applications (web, future mobile/server)
 - `packages/` contains shared libraries used by apps
 
@@ -125,11 +127,11 @@ The root `package.json` defines workspaces like this:
 
 ```json
 {
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "scripts"
-  ]
+    "workspaces": [
+        "apps/*",
+        "packages/*",
+        "scripts"
+    ]
 }
 ```
 
@@ -172,9 +174,9 @@ Example: `apps/web` uses the `@react-template/math` package:
 ```json
 // apps/web/package.json
 {
-  "dependencies": {
-    "@react-template/math": "workspace:*"
-  }
+    "dependencies": {
+        "@react-template/math": "workspace:*"
+    }
 }
 ```
 
@@ -201,6 +203,7 @@ The `workspace:*` protocol tells Bun: "This dependency is another package in thi
 When another package imports `@react-template/math`, Bun looks for a package with that exact name. The folder name (`math`) doesn't matter - only the `name` field does.
 
 **Convention:** Use a scope (`@react-template/`) for all internal packages. This:
+
 - Prevents name collisions with npm packages
 - Makes it clear which imports are internal vs external
 - Groups your packages together in `node_modules/@react-template/`
@@ -210,6 +213,7 @@ When another package imports `@react-template/math`, Bun looks for a package wit
 ## TypeScript Configuration
 
 TypeScript configuration in a monorepo has two main challenges:
+
 1. Sharing compiler options across all packages
 2. Making TypeScript understand the relationships between packages
 
@@ -220,48 +224,49 @@ All packages extend from `tsconfig.base.json` at the root:
 ```json
 // tsconfig.base.json
 {
-  "compilerOptions": {
-    // Build output location for incremental compilation cache
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+    "compilerOptions": {
+        // Build output location for incremental compilation cache
+        "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
 
-    // Use modern ES modules
-    "module": "ESNext",
+        // Use modern ES modules
+        "module": "ESNext",
 
-    // "bundler" works with Vite, Bun, and other modern bundlers
-    "moduleResolution": "bundler",
+        // "bundler" works with Vite, Bun, and other modern bundlers
+        "moduleResolution": "bundler",
 
-    // Don't type-check node_modules (faster)
-    "skipLibCheck": true,
+        // Don't type-check node_modules (faster)
+        "skipLibCheck": true,
 
-    // Require explicit `type` keyword for type-only imports
-    "verbatimModuleSyntax": true,
+        // Require explicit `type` keyword for type-only imports
+        "verbatimModuleSyntax": true,
 
-    // Treat all files as modules (not scripts)
-    "moduleDetection": "force",
+        // Treat all files as modules (not scripts)
+        "moduleDetection": "force",
 
-    // Generate .d.ts files
-    "declaration": true,
+        // Generate .d.ts files
+        "declaration": true,
 
-    // Source maps for declarations (better IDE navigation)
-    "declarationMap": true,
+        // Source maps for declarations (better IDE navigation)
+        "declarationMap": true,
 
-    // Don't emit .js (Bun runs .ts directly)
-    "emitDeclarationOnly": true,
+        // Don't emit .js (Bun runs .ts directly)
+        "emitDeclarationOnly": true,
 
-    // Maximum type safety
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
+        // Maximum type safety
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedSideEffectImports": true,
 
-    // Only allow syntax that can be erased (no enums, namespaces)
-    "erasableSyntaxOnly": true
-  }
+        // Only allow syntax that can be erased (no enums, namespaces)
+        "erasableSyntaxOnly": true
+    }
 }
 ```
 
 This base configuration is intentionally generic - it works for:
+
 - Library packages (like `packages/math`)
 - React applications (like `apps/web`)
 - Server code (future Node.js/Bun servers)
@@ -288,13 +293,13 @@ The root `tsconfig.json` is a "solution-style" configuration that doesn't compil
 ```json
 // tsconfig.json (root)
 {
-  "files": [],
-  "references": [
-    { "path": "./apps/web" },
-    { "path": "./packages/eslint" },
-    { "path": "./packages/math" },
-    { "path": "./scripts" }
-  ]
+    "files": [],
+    "references": [
+        { "path": "./apps/web" },
+        { "path": "./packages/eslint" },
+        { "path": "./packages/math" },
+        { "path": "./scripts" }
+    ]
 }
 ```
 
@@ -311,18 +316,19 @@ For project references to work, each package needs `"composite": true` in its ts
 ```json
 // packages/math/tsconfig.json
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,           // Required for project references
-    "outDir": "./dist"
-  },
-  "include": ["index.ts", "src", "../../reset.d.ts"]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "composite": true, // Required for project references
+        "outDir": "./dist"
+    },
+    "include": ["index.ts", "src", "../../reset.d.ts"]
 }
 ```
 
 ### The sync-tsconfig Script
 
 **The pain point:** When you add a new internal dependency (e.g., `apps/web` starts using `packages/utils`), you need to:
+
 1. Add it to `package.json` dependencies
 2. Add it to `tsconfig.json` references
 3. Add it to the root `tsconfig.json` references
@@ -332,6 +338,7 @@ Forgetting step 2 or 3 breaks incremental builds and can cause confusing type er
 **The solution:** Run `bun run sync:tsconfig` to automatically sync all tsconfig references based on your `package.json` dependencies.
 
 The script (`scripts/sync-tsconfig-references.ts`):
+
 1. Reads all workspace packages from root `package.json`
 2. Looks at each package's `dependencies` and `devDependencies`
 3. Finds dependencies using `workspace:*` (internal packages)
@@ -339,6 +346,7 @@ The script (`scripts/sync-tsconfig-references.ts`):
 5. Updates the root tsconfig to reference all packages
 
 **Run this after:**
+
 - Adding a new package
 - Adding/removing internal dependencies between packages
 
@@ -352,6 +360,7 @@ import "@total-typescript/ts-reset"
 ```
 
 This library improves TypeScript's built-in types. For example:
+
 - `.filter(Boolean)` correctly narrows types (removes `null`/`undefined`)
 - `.json()` from `fetch` returns `unknown` instead of `any`
 - `Array.isArray()` works better with `readonly` arrays
@@ -360,21 +369,22 @@ Every package includes this file in its tsconfig:
 
 ```json
 {
-  "include": ["src", "../../reset.d.ts"]
+    "include": ["src", "../../reset.d.ts"]
 }
 ```
 
 ### Per-Package Configuration
 
 **Library packages** (`packages/math`, `packages/eslint`):
+
 ```json
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "outDir": "./dist"
-  },
-  "include": ["index.ts", "src", "../../reset.d.ts"]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist"
+    },
+    "include": ["index.ts", "src", "../../reset.d.ts"]
 }
 ```
 
@@ -383,38 +393,38 @@ Every package includes this file in its tsconfig:
 ```json
 // apps/web/tsconfig.json - just references other configs
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.server.json" }
-  ]
+    "files": [],
+    "references": [
+        { "path": "./tsconfig.app.json" },
+        { "path": "./tsconfig.server.json" }
+    ]
 }
 ```
 
 ```json
 // apps/web/tsconfig.app.json - for React source code
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "jsx": "react-jsx",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"]
-  },
-  "include": ["src", "../../reset.d.ts"]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "composite": true,
+        "jsx": "react-jsx",
+        "lib": ["ES2022", "DOM", "DOM.Iterable"],
+        "types": ["vite/client"]
+    },
+    "include": ["src", "../../reset.d.ts"]
 }
 ```
 
 ```json
 // apps/web/tsconfig.server.json - for Node.js config files
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "lib": ["ES2023"],
-    "types": ["node"]
-  },
-  "include": ["vite.config.ts", "../../reset.d.ts"]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "composite": true,
+        "lib": ["ES2023"],
+        "types": ["node"]
+    },
+    "include": ["vite.config.ts", "../../reset.d.ts"]
 }
 ```
 
@@ -428,12 +438,13 @@ Why separate configs for apps? Because `vite.config.ts` runs in Node.js (needs N
 
 This template uses two linters that work together:
 
-| Linter | Written in | Speed | Purpose |
-|--------|------------|-------|---------|
-| **OxLint** | Rust | Very fast | Handles most lint rules |
-| **ESLint** | JavaScript | Slower | Rules OxLint doesn't support yet |
+| Linter     | Written in | Speed     | Purpose                          |
+| ---------- | ---------- | --------- | -------------------------------- |
+| **OxLint** | Rust       | Very fast | Handles most lint rules          |
+| **ESLint** | JavaScript | Slower    | Rules OxLint doesn't support yet |
 
 OxLint is 50-100x faster than ESLint but doesn't yet support all ESLint rules. The strategy is:
+
 1. Let OxLint handle everything it can
 2. Use ESLint only for what OxLint can't do (formatting, import sorting, some TypeScript rules)
 
@@ -454,24 +465,27 @@ oxlint.typescript.json (base - for all TypeScript code)
 ```
 
 **Base config** (`oxlint.typescript.json`):
+
 - Enables plugins: `unicorn`, `typescript`, `oxc`, `import`
 - Sets rule severities for code quality, performance, correctness
 - Defines ignore patterns for generated files, build output, etc.
 
 **React config** (`oxlint.react.json`):
+
 ```json
 {
-  "plugins": ["react", "jsx-a11y"],
-  "extends": ["./oxlint.typescript.json"],
-  "rules": {
-    "react/button-has-type": "warn",
-    "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
-    // ... more React-specific rules
-  }
+    "plugins": ["react", "jsx-a11y"],
+    "extends": ["./oxlint.typescript.json"],
+    "rules": {
+        "react/button-has-type": "warn",
+        "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }]
+        // ... more React-specific rules
+    }
 }
 ```
 
 **Per-package configs** just extend the appropriate base:
+
 ```json
 // packages/math/.oxlintrc.json (library - no React)
 {
@@ -521,6 +535,7 @@ export default defineConfig([{
 ```
 
 **What's in the base config?**
+
 - TypeScript-ESLint for type-aware linting
 - Perfectionist for import sorting
 - Stylistic for code formatting (4-space indent, double quotes, etc.)
@@ -528,6 +543,7 @@ export default defineConfig([{
 - Integration with OxLint (disables rules OxLint handles)
 
 **What does the React config add?**
+
 - React Hooks rules
 - React Refresh (for hot reloading)
 - @eslint-react rules
@@ -564,6 +580,9 @@ bun run lint:eslint
 
 # In each package, there's also a combined command:
 bun run lint  # Runs both
+
+# Runs the dprint formatter for json, yaml, markdown etc.
+bun run format:dprint
 ```
 
 ---
@@ -573,11 +592,12 @@ bun run lint  # Runs both
 [tsgo](https://github.com/nicolo-ribaudo/tsgo) is an experimental Go port of the TypeScript compiler. It's significantly faster than `tsc` for type checking.
 
 Each package has a `typecheck` script:
+
 ```json
 {
-  "scripts": {
-    "typecheck": "tsgo -b --noEmit"
-  }
+    "scripts": {
+        "typecheck": "tsgo -b --noEmit"
+    }
 }
 ```
 
@@ -585,15 +605,17 @@ Each package has a `typecheck` script:
 - `--noEmit` only type-checks, doesn't output files
 
 Run type checking across all packages:
+
 ```bash
 bun run typecheck  # Runs in all workspaces
 ```
 
 VS Code is also configured to use tsgo:
+
 ```json
 // .vscode/settings.json
 {
-  "typescript.experimental.useTsgo": true
+    "typescript.experimental.useTsgo": true
 }
 ```
 
@@ -606,23 +628,25 @@ VS Code is also configured to use tsgo:
 ```json
 // knip.json
 {
-  "ignoreExportsUsedInFile": {
-    "interface": true,
-    "type": true
-  },
-  "ignore": [
-    "components/ui/**",  // Ignore UI component library
-    "scripts/**"         // Ignore utility scripts
-  ]
+    "ignoreExportsUsedInFile": {
+        "interface": true,
+        "type": true
+    },
+    "ignore": [
+        "components/ui/**", // Ignore UI component library
+        "scripts/**" // Ignore utility scripts
+    ]
 }
 ```
 
 Run it:
+
 ```bash
 bun run deadcode
 ```
 
 Knip will report:
+
 - Unused files
 - Unused dependencies in `package.json`
 - Unused exports (functions, types, etc.)
@@ -638,26 +662,28 @@ Knip will report:
 ```json
 // devbox.json
 {
-  "packages": [
-    "bun@latest",
-    "commitlint-rs@latest",
-    "lefthook@latest"
-  ],
-  "shell": {
-    "init_hook": [
-      "bun install --frozen-lockfile",
-      "lefthook install"
-    ]
-  }
+    "packages": [
+        "bun@latest",
+        "commitlint-rs@latest",
+        "lefthook@latest"
+    ],
+    "shell": {
+        "init_hook": [
+            "bun install --frozen-lockfile",
+            "lefthook install"
+        ]
+    }
 }
 ```
 
 To enter the development environment:
+
 ```bash
 devbox shell
 ```
 
 This:
+
 1. Installs/activates the specified tool versions
 2. Runs `bun install --frozen-lockfile`
 3. Sets up git hooks with Lefthook
@@ -667,6 +693,7 @@ This:
 [direnv](https://direnv.net/) automatically loads the Devbox environment when you `cd` into the directory.
 
 The `.envrc` file:
+
 ```bash
 eval "$(devbox generate direnv --print-envrc)"
 ```
@@ -703,13 +730,14 @@ rules:
 
 ### Root `package.json` scripts
 
-| Script | Command | Description |
-|--------|---------|-------------|
+| Script          | Command                                   | Description                                                  |
+| --------------- | ----------------------------------------- | ------------------------------------------------------------ |
 | `sync:tsconfig` | `bun scripts/sync-tsconfig-references.ts` | Syncs tsconfig references based on package.json dependencies |
-| `lint:oxlint` | `bun run --filter '*' lint:oxlint` | Runs OxLint in all workspaces |
-| `lint:eslint` | `bun run --filter '*' lint:eslint` | Runs ESLint in all workspaces |
-| `typecheck` | `bun run --filter '*' typecheck` | Type-checks all workspaces with tsgo |
-| `deadcode` | `knip` | Finds unused code/dependencies |
+| `lint:oxlint`   | `bun run --filter '*' lint:oxlint`        | Runs OxLint in all workspaces                                |
+| `lint:eslint`   | `bun run --filter '*' lint:eslint`        | Runs ESLint in all workspaces                                |
+| `typecheck`     | `bun run --filter '*' typecheck`          | Type-checks all workspaces with tsgo                         |
+| `deadcode`      | `knip`                                    | Finds unused code/dependencies                               |
+| `format:dprint` | `bun run dprint fmt`                      | Runs the dprint formatter for json, yaml etc.                |
 
 The `--filter '*'` flag tells Bun to run the script in all workspace packages that have it.
 
@@ -717,18 +745,18 @@ The `--filter '*'` flag tells Bun to run the script in all workspace packages th
 
 Each package typically has:
 
-| Script | Description |
-|--------|-------------|
+| Script        | Description              |
+| ------------- | ------------------------ |
 | `lint:oxlint` | Run OxLint with auto-fix |
 | `lint:eslint` | Run ESLint with auto-fix |
-| `typecheck` | Type-check with tsgo |
+| `typecheck`   | Type-check with tsgo     |
 
 Apps may have additional scripts:
 
-| Script | Description |
-|--------|-------------|
-| `dev` | Start development server |
-| `build` | Build for production |
+| Script    | Description              |
+| --------- | ------------------------ |
+| `dev`     | Start development server |
+| `build`   | Build for production     |
 | `preview` | Preview production build |
 
 ---
@@ -738,44 +766,48 @@ Apps may have additional scripts:
 The `.vscode/settings.json` configures VS Code for this monorepo:
 
 **ESLint as formatter:**
+
 ```json
 {
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  }
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    }
 }
 ```
 
 **Use tsgo for TypeScript:**
+
 ```json
 {
-  "typescript.experimental.useTsgo": true
+    "typescript.experimental.useTsgo": true
 }
 ```
 
 **Disable VS Code's import organization** (let ESLint's perfectionist plugin handle it):
+
 ```json
 {
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": "never"
-  }
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "never"
+    }
 }
 ```
 
 **Tailwind CSS class detection** (for cva/cx utilities):
+
 ```json
 {
-  "tailwindCSS.experimental.classRegex": [
-    ["cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-    ["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-  ]
+    "tailwindCSS.experimental.classRegex": [
+        ["cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+        ["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+    ]
 }
 ```
 
@@ -784,6 +816,7 @@ The `.vscode/settings.json` configures VS Code for this monorepo:
 ## Adding New Packages
 
 > **TODO:** Consider adding a package generator to automate this. Options:
+>
 > - [Plop.js](https://plopjs.com/) - popular template generator with prompts
 > - [Turborepo](https://turbo.build/repo) - build system for monorepos with built-in generators
 > - Custom Bun script in `scripts/` - zero dependencies, full control
@@ -793,53 +826,58 @@ The `.vscode/settings.json` configures VS Code for this monorepo:
 Library packages are shared code used by apps (utilities, types, business logic).
 
 **1. Create the package directory:**
+
 ```bash
 mkdir -p packages/utils
 ```
 
 **2. Create `packages/utils/package.json`:**
+
 ```json
 {
-  "name": "@react-template/utils",
-  "version": "0.0.1",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "lint:oxlint": "oxlint --fix .",
-    "lint:eslint": "eslint --fix .",
-    "typecheck": "tsgo -b --noEmit"
-  },
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  }
+    "name": "@react-template/utils",
+    "version": "0.0.1",
+    "module": "index.ts",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "lint:oxlint": "oxlint --fix .",
+        "lint:eslint": "eslint --fix .",
+        "typecheck": "tsgo -b --noEmit"
+    },
+    "devDependencies": {
+        "@types/bun": "latest"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    }
 }
 ```
 
 **3. Create `packages/utils/tsconfig.json`:**
+
 ```json
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "outDir": "./dist"
-  },
-  "include": ["index.ts", "src", "../../reset.d.ts"],
-  "exclude": ["eslint.config.ts"]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist"
+    },
+    "include": ["index.ts", "src", "../../reset.d.ts"],
+    "exclude": ["eslint.config.ts"]
 }
 ```
 
 **4. Create `packages/utils/.oxlintrc.json`:**
+
 ```json
 {
-  "extends": ["../../oxlint.typescript.json"]
+    "extends": ["../../oxlint.typescript.json"]
 }
 ```
 
 **5. Create `packages/utils/eslint.config.ts`:**
+
 ```typescript
 import config from "@react-template/eslint"
 import { defineConfig } from "eslint/config"
@@ -850,6 +888,7 @@ export default defineConfig([{
 ```
 
 **6. Create `packages/utils/index.ts`:**
+
 ```typescript
 export function formatDate(date: Date): string {
     return date.toISOString()
@@ -857,6 +896,7 @@ export function formatDate(date: Date): string {
 ```
 
 **7. Install dependencies and sync tsconfig:**
+
 ```bash
 bun install
 bun run sync:tsconfig
@@ -865,11 +905,12 @@ bun run sync:tsconfig
 **8. Use it from another package:**
 
 Add to `apps/web/package.json`:
+
 ```json
 {
-  "dependencies": {
-    "@react-template/utils": "workspace:*"
-  }
+    "dependencies": {
+        "@react-template/utils": "workspace:*"
+    }
 }
 ```
 
@@ -880,62 +921,68 @@ Then run `bun install` and `bun run sync:tsconfig` again.
 React applications (web or mobile) need the React-specific linter configs.
 
 **1. Create the app directory:**
+
 ```bash
 mkdir -p apps/mobile/src
 ```
 
 **2. Create `apps/mobile/package.json`:**
+
 ```json
 {
-  "name": "@react-template/mobile",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "typecheck": "tsgo -b --noEmit",
-    "lint:oxlint": "oxlint --fix .",
-    "lint:eslint": "eslint --fix ."
-  },
-  "dependencies": {
-    "react": "^19.2.0"
-  },
-  "devDependencies": {
-    "@types/react": "^19.2.5"
-  }
+    "name": "@react-template/mobile",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "typecheck": "tsgo -b --noEmit",
+        "lint:oxlint": "oxlint --fix .",
+        "lint:eslint": "eslint --fix ."
+    },
+    "dependencies": {
+        "react": "^19.2.0"
+    },
+    "devDependencies": {
+        "@types/react": "^19.2.5"
+    }
 }
 ```
 
 **3. Create `apps/mobile/tsconfig.json`** (solution-style if you have multiple contexts):
+
 ```json
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" }
-  ]
+    "files": [],
+    "references": [
+        { "path": "./tsconfig.app.json" }
+    ]
 }
 ```
 
 **4. Create `apps/mobile/tsconfig.app.json`:**
+
 ```json
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "jsx": "react-jsx",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"]
-  },
-  "include": ["src", "../../reset.d.ts"]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "composite": true,
+        "jsx": "react-jsx",
+        "lib": ["ES2022", "DOM", "DOM.Iterable"]
+    },
+    "include": ["src", "../../reset.d.ts"]
 }
 ```
 
 **5. Create `apps/mobile/.oxlintrc.json`** (note: extends React config):
+
 ```json
 {
-  "extends": ["../../oxlint.react.json"]
+    "extends": ["../../oxlint.react.json"]
 }
 ```
 
 **6. Create `apps/mobile/eslint.config.ts`** (note: uses React config):
+
 ```typescript
 import { defineConfig } from "eslint/config"
 import reactConfig from "@react-template/eslint/react"
@@ -946,6 +993,7 @@ export default defineConfig([{
 ```
 
 **7. Create `apps/mobile/src/app.tsx`:**
+
 ```tsx
 function App() {
     return <div>Hello Mobile</div>
@@ -955,6 +1003,7 @@ export default App
 ```
 
 **8. Install and sync:**
+
 ```bash
 bun install
 bun run sync:tsconfig
@@ -969,6 +1018,7 @@ bun run sync:tsconfig
 **Cause:** The package isn't linked properly.
 
 **Fix:**
+
 1. Check the package has the correct `name` in its `package.json`
 2. Run `bun install` at the root
 3. Check your import matches the package name exactly
@@ -978,6 +1028,7 @@ bun run sync:tsconfig
 **Cause:** tsconfig references are out of sync with package.json dependencies.
 
 **Fix:**
+
 ```bash
 bun run sync:tsconfig
 ```
@@ -987,6 +1038,7 @@ bun run sync:tsconfig
 **Cause:** ESLint can't find the TypeScript project configuration.
 
 **Fix:**
+
 1. Make sure `eslint.config.ts` passes `import.meta.dir` to the config factory
 2. Make sure the package has a `tsconfig.json`
 3. Check `tsconfig.json` includes the files ESLint is trying to lint
@@ -996,6 +1048,7 @@ bun run sync:tsconfig
 **Cause:** OxLint looks for `.oxlintrc.json` in the current directory.
 
 **Fix:**
+
 1. Make sure `.oxlintrc.json` exists in the package directory
 2. Make sure the `extends` path is correct (usually `../../oxlint.typescript.json` or `../../oxlint.react.json`)
 
@@ -1004,6 +1057,7 @@ bun run sync:tsconfig
 **Cause:** TypeScript build cache is stale.
 
 **Fix:**
+
 ```bash
 # Clear build info and rebuild
 rm -rf node_modules/.tmp
@@ -1015,6 +1069,7 @@ bun run typecheck
 **Cause:** VS Code's TypeScript server needs to be restarted after adding references.
 
 **Fix:**
+
 1. Run `bun run sync:tsconfig`
 2. In VS Code: `Cmd/Ctrl + Shift + P` → "TypeScript: Restart TS Server"
 
@@ -1023,11 +1078,13 @@ bun run typecheck
 **Cause:** Hooks weren't installed.
 
 **Fix:**
+
 ```bash
 lefthook install
 ```
 
 Or enter the devbox shell which runs this automatically:
+
 ```bash
 devbox shell
 ```
