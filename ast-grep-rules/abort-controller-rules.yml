@@ -1,0 +1,79 @@
+# ============================================================================
+# AbortController Event Listener Rules
+# ============================================================================
+# These rules enforce using AbortController for managing multiple event
+# listeners in useEffect hooks, which provides cleaner cleanup than manual
+# removeEventListener calls.
+#
+# Good pattern:
+#   useEffect(() => {
+#     const controller = new AbortController();
+#     window.addEventListener('scroll', handleScroll, { signal: controller.signal });
+#     window.addEventListener('resize', handleResize, { signal: controller.signal });
+#     return () => controller.abort();
+#   }, []);
+#
+# Bad pattern:
+#   useEffect(() => {
+#     window.addEventListener('scroll', handleScroll);
+#     window.addEventListener('resize', handleResize);
+#     return () => {
+#       window.removeEventListener('scroll', handleScroll);
+#       window.removeEventListener('resize', handleResize);
+#     };
+#   }, []);
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Rule 1: Use AbortController for multiple event listeners in useEffect
+# ----------------------------------------------------------------------------
+# Example that MATCHES (bad):
+#   useEffect(() => {
+#     window.addEventListener('scroll', handleScroll);
+#     window.addEventListener('resize', handleResize);  // <-- flagged
+#     return () => {
+#       window.removeEventListener('scroll', handleScroll);
+#       window.removeEventListener('resize', handleResize);
+#     };
+#   }, []);
+#
+# Example that does NOT match (good):
+#   useEffect(() => {
+#     const controller = new AbortController();
+#     window.addEventListener('scroll', handleScroll, { signal: controller.signal });
+#     window.addEventListener('resize', handleResize, { signal: controller.signal });
+#     return () => controller.abort();
+#   }, []);
+# ----------------------------------------------------------------------------
+id: use-abort-controller-for-multiple-listeners
+language: tsx
+severity: error
+rule:
+  kind: expression_statement
+  has:
+    pattern: $OBJ.addEventListener($$$)
+    stopBy: end
+  not:
+    has:
+      pattern: $OBJ.addEventListener($A, $B, $OPTS)
+      has:
+        any:
+          # Shorthand: { signal }
+          - kind: shorthand_property_identifier
+            regex: ^signal$
+          # Explicit: { signal: ... }
+          - kind: pair
+            has:
+              kind: property_identifier
+              regex: ^signal$
+        stopBy: end
+      stopBy: end
+  precedes:
+    kind: expression_statement
+    has:
+      pattern: $OBJ2.addEventListener($$$)
+      stopBy: end
+  inside:
+    pattern: useEffect($$$)
+    stopBy: end
+message: "When using multiple event listeners in useEffect, use AbortController for cleanup instead of manual removeEventListener calls."
