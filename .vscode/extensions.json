@@ -1,0 +1,22 @@
+{
+    "recommendations": [
+        "oxc.oxc-vscode",
+        "antfu.file-nesting",
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "lokalise.i18n-ally",
+        "formulahendry.auto-rename-tag",
+        "ms-vscode-remote.remote-containers",
+        "csstools.postcss",
+        "MylesMurphy.prettify-ts",
+        "YoavBls.pretty-ts-errors",
+        "ast-grep.ast-grep-vscode",
+        "zeevro.fold-to-definitions",
+        "yzhang.markdown-all-in-one",
+        "nize.oklch-preview",
+        "meganrogge.template-string-converter"
+    ],
+    "unwantedRecommendations": [
+        "esbenp.prettier-vscode"
+    ]
+}
