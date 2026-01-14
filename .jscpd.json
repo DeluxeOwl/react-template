@@ -1,0 +1,29 @@
+{
+    "threshold": 0,
+    "minLines": 5,
+    "minTokens": 100,
+    "reporters": [
+        "console"
+    ],
+    "ignore": [
+        "**/.devbox/**",
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/coverage/**",
+        "**/.next/**",
+        "**/out/**",
+        "**/*.json",
+        "**/*.yaml",
+        "**/*.yml",
+        "**/*.html",
+        "**/*.md"
+    ],
+    "formats": [
+        "typescript",
+        "javascript",
+        "tsx",
+        "jsx"
+    ],
+    "absolute": true
+}

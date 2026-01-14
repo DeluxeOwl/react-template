@@ -14,6 +14,7 @@
         "@typescript/native-preview": "^7.0.0-dev.20260109.1",
         "dprint": "^0.51.1",
         "eslint": "^9.39.2",
+        "jscpd": "^4.0.7",
         "knip": "^5.73.4",
         "oxlint": "^1.38.0"
     },
@@ -22,6 +23,7 @@
         "lint:oxlint": "bun run --filter '*' lint:oxlint",
         "lint:eslint": "bun run --filter '*' lint:eslint",
         "format:dprint": "bun run dprint fmt",
+        "lint:duplicate": "bun run jscpd -c .jscpd.json",
         "typecheck": "bun run --filter '*' typecheck",
         "deadcode": "knip"
     }
