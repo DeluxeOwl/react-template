@@ -1,0 +1,431 @@
+# ============================================================================
+# React View-Only Component Rules
+# ============================================================================
+# These rules enforce a "view-only" pattern for React components where:
+# - Components should only use ONE custom hook for all logic
+# - No built-in hooks (useState, useMemo, etc.) directly in components
+# - No logic/transformations in the component body
+# - Components are purely for rendering JSX
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Rule 1: No built-in React hooks in components
+# ----------------------------------------------------------------------------
+# Example that MATCHES (bad):
+#   const Foo = () => {
+#     const [count, setCount] = useState(0);  // <-- flagged
+#     return <div>{count}</div>;
+#   };
+# ----------------------------------------------------------------------------
+id: no-builtin-hooks-in-component
+language: tsx
+severity: error
+rule:
+  any:
+    - pattern: useState($$$)
+    - pattern: useMemo($$$)
+    - pattern: useCallback($$$)
+    - pattern: useEffect($$$)
+    - pattern: useLayoutEffect($$$)
+    - pattern: useRef($$$)
+    - pattern: useContext($$$)
+    - pattern: useReducer($$$)
+    - pattern: useImperativeHandle($$$)
+    - pattern: useDebugValue($$$)
+    - pattern: useDeferredValue($$$)
+    - pattern: useTransition($$$)
+    - pattern: useId($$$)
+    - pattern: useSyncExternalStore($$$)
+    - pattern: useInsertionEffect($$$)
+    - pattern: useActionState($$$)
+    - pattern: useEffectEvent($$$)
+    - pattern: useOptimistic($$$)
+  inside:
+    any:
+      - kind: arrow_function
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: arrow_function
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+    stopBy: end
+message: "Built-in hooks should be moved to a custom hook. Components should only call one custom hook."
+
+---
+# ----------------------------------------------------------------------------
+# Rule 2: No .map() calls in JSX
+# ----------------------------------------------------------------------------
+# Example that MATCHES (bad):
+#   const Foo = () => {
+#     const { users } = useUsers();
+#     return <ul>{users.map(u => <li>{u.name}</li>)}</ul>;  // <-- flagged
+#   };
+# ----------------------------------------------------------------------------
+id: no-map-in-jsx
+language: tsx
+severity: error
+rule:
+  pattern: $ARR.map($$$)
+  inside:
+    any:
+      - kind: jsx_expression
+      - kind: jsx_element
+      - kind: jsx_self_closing_element
+    stopBy: end
+message: "Avoid .map() inside JSX. Move list rendering logic to a custom hook."
+
+---
+# ----------------------------------------------------------------------------
+# Rule 3: No .filter() calls in components
+# ----------------------------------------------------------------------------
+# Example that MATCHES (bad):
+#   const Foo = () => {
+#     const { users } = useUsers();
+#     const active = users.filter(u => u.active);  // <-- flagged
+#     return <div>{active.length}</div>;
+#   };
+# ----------------------------------------------------------------------------
+id: no-filter-in-component
+language: tsx
+severity: error
+rule:
+  pattern: $ARR.filter($$$)
+  inside:
+    any:
+      - kind: arrow_function
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: arrow_function
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+    stopBy: end
+message: "Avoid .filter() in components. Move filtering logic to a custom hook."
+
+---
+# ----------------------------------------------------------------------------
+# Rule 4: No array transformation methods in components
+# ----------------------------------------------------------------------------
+# Example that MATCHES (bad):
+#   const Foo = () => {
+#     const { users } = useUsers();
+#     const total = users.reduce((a, u) => a + u.age, 0);  // <-- flagged
+#     return <div>{total}</div>;
+#   };
+# ----------------------------------------------------------------------------
+id: no-array-methods-in-component
+language: tsx
+severity: error
+rule:
+  any:
+    - pattern: $ARR.reduce($$$)
+    - pattern: $ARR.find($$$)
+    - pattern: $ARR.findIndex($$$)
+    - pattern: $ARR.some($$$)
+    - pattern: $ARR.every($$$)
+    - pattern: $ARR.flatMap($$$)
+    - pattern: $ARR.sort($$$)
+    - pattern: $ARR.slice($$$)
+    - pattern: $ARR.concat($$$)
+    - pattern: $ARR.includes($$$)
+    - pattern: $ARR.toSorted($$$)
+    - pattern: $ARR.toReversed()
+    - pattern: $ARR.toSpliced($$$)
+    - pattern: $ARR.with($$$)
+    - pattern: $ARR.findLast($$$)
+    - pattern: $ARR.findLastIndex($$$)
+    - pattern: $ARR.at($$$)
+    - pattern: $ARR.flat($$$)
+    - pattern: Object.groupBy($ARR, $$$)
+  inside:
+    any:
+      - kind: arrow_function
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: arrow_function
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+    stopBy: end
+message: "Avoid array methods in components. Move data transformations to a custom hook."
+
+---
+# ----------------------------------------------------------------------------
+# Rule 5: No arithmetic/binary expressions in variable assignments
+# ----------------------------------------------------------------------------
+# Example that MATCHES (bad):
+#   const Foo = ({ count }) => {
+#     const doubled = count * 2;  // <-- flagged
+#     return <div>{doubled}</div>;
+#   };
+# ----------------------------------------------------------------------------
+id: no-logic-expressions-in-component
+language: tsx
+severity: error
+rule:
+  kind: lexical_declaration
+  has:
+    kind: binary_expression
+    stopBy: end
+  not:
+    has:
+      kind: call_expression
+      stopBy: end
+  inside:
+    any:
+      - kind: arrow_function
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: arrow_function
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+    stopBy: end
+message: "Avoid logic expressions in components. Move calculations to a custom hook."
+
+---
+# ----------------------------------------------------------------------------
+# Rule 6: No object spread in variable assignments
+# ----------------------------------------------------------------------------
+# Example that MATCHES (bad):
+#   const Foo = ({ baseStyles }) => {
+#     const styles = { ...baseStyles, color: 'red' };  // <-- flagged
+#     return <div style={styles}>Hello</div>;
+#   };
+# ----------------------------------------------------------------------------
+id: no-object-spread-in-component
+language: tsx
+severity: error
+rule:
+  kind: lexical_declaration
+  has:
+    kind: spread_element
+    stopBy: end
+  inside:
+    any:
+      - kind: arrow_function
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: arrow_function
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+    stopBy: end
+message: "Avoid object spread in components. Move object composition to a custom hook."
+
+---
+# ----------------------------------------------------------------------------
+# Rule 7: No ternary expressions in variable assignments
+# ----------------------------------------------------------------------------
+# Example that MATCHES (bad):
+#   const Foo = ({ isAdmin }) => {
+#     const role = isAdmin ? 'admin' : 'user';  // <-- flagged
+#     return <div>{role}</div>;
+#   };
+# Note: Ternaries directly in JSX are OK: <div>{isAdmin ? 'Yes' : 'No'}</div>
+# ----------------------------------------------------------------------------
+id: no-ternary-assignment-in-component
+language: tsx
+severity: error
+rule:
+  kind: lexical_declaration
+  has:
+    kind: ternary_expression
+    stopBy: end
+  inside:
+    any:
+      - kind: arrow_function
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: arrow_function
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+    stopBy: end
+message: "Avoid ternary assignments in components. Move conditional logic to a custom hook."
+
+---
+# ----------------------------------------------------------------------------
+# Rule 8: No multiple hooks in component
+# ----------------------------------------------------------------------------
+# Example that MATCHES (bad):
+#   const Foo = () => {
+#     const { users } = useUsers();  // <-- flagged (first of multiple)
+#     const { theme } = useTheme();
+#     return <div style={theme}>{users.length}</div>;
+#   };
+# ----------------------------------------------------------------------------
+id: no-multiple-hooks-in-component
+language: tsx
+severity: error
+rule:
+  kind: lexical_declaration
+  has:
+    kind: call_expression
+    regex: ^use[A-Z]
+    stopBy: end
+  precedes:
+    kind: lexical_declaration
+    has:
+      kind: call_expression
+      regex: ^use[A-Z]
+      stopBy: end
+    stopBy: end
+  inside:
+    any:
+      - kind: arrow_function
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: arrow_function
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+    stopBy: end
+message: "Components should use at most one custom hook. Combine hooks into a single custom hook."
+
+---
+# ----------------------------------------------------------------------------
+# Rule 9: No loops in components (for, for-in, for-of, while, do-while)
+# ----------------------------------------------------------------------------
+# Example that MATCHES (bad):
+#   const Foo = ({ items }) => {
+#     const results = [];
+#     for (const item of items) {  // <-- flagged
+#       results.push(item.name);
+#     }
+#     return <div>{results.join(', ')}</div>;
+#   };
+# ----------------------------------------------------------------------------
+id: no-loops-in-component
+language: tsx
+severity: error
+rule:
+  any:
+    - kind: for_statement
+    - kind: for_in_statement
+    - kind: while_statement
+    - kind: do_statement
+  inside:
+    any:
+      - kind: arrow_function
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: arrow_function
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+    stopBy: end
+message: "Avoid loops in components. Move iteration logic to a custom hook."
+
+---
+# ----------------------------------------------------------------------------
+# Rule 10: No switch statements in components
+# ----------------------------------------------------------------------------
+# Example that MATCHES (bad):
+#   const Foo = ({ status }) => {
+#     let icon;
+#     switch (status) {  // <-- flagged
+#       case 'ok': icon = '✓'; break;
+#       default: icon = '?';
+#     }
+#     return <div>{icon}</div>;
+#   };
+# ----------------------------------------------------------------------------
+id: no-switch-in-component
+language: tsx
+severity: error
+rule:
+  kind: switch_statement
+  inside:
+    any:
+      - kind: arrow_function
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: arrow_function
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_element
+          stopBy: end
+      - kind: function_declaration
+        has:
+          kind: jsx_self_closing_element
+          stopBy: end
+    stopBy: end
+message: "Avoid switch statements in components. Move branching logic to a custom hook."
