@@ -22,6 +22,7 @@
         "sync:tsconfig": "bun scripts/sync-tsconfig-references.ts",
         "lint:oxlint": "bun run --filter '*' lint:oxlint",
         "lint:eslint": "bun run --filter '*' lint:eslint",
+        "lint:sg": "ast-grep scan",
         "format:dprint": "bun run dprint fmt",
         "lint:duplicate": "bun run jscpd -c .jscpd.json",
         "typecheck": "bun run --filter '*' typecheck",

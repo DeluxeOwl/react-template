@@ -1,20 +1,20 @@
 {
-  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
-  "packages": [
-    "bun@latest",
-    "commitlint-rs@latest",
-    "lefthook@latest",
-    "ast-grep@latest"
-  ],
-  "shell": {
-    "init_hook": [
-      "bun install --frozen-lockfile",
-      "lefthook install"
+    "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
+    "packages": [
+        "bun@latest",
+        "commitlint-rs@latest",
+        "lefthook@latest",
+        "ast-grep@latest"
     ],
-    "scripts": {
-      "test": [
-        "echo \"Error: no test specified\" && exit 1"
-      ]
+    "shell": {
+        "init_hook": [
+            "bun install --frozen-lockfile",
+            "lefthook install"
+        ],
+        "scripts": {
+            "test": [
+                "echo \"Error: no test specified\" && exit 1"
+            ]
+        }
     }
-  }
 }

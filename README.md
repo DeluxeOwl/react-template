@@ -742,6 +742,7 @@ rules:
 | `deadcode`       | `knip`                                    | Finds unused code/dependencies                               |
 | `format:dprint`  | `bun run dprint fmt`                      | Runs the dprint formatter for json, yaml etc.                |
 | `lint:duplicate` | `bun run jscpd -c .jscpd.json`            | Runs the jscpd code duplication tool                         |
+| `lint:sg`        | `ast-grep scan`                           | Runs the ast-grep rules                                      |
 
 The `--filter '*'` flag tells Bun to run the script in all workspace packages that have it.
 
