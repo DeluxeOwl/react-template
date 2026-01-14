@@ -3,3 +3,25 @@ commit-msg:
     "lint commit message":
       use_stdin: true
       run: cat {1} | commitlint
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: check-if-in-devbox
+      run: task check-if-in-devbox
+    - name: sync/tsconfig
+      run: bun run sync:tsconfig
+    - name: lint/oxlint
+      run: bun run lint:oxlint
+    - name: lint/eslint
+      run: bun run lint:eslint
+    - name: lint/ast-grep
+      run: bun run lint:sg
+    - name: format/dprint
+      run: bun run format:dprint
+    - name: lint/duplicate-code
+      run: bun run lint:duplicate
+    - name: typecheck
+      run: bun run typecheck
+    - name: deadcode/knip
+      run: bun run deadcode
