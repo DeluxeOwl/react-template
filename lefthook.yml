@@ -7,8 +7,6 @@ commit-msg:
 pre-push:
   parallel: true
   jobs:
-    - name: check-if-in-devbox
-      run: task check-if-in-devbox
     - name: sync/tsconfig
       run: bun run sync:tsconfig
     - name: lint/oxlint
