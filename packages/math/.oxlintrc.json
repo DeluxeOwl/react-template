@@ -1,5 +1,5 @@
 {
-	"extends": [
-		"../../oxlint.typescript.json"
-	],
+    "extends": [
+        "../../oxlint.typescript.json"
+    ],
 }

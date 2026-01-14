@@ -1,26 +1,26 @@
 {
-  "name": "react-template",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "scripts"
-  ],
-  "type": "module",
-  "devDependencies": {
-    "@react-template/eslint": "workspace:*",
-    "@total-typescript/ts-reset": "^0.6.1",
-    "@types/bun": "latest",
-    "@typescript/native-preview": "^7.0.0-dev.20260109.1",
-    "eslint": "^9.39.2",
-    "knip": "^5.73.4",
-    "oxlint": "^1.38.0"
-  },
-  "scripts": {
-    "sync:tsconfig": "bun scripts/sync-tsconfig-references.ts",
-    "lint:oxlint": "bun run --filter '*' lint:oxlint",
-    "lint:eslint": "bun run --filter '*' lint:eslint",
-    "typecheck": "bun run --filter '*' typecheck",
-    "deadcode": "knip"
-  }
+    "name": "react-template",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*",
+        "scripts"
+    ],
+    "type": "module",
+    "devDependencies": {
+        "@react-template/eslint": "workspace:*",
+        "@total-typescript/ts-reset": "^0.6.1",
+        "@types/bun": "latest",
+        "@typescript/native-preview": "^7.0.0-dev.20260109.1",
+        "eslint": "^9.39.2",
+        "knip": "^5.73.4",
+        "oxlint": "^1.38.0"
+    },
+    "scripts": {
+        "sync:tsconfig": "bun scripts/sync-tsconfig-references.ts",
+        "lint:oxlint": "bun run --filter '*' lint:oxlint",
+        "lint:eslint": "bun run --filter '*' lint:eslint",
+        "typecheck": "bun run --filter '*' typecheck",
+        "deadcode": "knip"
+    }
 }

@@ -1,13 +1,13 @@
 {
-  "name": "scripts",
-  "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "scripts": {
-    "lint:oxlint": "oxlint --fix ."
-  }
+    "name": "scripts",
+    "private": true,
+    "devDependencies": {
+        "@types/bun": "latest"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    },
+    "scripts": {
+        "lint:oxlint": "oxlint --fix ."
+    }
 }

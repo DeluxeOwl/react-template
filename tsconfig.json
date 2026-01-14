@@ -1,9 +1,17 @@
 {
-	"files": [],
-	"references": [
-    { "path": "./apps/web" },
-    { "path": "./packages/eslint" },
-    { "path": "./packages/math" },
-    { "path": "./scripts" }
-  ]
+    "files": [],
+    "references": [
+        {
+            "path": "./apps/web"
+        },
+        {
+            "path": "./packages/eslint"
+        },
+        {
+            "path": "./packages/math"
+        },
+        {
+            "path": "./scripts"
+        }
+    ]
 }

@@ -1,16 +1,16 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "noEmit": false,
-    "outDir": "./dist"
-  },
-  "include": [
-    "src",
-    "index.ts",
-    "../../reset.d.ts"
-  ],
-  "exclude": [
-    "eslint.config.ts"
-  ]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "composite": true,
+        "noEmit": false,
+        "outDir": "./dist"
+    },
+    "include": [
+        "src",
+        "index.ts",
+        "../../reset.d.ts"
+    ],
+    "exclude": [
+        "eslint.config.ts"
+    ]
 }

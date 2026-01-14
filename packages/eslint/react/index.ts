@@ -38,8 +38,7 @@ export default function createReactConfig(rootDir: string) {
                 youMightNotNeedAnEffect.configs.recommended,
                 createConfig(rootDir),
             ],
-            files: ["**/*.{mjs,js,jsx,ts,tsx}"],
-
+            files:           ["**/*.{mjs,js,jsx,ts,tsx}"],
             languageOptions: {
                 parser:        tseslint.parser,
                 parserOptions: {
@@ -60,8 +59,9 @@ export default function createReactConfig(rootDir: string) {
                 "react-hooks/todo":                                    "error",
                 ...betterTailwindcss.configs["stylistic-warn"].rules,
                 ...betterTailwindcss.configs["correctness-error"].rules,
-                "better-tailwindcss/enforce-consistent-line-wrapping": ["off"],
+                "better-tailwindcss/enforce-consistent-line-wrapping": ["error", { group: "newLine", printWidth: 120 }],
             },
         },
+
     ])
 }

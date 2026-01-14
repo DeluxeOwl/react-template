@@ -1,15 +1,15 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "composite": true,
-    "outDir": "./dist"
-  },
-  "include": [
-    "index.ts",
-    "react/**/*.ts",
-    "../../reset.d.ts"
-  ],
-  "exclude": [
-    "eslint.config.ts"
-  ]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist"
+    },
+    "include": [
+        "index.ts",
+        "react/**/*.ts",
+        "../../reset.d.ts"
+    ],
+    "exclude": [
+        "eslint.config.ts"
+    ]
 }

@@ -1,8 +1,10 @@
 import { sum } from "@react-template/math"
 
+import { cn } from "~/ui/lib/utils"
+
 function App() {
     return (
-        <div>Hello world {sum(10, 12)}</div>
+        <div className={cn("mx-2")}>Hello world {sum(10, 12)}</div>
     )
 }
 

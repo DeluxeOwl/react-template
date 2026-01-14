@@ -1,34 +1,34 @@
 {
-	"plugins": [
-		"react",
-		"jsx-a11y"
-	],
-	"extends": [
-		"./oxlint.typescript.json"
-	],
-	"rules": {
-		"react/button-has-type": "warn",
-		"react/jsx-filename-extension": [
-			"error",
-			{
-				"extensions": [
-					".tsx"
-				]
-			}
-		],
-		"react/no-danger": "error",
-		"react/no-unknown-property": "error",
-		"react/react-in-jsx-scope": "allow",
-		"jsx-a11y/anchor-ambiguous-text": "warn"
-	},
-	"settings": {
-		"jsx-a11y": {
-			"polymorphicPropName": null,
-			"components": {}
-		},
-		"react": {
-			"formComponents": [],
-			"linkComponents": []
-		}
-	}
+    "plugins": [
+        "react",
+        "jsx-a11y"
+    ],
+    "extends": [
+        "./oxlint.typescript.json"
+    ],
+    "rules": {
+        "react/button-has-type": "warn",
+        "react/jsx-filename-extension": [
+            "error",
+            {
+                "extensions": [
+                    ".tsx"
+                ]
+            }
+        ],
+        "react/no-danger": "error",
+        "react/no-unknown-property": "error",
+        "react/react-in-jsx-scope": "allow",
+        "jsx-a11y/anchor-ambiguous-text": "warn"
+    },
+    "settings": {
+        "jsx-a11y": {
+            "polymorphicPropName": null,
+            "components": {}
+        },
+        "react": {
+            "formComponents": [],
+            "linkComponents": []
+        }
+    }
 }

@@ -1,17 +1,17 @@
 {
-  "name": "@react-template/math",
-  "version": "0.0.1",
-  "module": "index.ts",
-  "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "scripts": {
-    "lint:oxlint": "oxlint --fix .",
-    "lint:eslint": "eslint --fix .",
-    "typecheck": "tsgo -b --noEmit"
-  }
+    "name": "@react-template/math",
+    "version": "0.0.1",
+    "module": "index.ts",
+    "type": "module",
+    "devDependencies": {
+        "@types/bun": "latest"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    },
+    "scripts": {
+        "lint:oxlint": "oxlint --fix .",
+        "lint:eslint": "eslint --fix .",
+        "typecheck": "tsgo -b --noEmit"
+    }
 }
