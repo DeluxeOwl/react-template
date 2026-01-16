@@ -745,6 +745,7 @@ rules:
 | `format:dprint`  | `bun run dprint fmt`                      | Runs the dprint formatter for json, yaml etc.                |
 | `lint:duplicate` | `bun run jscpd -c .jscpd.json`            | Runs the jscpd code duplication tool                         |
 | `lint:sg`        | `ast-grep scan`                           | Runs the ast-grep rules                                      |
+| `lint:all`       | `lefthook run pre-push -f`                | Runs all the linters                                         |
 
 The `--filter '*'` flag tells Bun to run the script in all workspace packages that have it.
 
