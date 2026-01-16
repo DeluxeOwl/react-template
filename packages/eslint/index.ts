@@ -52,7 +52,7 @@ export default function createConfig(rootDir: string) {
                 parserOptions: {
                     projectService: {
                         // Extra files for the linting
-                        allowDefaultProject: ["eslint.config.ts", "*.d.ts"],
+                        allowDefaultProject: ["*.d.ts"],
                         tsconfigRootDir:     rootDir,
                     },
                 },

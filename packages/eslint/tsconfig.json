@@ -7,9 +7,8 @@
     "include": [
         "index.ts",
         "react/**/*.ts",
+        "eslint.config.ts",
         "../../reset.d.ts"
     ],
-    "exclude": [
-        "eslint.config.ts"
-    ]
+    "exclude": []
 }

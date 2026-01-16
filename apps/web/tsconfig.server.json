@@ -9,11 +9,13 @@
             "ES2023"
         ],
         "types": [
-            "node"
+            "node",
+            "bun"
         ]
     },
     "include": [
         "vite.config.ts",
+        "eslint.config.ts",
         "../../reset.d.ts"
     ]
 }
