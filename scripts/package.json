@@ -8,6 +8,7 @@
         "typescript": "^5"
     },
     "scripts": {
-        "lint:oxlint": "oxlint --fix ."
+        "lint:oxlint": "oxlint --fix .",
+        "lint:eslint": "eslint --fix ."
     }
 }

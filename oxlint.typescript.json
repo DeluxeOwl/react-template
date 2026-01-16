@@ -71,6 +71,12 @@
         "unicorn/no-nested-ternary": "error",
         "unicorn/prefer-modern-math-apis": "warn",
         "unicorn/prefer-spread": "off",
+        "eslint/max-statements": [
+            "error",
+            {
+                "max": 15
+            }
+        ],
         "eslint/max-params": [
             "error",
             {

@@ -1,0 +1,14 @@
+id: find-functions
+language: tsx
+rule:
+  any:
+    # Function declarations
+    - pattern: function $NAME($$$PARAMS) { $$$BODY }
+    # Arrow functions (sync)
+    - pattern: const $NAME = ($$$PARAMS) => $BODY
+    - pattern: let $NAME = ($$$PARAMS) => $BODY
+    - pattern: var $NAME = ($$$PARAMS) => $BODY
+    # Arrow functions (async)
+    - pattern: const $NAME = async ($$$PARAMS) => $BODY
+    - pattern: let $NAME = async ($$$PARAMS) => $BODY
+    - pattern: var $NAME = async ($$$PARAMS) => $BODY
