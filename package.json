@@ -27,6 +27,7 @@
         "lint:duplicate": "bun run jscpd -c .jscpd.json",
         "typecheck": "bun run --filter '*' typecheck",
         "deadcode": "knip",
-        "lint:all": "lefthook run pre-push -f"
+        "lint:all": "lefthook run pre-push -f",
+        "lint:duplicates": "bun run scripts/find-duplicate-functions.ts"
     }
 }
