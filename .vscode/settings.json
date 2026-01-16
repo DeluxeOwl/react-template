@@ -15,6 +15,7 @@
     "editor.codeActionsOnSave": {
         // Note: this being "never" doesn't clash with dangling comma, let perfectionist eslint handle imports
         "source.organizeImports": "never",
+        "source.fixAll.ast-grep": "never",
         "source.fixAll.eslint": "explicit"
     },
     "eslint.validate": [
