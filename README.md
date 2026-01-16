@@ -23,7 +23,7 @@ bun create github.com/DeluxeOwl/react-template <your-app>
   - [OxLint Configuration](#oxlint-configuration)
   - [ESLint Shared Package](#eslint-shared-package)
   - [How the Linters Work Together](#how-the-linters-work-together)
-- [Type Checking with tsgo](#type-checking-with-tsgo)
+- [Type Checking with tsgo/tsc](#type-checking-with-tsgotsc)
 - [Dead Code Detection with Knip](#dead-code-detection-with-knip)
 - [Development Environment](#development-environment)
   - [Devbox](#devbox)
@@ -590,7 +590,9 @@ bun run lint:duplicate
 
 ---
 
-## Type Checking with tsgo
+## Type Checking with tsgo/tsc
+
+NOTE: ran into issues with tsgo, the project is using tsc actually.
 
 [tsgo](https://github.com/nicolo-ribaudo/tsgo) is an experimental Go port of the TypeScript compiler. It's significantly faster than `tsc` for type checking.
 
@@ -599,7 +601,7 @@ Each package has a `typecheck` script:
 ```json
 {
     "scripts": {
-        "typecheck": "tsgo -b --noEmit"
+        "typecheck": "tsc -b --noEmit"
     }
 }
 ```
@@ -848,7 +850,7 @@ mkdir -p packages/utils
     "scripts": {
         "lint:oxlint": "oxlint --fix .",
         "lint:eslint": "eslint --fix .",
-        "typecheck": "tsgo -b --noEmit"
+        "typecheck": "tsc -b --noEmit"
     },
     "devDependencies": {
         "@types/bun": "latest"
@@ -940,7 +942,7 @@ mkdir -p apps/mobile/src
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "typecheck": "tsgo -b --noEmit",
+        "typecheck": "tsc -b --noEmit",
         "lint:oxlint": "oxlint --fix .",
         "lint:eslint": "eslint --fix ."
     },

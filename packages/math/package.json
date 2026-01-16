@@ -12,6 +12,6 @@
     "scripts": {
         "lint:oxlint": "oxlint --fix .",
         "lint:eslint": "eslint --fix .",
-        "typecheck": "tsgo -b --noEmit"
+        "typecheck": "tsc -b --noEmit"
     }
 }

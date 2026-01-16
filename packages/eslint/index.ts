@@ -4,12 +4,14 @@
 import tseslint from "typescript-eslint"
 import oxlint from "eslint-plugin-oxlint"
 import stylistic from "@stylistic/eslint-plugin"
+import { importX } from "eslint-plugin-import-x"
 import importZod from "eslint-plugin-import-zod"
 import {
     defineConfig,
 } from "eslint/config"
 import perfectionist from "eslint-plugin-perfectionist"
 import unusedImports from "eslint-plugin-unused-imports"
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
 // Using eslint for some rules that aren't available in oxlint
 export default function createConfig(rootDir: string) {
@@ -185,6 +187,25 @@ export default function createConfig(rootDir: string) {
                         vars:              "all",
                         varsIgnorePattern: "^_",
                     },
+                ],
+            },
+        },
+        {
+            extends: ["import-x/flat/recommended"],
+            plugins: {
+                // @ts-expect-error https://github.com/typescript-eslint/typescript-eslint/issues/11543 and https://github.com/un-ts/eslint-plugin-import-x/issues/421
+                "import-x": importX,
+            },
+            rules: {
+                "import-x/no-dynamic-require": "warn",
+            },
+            settings: {
+                "import-x/resolver-next": [
+                    createTypeScriptImportResolver({
+                        alwaysTryTypes: true,
+                        bun:            true,
+                        project:        rootDir,
+                    }),
                 ],
             },
         },
