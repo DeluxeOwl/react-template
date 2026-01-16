@@ -143,10 +143,20 @@ async function findAllFunctions(dirs: string[]): Promise<FunctionInfo[]> {
     return allFunctions
 }
 
+const IGNORED_NAMES = new Set([
+    "App",
+    "default",
+    "index",
+    "main",
+])
+
 function findDuplicates(functions: FunctionInfo[]): Map<string, FunctionInfo[]> {
     const byName = new Map<string, FunctionInfo[]>()
 
     for (const fn of functions) {
+        if (IGNORED_NAMES.has(fn.name)) {
+            continue
+        }
         const existing = byName.get(fn.name) ?? []
         existing.push(fn)
         byName.set(fn.name, existing)
