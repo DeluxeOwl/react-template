@@ -1,0 +1,61 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "globalDependencies": [
+        "tsconfig.base.json",
+        "oxlint.typescript.json",
+        "oxlint.react.json",
+        ".oxlintrc.json"
+    ],
+    "tasks": {
+        "build": {
+            "dependsOn": [
+                "^build",
+                "typecheck"
+            ],
+            "outputs": [
+                "dist/**",
+                "out/**"
+            ],
+            "env": [
+                "VITE_*",
+                "NODE_ENV",
+                "PUBLIC_URL"
+            ]
+        },
+        "typecheck": {
+            "dependsOn": [
+                "^typecheck"
+            ],
+            "cache": true,
+            "outputs": [
+                "node_modules/.tmp/tsconfig.tsbuildinfo"
+            ]
+        },
+        "lint:oxlint": {
+            "cache": true
+        },
+        "lint:eslint": {
+            "dependsOn": [
+                "typecheck"
+            ],
+            "cache": true
+        },
+        "lint": {
+            "dependsOn": [
+                "lint:oxlint",
+                "lint:eslint"
+            ]
+        },
+        "dev": {
+            "cache": false,
+            "persistent": true
+        },
+        "preview": {
+            "dependsOn": [
+                "build"
+            ],
+            "cache": false,
+            "persistent": true
+        }
+    }
+}

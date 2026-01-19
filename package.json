@@ -1,6 +1,7 @@
 {
     "name": "react-template",
     "private": true,
+    "packageManager": "bun@1.3.3",
     "workspaces": [
         "apps/*",
         "packages/*",
@@ -10,22 +11,25 @@
     "devDependencies": {
         "@react-template/eslint": "workspace:*",
         "@total-typescript/ts-reset": "^0.6.1",
+        "@turbo/gen": "^2.7.5",
         "@types/bun": "latest",
         "@typescript/native-preview": "^7.0.0-dev.20260109.1",
         "dprint": "^0.51.1",
         "eslint": "^9.39.2",
         "jscpd": "^4.0.7",
         "knip": "^5.73.4",
-        "oxlint": "^1.38.0"
+        "oxlint": "^1.38.0",
+        "turbo": "^2.7.5"
     },
     "scripts": {
         "sync:tsconfig": "bun scripts/sync-tsconfig-references.ts",
-        "lint:oxlint": "bun run --filter '*' lint:oxlint",
-        "lint:eslint": "bun run --filter '*' lint:eslint",
+        "lint:oxlint": "turbo lint:oxlint",
+        "lint:eslint": "turbo lint:eslint",
         "lint:sg": "ast-grep scan",
+        "gen:package": "turbo gen package",
         "format:dprint": "bun run dprint fmt",
         "lint:duplicate": "bun run jscpd -c .jscpd.json",
-        "typecheck": "bun run --filter '*' typecheck",
+        "typecheck": "turbo typecheck",
         "deadcode": "knip",
         "lint:all": "lefthook run pre-push -f",
         "lint:duplicates": "bun run scripts/find-duplicate-functions.ts"

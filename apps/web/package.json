@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "tsgo -b && vite build",
+        "build": "tsc -b && vite build",
         "typecheck": "tsc -b --noEmit",
         "lint:oxlint": "oxlint --fix .",
         "lint:eslint": "eslint --fix .",

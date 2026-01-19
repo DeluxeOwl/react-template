@@ -23,7 +23,7 @@ bun create github.com/DeluxeOwl/react-template <your-app>
   - [OxLint Configuration](#oxlint-configuration)
   - [ESLint Shared Package](#eslint-shared-package)
   - [How the Linters Work Together](#how-the-linters-work-together)
-- [Type Checking with tsgo/tsc](#type-checking-with-tsgotsc)
+- [Type Checking with tsc](#type-checking-with-tsc)
 - [Dead Code Detection with Knip](#dead-code-detection-with-knip)
 - [Development Environment](#development-environment)
   - [Devbox](#devbox)
@@ -34,7 +34,7 @@ bun create github.com/DeluxeOwl/react-template <your-app>
   - [Per-package scripts](#per-package-scripts)
 - [VS Code Integration](#vs-code-integration)
 - [Adding New Packages](#adding-new-packages)
-  - [Adding a Library Package](#adding-a-library-package)
+  - [Manual Setup (Optional)](#manual-setup-optional)
   - [Adding a React Application](#adding-a-react-application)
 - [Troubleshooting](#troubleshooting)
   - ["Cannot find module '@react-template/xxx'"](#cannot-find-module-react-templatexxx)
@@ -83,6 +83,7 @@ react-template/
 │   └── .oxlintrc.json
 │
 ├── package.json                # Root package.json (workspaces + shared dev deps)
+├── turbo.json                  # Turborepo configuration
 ├── tsconfig.json               # Root tsconfig (references all projects)
 ├── tsconfig.base.json          # Shared TypeScript compiler options
 ├── oxlint.typescript.json      # Base OxLint config for all TypeScript
@@ -590,11 +591,9 @@ bun run lint:duplicate
 
 ---
 
-## Type Checking with tsgo/tsc
+## Type Checking with tsc
 
-NOTE: ran into issues with tsgo, the project is using tsc actually.
-
-[tsgo](https://github.com/nicolo-ribaudo/tsgo) is an experimental Go port of the TypeScript compiler. It's significantly faster than `tsc` for type checking.
+This project uses `tsc` for type checking, orchestrated by [Turborepo](https://turbo.build/repo) for optimized caching and parallel execution.
 
 Each package has a `typecheck` script:
 
@@ -612,16 +611,7 @@ Each package has a `typecheck` script:
 Run type checking across all packages:
 
 ```bash
-bun run typecheck  # Runs in all workspaces
-```
-
-VS Code is also configured to use tsgo:
-
-```json
-// .vscode/settings.json
-{
-    "typescript.experimental.useTsgo": true
-}
+bun run typecheck  # Runs via turbo typecheck
 ```
 
 ---
@@ -738,16 +728,17 @@ rules:
 | Script           | Command                                   | Description                                                  |
 | ---------------- | ----------------------------------------- | ------------------------------------------------------------ |
 | `sync:tsconfig`  | `bun scripts/sync-tsconfig-references.ts` | Syncs tsconfig references based on package.json dependencies |
-| `lint:oxlint`    | `bun run --filter '*' lint:oxlint`        | Runs OxLint in all workspaces                                |
-| `lint:eslint`    | `bun run --filter '*' lint:eslint`        | Runs ESLint in all workspaces                                |
-| `typecheck`      | `bun run --filter '*' typecheck`          | Type-checks all workspaces with tsgo                         |
+| `lint:oxlint`    | `turbo lint:oxlint`                       | Runs OxLint in all workspaces via Turbo                      |
+| `lint:eslint`    | `turbo lint:eslint`                       | Runs ESLint in all workspaces via Turbo                      |
+| `typecheck`      | `turbo typecheck`                         | Type-checks all workspaces via Turbo                         |
 | `deadcode`       | `knip`                                    | Finds unused code/dependencies                               |
 | `format:dprint`  | `bun run dprint fmt`                      | Runs the dprint formatter for json, yaml etc.                |
 | `lint:duplicate` | `bun run jscpd -c .jscpd.json`            | Runs the jscpd code duplication tool                         |
 | `lint:sg`        | `ast-grep scan`                           | Runs the ast-grep rules                                      |
+| `gen:package`    | `turbo gen package`                       | Generates a new package from a template                      |
 | `lint:all`       | `lefthook run pre-push -f`                | Runs all the linters                                         |
 
-The `--filter '*'` flag tells Bun to run the script in all workspace packages that have it.
+Turborepo handles caching and parallel execution for `lint` and `typecheck` tasks.
 
 ### Per-package scripts
 
@@ -790,14 +781,6 @@ The `.vscode/settings.json` configures VS Code for this monorepo:
 }
 ```
 
-**Use tsgo for TypeScript:**
-
-```json
-{
-    "typescript.experimental.useTsgo": true
-}
-```
-
 **Disable VS Code's import organization** (let ESLint's perfectionist plugin handle it):
 
 ```json
@@ -823,13 +806,15 @@ The `.vscode/settings.json` configures VS Code for this monorepo:
 
 ## Adding New Packages
 
-> **TODO:** Consider adding a package generator to automate this. Options:
->
-> - [Plop.js](https://plopjs.com/) - popular template generator with prompts
-> - [Turborepo](https://turbo.build/repo) - build system for monorepos with built-in generators
-> - Custom Bun script in `scripts/` - zero dependencies, full control
+You can use the built-in generator to create a new package:
 
-### Adding a Library Package
+```bash
+bun run gen:package
+```
+
+This uses [Turborepo Generators](https://turbo.build/repo/docs/core-concepts/generators) to scaffold a new package with the correct configuration.
+
+### Manual Setup (Optional)
 
 Library packages are shared code used by apps (utilities, types, business logic).
 
