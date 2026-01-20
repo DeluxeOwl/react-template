@@ -142,13 +142,15 @@ export default function createConfig(rootDir: string) {
                         multiline:  true,
                     },
                 ],
-                "@stylistic/object-property-newline":    ["error", { allowAllPropertiesOnSameLine: true }],
-                "@stylistic/operator-linebreak":         ["error"],
+                "@stylistic/object-property-newline":             ["error", { allowAllPropertiesOnSameLine: true }],
+                "@stylistic/operator-linebreak":                  ["error"],
+                "@typescript-eslint/array-type":                  "error",
+                "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
                 // These 2 are handled by oxlint.
-                "@typescript-eslint/no-explicit-any":    ["off"],
-                "@typescript-eslint/no-require-imports": ["off"],
-                "@typescript-eslint/no-unused-vars":     "off",
-                "perfectionist/sort-imports":            [
+                "@typescript-eslint/no-explicit-any":             ["off"],
+                "@typescript-eslint/no-require-imports":          ["off"],
+                "@typescript-eslint/no-unused-vars":              "off",
+                "perfectionist/sort-imports":                     [
                     "error",
                     {
                         fallbackSort: {

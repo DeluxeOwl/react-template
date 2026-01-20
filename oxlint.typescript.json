@@ -80,7 +80,7 @@
         "eslint/max-params": [
             "error",
             {
-                "max": 5
+                "max": 2
             }
         ],
         "unicorn/prefer-number-properties": "off",

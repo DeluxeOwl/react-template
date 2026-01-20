@@ -106,7 +106,14 @@ function parseAstGrepOutput(stdout: string): FunctionInfo[] {
     return functions
 }
 
-async function runAstGrep(pattern: string, lang: string, dirs: string[]): Promise<FunctionInfo[]> {
+interface RunASTGrep {
+    dirs:    string[]
+    lang:    string
+    pattern: string
+}
+
+async function runAstGrep(params: RunASTGrep): Promise<FunctionInfo[]> {
+    const { dirs, lang, pattern } = params
     const args = ["run", "--pattern", pattern, "--lang", lang, "--json", ...dirs]
     const result = await $`ast-grep ${args}`.quiet().nothrow()
 
@@ -135,7 +142,9 @@ async function findAllFunctions(dirs: string[]): Promise<FunctionInfo[]> {
 
     for (const lang of ["ts", "tsx"]) {
         for (const pattern of PATTERNS) {
-            const functions = await runAstGrep(pattern, lang, dirs)
+            const functions = await runAstGrep({
+                dirs, lang, pattern,
+            })
             allFunctions.push(...dedupeByLocation(functions, seen))
         }
     }
