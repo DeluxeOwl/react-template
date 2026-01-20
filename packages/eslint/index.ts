@@ -174,7 +174,6 @@ export default function createConfig(rootDir: string): Config[] {
                 // These 2 are handled by oxlint.
                 "@typescript-eslint/no-explicit-any":              ["off"],
                 "@typescript-eslint/no-inferrable-types":          "error",
-                // 0 and 1 are common enough during ifs, arrays etc.
                 "@typescript-eslint/no-magic-numbers":             [
                     "error", {
                         enforceConst:              true,
@@ -184,13 +183,29 @@ export default function createConfig(rootDir: string): Config[] {
                         ignoreTypeIndexes:         true,
                     },
                 ],
-                "@typescript-eslint/no-require-imports":              ["off"],
-                "@typescript-eslint/no-unused-vars":                  "off",
+                "@typescript-eslint/no-require-imports":                     ["off"],
+                // Related to restricted imports
+                "@typescript-eslint/no-restricted-imports":                  "error",
+                // Related to restricted types
+                "@typescript-eslint/no-restricted-types":                    ["off"],
+                "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
+                "@typescript-eslint/no-unnecessary-condition":               "error",
+                "@typescript-eslint/no-unnecessary-template-expression":     "error",
+                "@typescript-eslint/no-unnecessary-type-conversion":         "error",
+                "@typescript-eslint/no-unsafe-type-assertion":               "error",
+                "@typescript-eslint/no-unused-vars":                         "off",
+                "@typescript-eslint/no-useless-default-assignment":          "error",
+                "@typescript-eslint/prefer-function-type":                   "error",
                 // This is not bad but really, it will confuse the LLMs
-                "@typescript-eslint/prefer-readonly-parameter-types": "off",
-                "custom/prefer-discriminated-union":                  "warn",
-                "no-var":                                             "error",
-                "perfectionist/sort-imports":                         [
+                "@typescript-eslint/prefer-readonly-parameter-types":        "off",
+                "@typescript-eslint/prefer-string-starts-ends-with":         "error",
+                "@typescript-eslint/unified-signatures":                     "error",
+                "custom/prefer-discriminated-union":                         "warn",
+                // 0 and 1 are common enough during ifs, arrays etc.
+                "no-magic-numbers":                                          ["off"],
+                "no-restricted-imports":                                     "off",
+                "no-var":                                                    "error",
+                "perfectionist/sort-imports":                                [
                     "error",
                     {
                         fallbackSort: {

@@ -63,10 +63,12 @@ export const preferDiscriminatedUnionRule: Rule.RuleModule = {
 
         return {
             TSInterfaceDeclaration(node: Rule.Node) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
                 const interfaceNode = node as unknown as InterfaceNode
                 analyzeMembers(interfaceNode.body.body, node)
             },
             TSTypeLiteral(node: Rule.Node) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
                 const typeLiteralNode = node as unknown as TypeLiteralNode
                 analyzeMembers(typeLiteralNode.members, node)
             },

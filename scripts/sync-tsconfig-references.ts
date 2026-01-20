@@ -41,6 +41,7 @@ interface WorkspacePackage {
 
 async function getWorkspacePatterns(): Promise<string[]> {
     const rootPkgContent = await readFile(join(ROOT, "package.json"), "utf8")
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
     const rootPkg = JSON.parse(rootPkgContent) as PackageJson
     return rootPkg.workspaces ?? []
 }
@@ -48,6 +49,7 @@ async function getWorkspacePatterns(): Promise<string[]> {
 async function parseWorkspacePackage(pkgJsonPath: string): Promise<null | WorkspacePackage> {
     try {
         const content = await readFile(pkgJsonPath, "utf8")
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
         const packageJson = JSON.parse(content) as PackageJson
         const pkgDir = dirname(pkgJsonPath)
         const relativePath = relative(ROOT, pkgDir)
@@ -117,6 +119,7 @@ function parseJsonWithComments(content: string): TsConfig {
     const stripped = content
         .replaceAll(/\/\/.*$/gm, "")
         .replaceAll(/,(\s*[}\]])/g, "$1")
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
     return JSON.parse(stripped) as TsConfig
 }
 
