@@ -14,7 +14,9 @@
         "zeevro.fold-to-definitions",
         "yzhang.markdown-all-in-one",
         "nize.oklch-preview",
-        "meganrogge.template-string-converter"
+        "meganrogge.template-string-converter",
+        "jetpack-io.devbox",
+        "mkhl.direnv"
     ],
     "unwantedRecommendations": [
         "esbenp.prettier-vscode"
