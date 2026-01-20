@@ -32,6 +32,7 @@
         "deadcode": "knip",
         "lint:all": "lefthook run pre-push -f",
         "lint:duplicates": "bun run scripts/find-duplicate-functions.ts",
-        "gen:package": "turbo gen package"
+        "gen:package": "turbo gen package",
+        "outdated": "bun outdated --filter '*'"
     }
 }
