@@ -223,7 +223,9 @@ function isSolutionStyleTsconfig(parsed: TsConfig): boolean {
     )
 }
 
-function buildTsconfigRefs(workspaceDeps: WorkspacePackage[], tsconfigDir: string) {
+function buildTsconfigRefs(workspaceDeps: WorkspacePackage[], tsconfigDir: string): {
+    path: string
+}[] {
     return workspaceDeps.map((dep) => {
         const relPath = relative(tsconfigDir, join(ROOT, dep.path))
         return { path: relPath.startsWith(".") ? relPath : `./${relPath}` }
@@ -241,7 +243,7 @@ async function syncPackageTsconfigs(packages: WorkspacePackage[]): Promise<void>
     }
 }
 
-async function main() {
+async function main(): Promise<void> {
     console.log("Syncing tsconfig references...\n")
 
     const packages = await findWorkspacePackages()

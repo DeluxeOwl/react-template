@@ -37,7 +37,7 @@ function isOptionalProperty(node: TypeMember): boolean {
 
 export const preferDiscriminatedUnionRule: Rule.RuleModule = {
     create(context) {
-        function analyzeMembers(members: TypeMember[], reportNode: Rule.Node) {
+        function analyzeMembers(members: TypeMember[], reportNode: Rule.Node): void {
             let unionTypeCount = 0
             let optionalPropertyCount = 0
 

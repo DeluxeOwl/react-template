@@ -6,17 +6,18 @@ import oxlint from "eslint-plugin-oxlint"
 import stylistic from "@stylistic/eslint-plugin"
 import { importX } from "eslint-plugin-import-x"
 import importZod from "eslint-plugin-import-zod"
-import {
-    defineConfig,
-} from "eslint/config"
 import perfectionist from "eslint-plugin-perfectionist"
 import unusedImports from "eslint-plugin-unused-imports"
+import {
+    type Config,
+    defineConfig,
+} from "eslint/config"
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
 import { preferDiscriminatedUnionRule } from "./custom/discriminated-union"
 
 // Using eslint for some rules that aren't available in oxlint
-export default function createConfig(rootDir: string) {
+export default function createConfig(rootDir: string): Config[] {
     return defineConfig([
         {
             ignores: [
@@ -152,7 +153,11 @@ export default function createConfig(rootDir: string) {
                 "@stylistic/object-property-newline":                 ["error", { allowAllPropertiesOnSameLine: true }],
                 "@stylistic/operator-linebreak":                      ["error"],
                 "@typescript-eslint/array-type":                      "error",
+                "@typescript-eslint/consistent-generic-constructors": "error",
+                "@typescript-eslint/consistent-indexed-object-style": "error",
                 "@typescript-eslint/consistent-type-definitions":     ["error", "interface"],
+                "@typescript-eslint/consistent-type-exports":         "error",
+                "@typescript-eslint/explicit-function-return-type":   ["error", { allowExpressions: true, allowIIFEs: true }],
                 // These 2 are handled by oxlint.
                 "@typescript-eslint/no-explicit-any":                 ["off"],
                 "@typescript-eslint/no-require-imports":              ["off"],
@@ -160,6 +165,7 @@ export default function createConfig(rootDir: string) {
                 // This is not bad but really, it will confuse the LLMs
                 "@typescript-eslint/prefer-readonly-parameter-types": "off",
                 "custom/prefer-discriminated-union":                  "warn",
+                "no-var":                                             "error",
                 "perfectionist/sort-imports":                         [
                     "error",
                     {

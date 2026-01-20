@@ -139,6 +139,7 @@
         "coverage/**",
         "app/globals.css",
         "node_modules/**",
-        "public/**"
+        "public/**",
+        "**/*.d.ts"
     ]
 }

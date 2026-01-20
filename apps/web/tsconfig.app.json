@@ -14,7 +14,8 @@
             "DOM.Iterable"
         ],
         "types": [
-            "vite/client"
+            "vite/client",
+            "react"
         ],
         "paths": {
             "~/*": [
@@ -24,6 +25,7 @@
     },
     "include": [
         "src",
-        "../../reset.d.ts"
+        "../../reset.d.ts",
+        "node_modules/auto-imports.d.ts"
     ]
 }

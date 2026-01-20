@@ -217,7 +217,7 @@ function reportResults(functions: FunctionInfo[], duplicates: Map<string, Functi
     process.exit(1)
 }
 
-async function main() {
+async function main(): Promise<void> {
     const dirs = parseCliArgs()
     console.log(`Searching for duplicate function names in: ${dirs.join(", ")}\n`)
 

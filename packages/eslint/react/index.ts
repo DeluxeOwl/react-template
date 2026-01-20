@@ -2,17 +2,18 @@
 // @ts-check
 import tseslint from "typescript-eslint"
 import createConfig from "@react-template/eslint"
-import {
-    defineConfig,
-} from "eslint/config"
 import reactHooks from "eslint-plugin-react-hooks"
 import eslintReact from "@eslint-react/eslint-plugin"
 import reactRefresh from "eslint-plugin-react-refresh"
 import betterTailwindcss from "eslint-plugin-better-tailwindcss"
+import {
+    type Config,
+    defineConfig,
+} from "eslint/config"
 import youMightNotNeedAnEffect from "eslint-plugin-react-you-might-not-need-an-effect"
 
 // Depends on the default config
-export default function createReactConfig(rootDir: string) {
+export default function createReactConfig(rootDir: string): Config[] {
     return defineConfig([
         {
             ignores: [
