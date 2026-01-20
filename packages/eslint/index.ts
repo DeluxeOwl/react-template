@@ -13,6 +13,8 @@ import perfectionist from "eslint-plugin-perfectionist"
 import unusedImports from "eslint-plugin-unused-imports"
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
+import { preferDiscriminatedUnionRule } from "./custom/discriminated-union"
+
 // Using eslint for some rules that aren't available in oxlint
 export default function createConfig(rootDir: string) {
     return defineConfig([
@@ -62,7 +64,12 @@ export default function createConfig(rootDir: string) {
 
             plugins: {
                 "@typescript-eslint": tseslint.plugin,
-                "unused-imports":     unusedImports,
+                "custom":             {
+                    rules: {
+                        "prefer-discriminated-union": preferDiscriminatedUnionRule,
+                    },
+                },
+                "unused-imports": unusedImports,
             },
 
             rules: {
@@ -142,15 +149,18 @@ export default function createConfig(rootDir: string) {
                         multiline:  true,
                     },
                 ],
-                "@stylistic/object-property-newline":             ["error", { allowAllPropertiesOnSameLine: true }],
-                "@stylistic/operator-linebreak":                  ["error"],
-                "@typescript-eslint/array-type":                  "error",
-                "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+                "@stylistic/object-property-newline":                 ["error", { allowAllPropertiesOnSameLine: true }],
+                "@stylistic/operator-linebreak":                      ["error"],
+                "@typescript-eslint/array-type":                      "error",
+                "@typescript-eslint/consistent-type-definitions":     ["error", "interface"],
                 // These 2 are handled by oxlint.
-                "@typescript-eslint/no-explicit-any":             ["off"],
-                "@typescript-eslint/no-require-imports":          ["off"],
-                "@typescript-eslint/no-unused-vars":              "off",
-                "perfectionist/sort-imports":                     [
+                "@typescript-eslint/no-explicit-any":                 ["off"],
+                "@typescript-eslint/no-require-imports":              ["off"],
+                "@typescript-eslint/no-unused-vars":                  "off",
+                // This is not bad but really, it will confuse the LLMs
+                "@typescript-eslint/prefer-readonly-parameter-types": "off",
+                "custom/prefer-discriminated-union":                  "warn",
+                "perfectionist/sort-imports":                         [
                     "error",
                     {
                         fallbackSort: {
@@ -181,7 +191,8 @@ export default function createConfig(rootDir: string) {
                     },
                 ],
                 "unused-imports/no-unused-imports": "error",
-                "unused-imports/no-unused-vars":    [
+
+                "unused-imports/no-unused-vars": [
                     "warn",
                     {
                         args:              "after-used",

@@ -107,12 +107,12 @@ function parseAstGrepOutput(stdout: string): FunctionInfo[] {
 }
 
 interface RunASTGrep {
-    dirs:    string[]
+    dirs:    readonly string[]
     lang:    string
     pattern: string
 }
 
-async function runAstGrep(params: RunASTGrep): Promise<FunctionInfo[]> {
+async function runAstGrep(params: Readonly<RunASTGrep>): Promise<FunctionInfo[]> {
     const { dirs, lang, pattern } = params
     const args = ["run", "--pattern", pattern, "--lang", lang, "--json", ...dirs]
     const result = await $`ast-grep ${args}`.quiet().nothrow()
@@ -136,7 +136,7 @@ function dedupeByLocation(functions: FunctionInfo[], seen: Set<string>): Functio
     })
 }
 
-async function findAllFunctions(dirs: string[]): Promise<FunctionInfo[]> {
+async function findAllFunctions(dirs: readonly string[]): Promise<FunctionInfo[]> {
     const allFunctions: FunctionInfo[] = []
     const seen = new Set<string>()
 
