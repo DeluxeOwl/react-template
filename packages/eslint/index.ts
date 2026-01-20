@@ -164,8 +164,26 @@ export default function createConfig(rootDir: string): Config[] {
                     "off",
                     { default: ["signature", "method", "constructor", "field"] },
                 ],
+                // Naming conventions
+                "@typescript-eslint/naming-convention": [
+                    "off",
+                    { format: ["camelCase"], selector: "variableLike" },
+                ],
+                "@typescript-eslint/no-confusing-void-expression": "error",
+                "@typescript-eslint/no-deprecated":                "error",
                 // These 2 are handled by oxlint.
-                "@typescript-eslint/no-explicit-any":                 ["off"],
+                "@typescript-eslint/no-explicit-any":              ["off"],
+                "@typescript-eslint/no-inferrable-types":          "error",
+                // 0 and 1 are common enough during ifs, arrays etc.
+                "@typescript-eslint/no-magic-numbers":             [
+                    "error", {
+                        enforceConst:              true,
+                        ignore:                    [0, 1],
+                        ignoreArrayIndexes:        true,
+                        ignoreNumericLiteralTypes: true,
+                        ignoreTypeIndexes:         true,
+                    },
+                ],
                 "@typescript-eslint/no-require-imports":              ["off"],
                 "@typescript-eslint/no-unused-vars":                  "off",
                 // This is not bad but really, it will confuse the LLMs

@@ -52,7 +52,8 @@ export const preferDiscriminatedUnionRule: Rule.RuleModule = {
                 }
             }
 
-            if (unionTypeCount >= 1 && optionalPropertyCount >= 2) {
+            const propertyCount = 2
+            if (unionTypeCount >= 1 && optionalPropertyCount >= propertyCount) {
                 context.report({
                     message: "This type has a union type property and multiple optional properties. Consider refactoring to a discriminated union for better type safety.",
                     node:    reportNode,

@@ -197,9 +197,10 @@ function printDuplicates(duplicates: Map<string, FunctionInfo[]>): void {
 }
 
 function parseCliArgs(): string[] {
+    const argsIndex = 2
     const { positionals } = parseArgs({
         allowPositionals: true,
-        args:             Bun.argv.slice(2),
+        args:             Bun.argv.slice(argsIndex),
     })
     return positionals.length > 0 ? positionals : ["."]
 }
