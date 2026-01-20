@@ -21,5 +21,6 @@ pre-push:
       run: bun run lint:duplicate
     - name: typecheck
       run: bun run typecheck
-    # - name: deadcode/knip
+    # TODO: this once I finish with the repo.
+    # - name: deadcode
     #   run: bun run deadcode
