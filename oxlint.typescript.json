@@ -80,7 +80,7 @@
         "eslint/max-params": [
             "error",
             {
-                "max": 5
+                "max": 2
             }
         ],
         "unicorn/prefer-number-properties": "off",
@@ -139,6 +139,7 @@
         "coverage/**",
         "app/globals.css",
         "node_modules/**",
-        "public/**"
+        "public/**",
+        "**/*.d.ts"
     ]
 }

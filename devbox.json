@@ -11,10 +11,6 @@
             "bun install --frozen-lockfile",
             "lefthook install"
         ],
-        "scripts": {
-            "test": [
-                "echo \"Error: no test specified\" && exit 1"
-            ]
-        }
+        "scripts": {}
     }
 }

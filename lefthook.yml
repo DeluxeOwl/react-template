@@ -5,6 +5,9 @@ commit-msg:
       run: cat {1} | commitlint
 
 pre-push:
+  commands:
+    00-check-if-devbox:
+      run: bash -c scripts/check-if-in-devbox.sh
   parallel: true
   jobs:
     - name: sync/tsconfig
@@ -21,5 +24,6 @@ pre-push:
       run: bun run lint:duplicate
     - name: typecheck
       run: bun run typecheck
-    # - name: deadcode/knip
+    # TODO: this once I finish with the repo.
+    # - name: deadcode
     #   run: bun run deadcode

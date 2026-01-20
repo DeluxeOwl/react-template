@@ -6,15 +6,18 @@ import oxlint from "eslint-plugin-oxlint"
 import stylistic from "@stylistic/eslint-plugin"
 import { importX } from "eslint-plugin-import-x"
 import importZod from "eslint-plugin-import-zod"
-import {
-    defineConfig,
-} from "eslint/config"
 import perfectionist from "eslint-plugin-perfectionist"
 import unusedImports from "eslint-plugin-unused-imports"
+import {
+    type Config,
+    defineConfig,
+} from "eslint/config"
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
+import { preferDiscriminatedUnionRule } from "./custom/discriminated-union"
+
 // Using eslint for some rules that aren't available in oxlint
-export default function createConfig(rootDir: string) {
+export default function createConfig(rootDir: string): Config[] {
     return defineConfig([
         {
             ignores: [
@@ -62,7 +65,12 @@ export default function createConfig(rootDir: string) {
 
             plugins: {
                 "@typescript-eslint": tseslint.plugin,
-                "unused-imports":     unusedImports,
+                "custom":             {
+                    rules: {
+                        "prefer-discriminated-union": preferDiscriminatedUnionRule,
+                    },
+                },
+                "unused-imports": unusedImports,
             },
 
             rules: {
@@ -142,13 +150,72 @@ export default function createConfig(rootDir: string) {
                         multiline:  true,
                     },
                 ],
-                "@stylistic/object-property-newline":    ["error", { allowAllPropertiesOnSameLine: true }],
-                "@stylistic/operator-linebreak":         ["error"],
+                "@stylistic/object-property-newline":                 ["error", { allowAllPropertiesOnSameLine: true }],
+                "@stylistic/operator-linebreak":                      ["error"],
+                "@typescript-eslint/array-type":                      "error",
+                "@typescript-eslint/consistent-generic-constructors": "error",
+                "@typescript-eslint/consistent-indexed-object-style": "error",
+                "@typescript-eslint/consistent-type-definitions":     ["error", "interface"],
+                "@typescript-eslint/consistent-type-exports":         "error",
+                "@typescript-eslint/explicit-function-return-type":   ["error", { allowExpressions: true, allowIIFEs: true }],
+                // For ordering classes and such, conflicts with perfectionist/sort-interfaces
+                // Could maybe configure it for classes
+                "@typescript-eslint/member-ordering":                 [
+                    "off",
+                    { default: ["signature", "method", "constructor", "field"] },
+                ],
+                // Naming conventions
+                "@typescript-eslint/naming-convention": [
+                    "off",
+                    { format: ["camelCase"], selector: "variableLike" },
+                ],
+                "@typescript-eslint/no-confusing-void-expression": "error",
+                "@typescript-eslint/no-deprecated":                "error",
                 // These 2 are handled by oxlint.
-                "@typescript-eslint/no-explicit-any":    ["off"],
-                "@typescript-eslint/no-require-imports": ["off"],
-                "@typescript-eslint/no-unused-vars":     "off",
-                "perfectionist/sort-imports":            [
+                "@typescript-eslint/no-explicit-any":              ["off"],
+                "@typescript-eslint/no-inferrable-types":          "error",
+                "@typescript-eslint/no-magic-numbers":             [
+                    "error", {
+                        enforceConst:              true,
+                        ignore:                    [0, 1],
+                        ignoreArrayIndexes:        true,
+                        ignoreNumericLiteralTypes: true,
+                        ignoreTypeIndexes:         true,
+                    },
+                ],
+                "@typescript-eslint/no-require-imports":                     ["off"],
+                // Related to restricted imports
+                "@typescript-eslint/no-restricted-imports":                  "error",
+                // Related to restricted types
+                "@typescript-eslint/no-restricted-types":                    ["off"],
+                "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
+                "@typescript-eslint/no-unnecessary-condition":               "error",
+                "@typescript-eslint/no-unnecessary-template-expression":     "error",
+                "@typescript-eslint/no-unnecessary-type-conversion":         "error",
+                "@typescript-eslint/no-unsafe-type-assertion":               "error",
+                "@typescript-eslint/no-unused-vars":                         "off",
+                "@typescript-eslint/no-useless-default-assignment":          "error",
+                "@typescript-eslint/prefer-function-type":                   "error",
+                // This is not bad but really, it will confuse the LLMs
+                "@typescript-eslint/prefer-readonly-parameter-types":        "off",
+                "@typescript-eslint/prefer-string-starts-ends-with":         "error",
+                "@typescript-eslint/unified-signatures":                     "error",
+                "custom/prefer-discriminated-union":                         "warn",
+                // 0 and 1 are common enough during ifs, arrays etc.
+                "no-magic-numbers":                                          ["off"],
+                "no-restricted-imports":                                     "off",
+                "no-var":                                                    "error",
+                "perfectionist/sort-imports":                                [
+                    "error",
+                    {
+                        fallbackSort: {
+                            order: "asc",
+                            type:  "alphabetical",
+                        },
+                        type: "line-length",
+                    },
+                ],
+                "perfectionist/sort-interfaces": [
                     "error",
                     {
                         fallbackSort: {
@@ -179,7 +246,8 @@ export default function createConfig(rootDir: string) {
                     },
                 ],
                 "unused-imports/no-unused-imports": "error",
-                "unused-imports/no-unused-vars":    [
+
+                "unused-imports/no-unused-vars": [
                     "warn",
                     {
                         args:              "after-used",

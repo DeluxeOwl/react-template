@@ -737,6 +737,7 @@ rules:
 | `lint:sg`        | `ast-grep scan`                           | Runs the ast-grep rules                                      |
 | `gen:package`    | `turbo gen package`                       | Generates a new package from a template                      |
 | `lint:all`       | `lefthook run pre-push -f`                | Runs all the linters                                         |
+| `outdated`       | `bun outdated --filter '*'`               | Checks for outdated packages                                 |
 
 Turborepo handles caching and parallel execution for `lint` and `typecheck` tasks.
 

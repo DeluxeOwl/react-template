@@ -29,6 +29,7 @@ const PATTERNS = [
 
 interface AstGrepMatch {
     file:           string
+    text:           string
     metaVariables?: {
         single?: {
             NAME?: { text: string }
@@ -38,7 +39,6 @@ interface AstGrepMatch {
         end:   { column: number, line: number }
         start: { column: number, line: number }
     }
-    text: string
 }
 
 interface FunctionInfo {
@@ -106,7 +106,14 @@ function parseAstGrepOutput(stdout: string): FunctionInfo[] {
     return functions
 }
 
-async function runAstGrep(pattern: string, lang: string, dirs: string[]): Promise<FunctionInfo[]> {
+interface RunASTGrep {
+    lang:    string
+    pattern: string
+    dirs:    readonly string[]
+}
+
+async function runAstGrep(params: Readonly<RunASTGrep>): Promise<FunctionInfo[]> {
+    const { dirs, lang, pattern } = params
     const args = ["run", "--pattern", pattern, "--lang", lang, "--json", ...dirs]
     const result = await $`ast-grep ${args}`.quiet().nothrow()
 
@@ -129,13 +136,15 @@ function dedupeByLocation(functions: FunctionInfo[], seen: Set<string>): Functio
     })
 }
 
-async function findAllFunctions(dirs: string[]): Promise<FunctionInfo[]> {
+async function findAllFunctions(dirs: readonly string[]): Promise<FunctionInfo[]> {
     const allFunctions: FunctionInfo[] = []
     const seen = new Set<string>()
 
     for (const lang of ["ts", "tsx"]) {
         for (const pattern of PATTERNS) {
-            const functions = await runAstGrep(pattern, lang, dirs)
+            const functions = await runAstGrep({
+                dirs, lang, pattern,
+            })
             allFunctions.push(...dedupeByLocation(functions, seen))
         }
     }
@@ -188,9 +197,10 @@ function printDuplicates(duplicates: Map<string, FunctionInfo[]>): void {
 }
 
 function parseCliArgs(): string[] {
+    const argsIndex = 2
     const { positionals } = parseArgs({
         allowPositionals: true,
-        args:             Bun.argv.slice(2),
+        args:             Bun.argv.slice(argsIndex),
     })
     return positionals.length > 0 ? positionals : ["."]
 }
@@ -208,7 +218,7 @@ function reportResults(functions: FunctionInfo[], duplicates: Map<string, Functi
     process.exit(1)
 }
 
-async function main() {
+async function main(): Promise<void> {
     const dirs = parseCliArgs()
     console.log(`Searching for duplicate function names in: ${dirs.join(", ")}\n`)
 
