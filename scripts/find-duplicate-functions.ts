@@ -29,6 +29,7 @@ const PATTERNS = [
 
 interface AstGrepMatch {
     file:           string
+    text:           string
     metaVariables?: {
         single?: {
             NAME?: { text: string }
@@ -38,7 +39,6 @@ interface AstGrepMatch {
         end:   { column: number, line: number }
         start: { column: number, line: number }
     }
-    text: string
 }
 
 interface FunctionInfo {
@@ -107,9 +107,9 @@ function parseAstGrepOutput(stdout: string): FunctionInfo[] {
 }
 
 interface RunASTGrep {
-    dirs:    readonly string[]
     lang:    string
     pattern: string
+    dirs:    readonly string[]
 }
 
 async function runAstGrep(params: Readonly<RunASTGrep>): Promise<FunctionInfo[]> {

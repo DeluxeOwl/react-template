@@ -158,6 +158,12 @@ export default function createConfig(rootDir: string): Config[] {
                 "@typescript-eslint/consistent-type-definitions":     ["error", "interface"],
                 "@typescript-eslint/consistent-type-exports":         "error",
                 "@typescript-eslint/explicit-function-return-type":   ["error", { allowExpressions: true, allowIIFEs: true }],
+                // For ordering classes and such, conflicts with perfectionist/sort-interfaces
+                // Could maybe configure it for classes
+                "@typescript-eslint/member-ordering":                 [
+                    "off",
+                    { default: ["signature", "method", "constructor", "field"] },
+                ],
                 // These 2 are handled by oxlint.
                 "@typescript-eslint/no-explicit-any":                 ["off"],
                 "@typescript-eslint/no-require-imports":              ["off"],
@@ -167,6 +173,16 @@ export default function createConfig(rootDir: string): Config[] {
                 "custom/prefer-discriminated-union":                  "warn",
                 "no-var":                                             "error",
                 "perfectionist/sort-imports":                         [
+                    "error",
+                    {
+                        fallbackSort: {
+                            order: "asc",
+                            type:  "alphabetical",
+                        },
+                        type: "line-length",
+                    },
+                ],
+                "perfectionist/sort-interfaces": [
                     "error",
                     {
                         fallbackSort: {

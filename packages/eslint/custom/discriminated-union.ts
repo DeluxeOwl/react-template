@@ -6,8 +6,8 @@ interface TypeAnnotation {
 }
 
 interface TypeMember {
-    optional?:       boolean
     type:            string
+    optional?:       boolean
     typeAnnotation?: TypeAnnotation
 }
 

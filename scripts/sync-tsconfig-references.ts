@@ -19,10 +19,10 @@ import { readdir, readFile, writeFile } from "node:fs/promises"
 const ROOT = join(import.meta.dirname, "..")
 
 interface PackageJson {
-    dependencies?:    Record<string, string>
-    devDependencies?: Record<string, string>
     name:             string
     workspaces?:      string[]
+    dependencies?:    Record<string, string>
+    devDependencies?: Record<string, string>
 }
 
 interface TsConfig {
@@ -32,11 +32,11 @@ interface TsConfig {
 
 interface WorkspacePackage {
     name:          string
-    packageJson:   PackageJson
     /** Relative to root, e.g., "apps/web" */
     path:          string
     /** Tsconfig files that have references */
     tsconfigPaths: string[]
+    packageJson:   PackageJson
 }
 
 async function getWorkspacePatterns(): Promise<string[]> {
