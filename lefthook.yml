@@ -5,6 +5,9 @@ commit-msg:
       run: cat {1} | commitlint
 
 pre-push:
+  commands:
+    00-check-if-devbox:
+      run: bash -c scripts/check-if-in-devbox.sh
   parallel: true
   jobs:
     - name: sync/tsconfig
