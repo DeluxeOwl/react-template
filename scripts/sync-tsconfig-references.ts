@@ -117,7 +117,7 @@ function parseJsonWithComments(content: string): TsConfig {
     const stripped = content
         .replaceAll(/\/\/.*$/gm, "")
         .replaceAll(/,(\s*[}\]])/g, "$1")
-    return JSON.parse(stripped)
+    return JSON.parse(stripped) as TsConfig
 }
 
 async function readTsconfig(path: string): Promise<{ content: string, parsed: TsConfig }> {
@@ -149,23 +149,57 @@ function updateReferences(
     return `${before}${needsComma ? "," : ""}\n  ${newRefsStr}\n}`
 }
 
+function referencesAreEqual(
+    current: undefined | { path: string }[],
+    expected: { path: string }[],
+): boolean {
+    const currentRefs = current ?? []
+    if (currentRefs.length !== expected.length) {
+        return false
+    }
+    return expected.every((ref, i) => ref.path === currentRefs[i].path)
+}
+
+async function syncSingleTsconfig(
+    tsconfigPath: string,
+    workspaceDeps: WorkspacePackage[],
+): Promise<void> {
+    const { content, parsed } = await readTsconfig(tsconfigPath)
+
+    if (isSolutionStyleTsconfig(parsed)) {
+        console.log(`Skipped (solution-style): ${relative(ROOT, tsconfigPath)}`)
+        return
+    }
+
+    const refs = buildTsconfigRefs(workspaceDeps, dirname(tsconfigPath))
+
+    if (referencesAreEqual(parsed.references, refs)) {
+        console.log(`No changes: ${relative(ROOT, tsconfigPath)}`)
+        return
+    }
+
+    const updated = updateReferences(content, refs)
+    await writeFile(tsconfigPath, updated)
+    console.log(`Updated: ${relative(ROOT, tsconfigPath)}`)
+}
+
 async function syncRootTsconfig(packages: WorkspacePackage[]): Promise<void> {
     const rootTsconfigPath = join(ROOT, "tsconfig.json")
-    const { content } = await readTsconfig(rootTsconfigPath)
+    const { content, parsed } = await readTsconfig(rootTsconfigPath)
 
     // Root references all workspace packages
     const refs = packages
         .toSorted((a, b) => a.path.localeCompare(b.path))
         .map((pkg) => ({ path: `./${pkg.path}` }))
 
-    const updated = updateReferences(content, refs)
-
-    if (updated !== content) {
-        await writeFile(rootTsconfigPath, updated)
-        console.log(`Updated: tsconfig.json`)
-    } else {
+    if (referencesAreEqual(parsed.references, refs)) {
         console.log(`No changes: tsconfig.json`)
+        return
     }
+
+    const updated = updateReferences(content, refs)
+    await writeFile(rootTsconfigPath, updated)
+    console.log(`Updated: tsconfig.json`)
 }
 
 function getWorkspaceDeps(
@@ -194,28 +228,6 @@ function buildTsconfigRefs(workspaceDeps: WorkspacePackage[], tsconfigDir: strin
         const relPath = relative(tsconfigDir, join(ROOT, dep.path))
         return { path: relPath.startsWith(".") ? relPath : `./${relPath}` }
     })
-}
-
-async function syncSingleTsconfig(
-    tsconfigPath: string,
-    workspaceDeps: WorkspacePackage[],
-): Promise<void> {
-    const { content, parsed } = await readTsconfig(tsconfigPath)
-
-    if (isSolutionStyleTsconfig(parsed)) {
-        console.log(`Skipped (solution-style): ${relative(ROOT, tsconfigPath)}`)
-        return
-    }
-
-    const refs = buildTsconfigRefs(workspaceDeps, dirname(tsconfigPath))
-    const updated = updateReferences(content, refs)
-
-    if (updated !== content) {
-        await writeFile(tsconfigPath, updated)
-        console.log(`Updated: ${relative(ROOT, tsconfigPath)}`)
-    } else {
-        console.log(`No changes: ${relative(ROOT, tsconfigPath)}`)
-    }
 }
 
 async function syncPackageTsconfigs(packages: WorkspacePackage[]): Promise<void> {
