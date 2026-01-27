@@ -75,33 +75,58 @@ message: "Built-in hooks should be moved to a custom hook. Components should onl
 
 ---
 # ----------------------------------------------------------------------------
-# Rule 2: No .map() calls in JSX
+# Rule 2: No logic inside .map() callbacks in JSX
 # ----------------------------------------------------------------------------
-# Example that MATCHES (bad - has nested JSX):
-#   const Foo = () => {
-#     const { users } = useUsers();
-#     return <ul>{users.map(u => <li>{u.name}</li>)}</ul>;  // <-- flagged
-#   };
+# This rule allows .map() in JSX but forbids logic inside the callback.
+# Simple maps and early returns are OK; variable declarations are NOT.
 #
-# Example that does NOT match (simple wrapper - OK):
-#   const Provider = () => {
-#     return <Context.Provider>{items.map(i => i)}</Context.Provider>;
-#   };
+# Example that MATCHES (bad - has logic inside map):
+#   const Foo = () => (
+#     <ul>
+#       {items.map((item) => {
+#         const name = item.name.toUpperCase();  // <-- flagged (logic!)
+#         return <li>{name}</li>;
+#       })}
+#     </ul>
+#   );
+#
+# Example that does NOT match (simple expression - OK):
+#   const Foo = () => (
+#     <ul>
+#       {items.map((item) => <li key={item.id}>{item.name}</li>)}
+#     </ul>
+#   );
+#
+# Example that does NOT match (early return only - OK):
+#   const Foo = () => (
+#     <ul>
+#       {items.map((item) => {
+#         if (!item.isActive) return null;  // Early return is OK
+#         return <li key={item.id}>{item.name}</li>;
+#       })}
+#     </ul>
+#   );
 # ----------------------------------------------------------------------------
-id: no-map-in-jsx
+id: no-logic-in-map-callback
 language: tsx
 severity: error
 rule:
   pattern: $ARR.map($$$)
-  inside:
-    kind: jsx_element
+  has:
+    kind: arrow_function
     has:
-      any:
-        - kind: jsx_element
-        - kind: jsx_self_closing_element
+      kind: statement_block
+      has:
+        kind: lexical_declaration
+        stopBy: end
       stopBy: end
     stopBy: end
-message: "Avoid .map() inside JSX. Move list rendering logic to a custom hook."
+  inside:
+    kind: jsx_element
+    stopBy: end
+message: |
+  Avoid logic inside .map() callbacks. Only early returns are allowed.
+  Move data transformations to a custom hook or compute them before the map.
 
 ---
 # ----------------------------------------------------------------------------
@@ -520,4 +545,4 @@ rule:
             stopBy: end
           stopBy: end
     stopBy: end
-message: "Avoid switch statements in components. Move branching logic to a custom hook."
+message: "Avoid switch statements in components. Move branching logic to a custom hook or prefer a dispatcher component if using JSX."

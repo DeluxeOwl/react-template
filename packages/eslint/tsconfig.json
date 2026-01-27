@@ -8,6 +8,7 @@
         "index.ts",
         "react/**/*.ts",
         "custom/**/*.ts",
+        "custom-react/**/*.ts",
         "eslint.config.ts",
         "../../reset.d.ts"
     ],

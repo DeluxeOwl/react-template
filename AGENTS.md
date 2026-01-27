@@ -8,8 +8,6 @@ This monorepo uses Bun workspaces for high-performance development across React 
 - **`packages/`**: Shared internal libraries (e.g., `@react-template/eslint`, `@react-template/math`).
 - **Tooling**: Bun for package management, OxLint (fast) + ESLint (thorough) for linting and formatting, and TypeScript Project References for incremental type checking.
 
-**CRITICAL**: After any programming task, run `bun run lint:all` and fix all linter errors. This also formats things so you need to re-read files.
-
 ## Development Rules
 
 - MUST: Use `workspace:*` for internal dependencies.

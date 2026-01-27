@@ -685,6 +685,8 @@ This:
 
 ### direnv
 
+NOTE: You need this installed on your operating system.
+
 [direnv](https://direnv.net/) automatically loads the Devbox environment when you `cd` into the directory.
 
 The `.envrc` file:
@@ -738,6 +740,12 @@ rules:
 | `gen:package`    | `turbo gen package`                       | Generates a new package from a template                      |
 | `lint:all`       | `lefthook run pre-push -f`                | Runs all the linters                                         |
 | `outdated`       | `bun outdated --filter '*'`               | Checks for outdated packages                                 |
+
+NOTE: filter works only for defined scripts
+
+1. Use --cwd to change the working directory: bun --cwd apps/web x eslint src/app.tsx
+2. Or just run from the web directory: cd apps/web && bun run eslint src/app.tsx
+3. If you want to use --filter, you need to run a defined script: bun run --filter @react-template/web lint:eslint
 
 Turborepo handles caching and parallel execution for `lint` and `typecheck` tasks.
 

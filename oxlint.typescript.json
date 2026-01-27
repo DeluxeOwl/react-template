@@ -121,7 +121,9 @@
         "eslint/no-ternary": "allow",
         "eslint/init-declarations": "allow",
         "typescript/no-inferrable-types": "off",
-        "eslint/yoda": "allow"
+        "eslint/yoda": "allow",
+        "eslint/new-cap": "off",
+        "eslint/capitalized-comments": "off"
     },
     "env": {
         "builtin": true

@@ -14,7 +14,9 @@ import {
 } from "eslint/config"
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
-import { preferDiscriminatedUnionRule } from "./custom/discriminated-union"
+import customPlugin from "./custom"
+
+// bun run eslint --inspect-config
 
 // Using eslint for some rules that aren't available in oxlint
 export default function createConfig(rootDir: string): Config[] {
@@ -65,12 +67,9 @@ export default function createConfig(rootDir: string): Config[] {
 
             plugins: {
                 "@typescript-eslint": tseslint.plugin,
-                "custom":             {
-                    rules: {
-                        "prefer-discriminated-union": preferDiscriminatedUnionRule,
-                    },
-                },
-                "unused-imports": unusedImports,
+                // @ts-expect-error This is an issue with @typescript-eslint/utils.
+                "custom":             customPlugin,
+                "unused-imports":     unusedImports,
             },
 
             rules: {
@@ -177,7 +176,7 @@ export default function createConfig(rootDir: string): Config[] {
                 "@typescript-eslint/no-magic-numbers":             [
                     "error", {
                         enforceConst:              true,
-                        ignore:                    [0, 1],
+                        ignore:                    [0, 1, 60, 1000, 24, 12, 300],
                         ignoreArrayIndexes:        true,
                         ignoreNumericLiteralTypes: true,
                         ignoreTypeIndexes:         true,
@@ -204,8 +203,21 @@ export default function createConfig(rootDir: string): Config[] {
                 // 0 and 1 are common enough during ifs, arrays etc.
                 "no-magic-numbers":                                          ["off"],
                 "no-restricted-imports":                                     "off",
-                "no-var":                                                    "error",
-                "perfectionist/sort-imports":                                [
+                "no-restricted-syntax":                                      [
+                    "error",
+                    {
+                        message:  "Generic handler names (like 'handleClick' or 'onDelete') are forbidden. Please be specific about WHAT is being handled, e.g., 'handleUserDelete' or 'onEmailSubmit'.",
+                        // This selector looks for variable names and function names
+                        selector: "VariableDeclarator > Identifier[name=/^(handleClick|onClick|handleSubmit|onSubmit|handleEvent|onEvent|handleChange|onChange|handleDelete|onDelete|handleSelect|onSelect)$/], FunctionDeclaration > Identifier[name=/^(handleClick|onClick|handleSubmit|onSubmit|handleEvent|onEvent|handleChange|onChange|handleDelete|onDelete|handleSelect|onSelect)$/]",
+                    },
+                    {
+                        message:  "IIFEs inside JSX are forbidden. Extract logic to a variable or a sub-component.",
+                        // Targets: {(() => { ... })()} and { (function() { ... })() }
+                        selector: "JSXExpressionContainer > CallExpression[callee.type='ArrowFunctionExpression'], JSXExpressionContainer > CallExpression[callee.type='FunctionExpression']",
+                    },
+                ],
+                "no-var":                     "error",
+                "perfectionist/sort-imports": [
                     "error",
                     {
                         fallbackSort: {
