@@ -123,7 +123,8 @@
         "typescript/no-inferrable-types": "off",
         "eslint/yoda": "allow",
         "eslint/new-cap": "off",
-        "eslint/capitalized-comments": "off"
+        "eslint/capitalized-comments": "off",
+        "eslint/no-inline-comments": "off"
     },
     "env": {
         "builtin": true

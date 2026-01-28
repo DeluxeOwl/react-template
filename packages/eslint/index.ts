@@ -215,6 +215,10 @@ export default function createConfig(rootDir: string): Config[] {
                         // Targets: {(() => { ... })()} and { (function() { ... })() }
                         selector: "JSXExpressionContainer > CallExpression[callee.type='ArrowFunctionExpression'], JSXExpressionContainer > CallExpression[callee.type='FunctionExpression']",
                     },
+                    {
+                        message:  "Do not use 'instanceof Error'. Use 'Error.isError()' instead to ensure cross-realm compatibility and safer type narrowing.",
+                        selector: "BinaryExpression[operator='instanceof'][right.name='Error']",
+                    },
                 ],
                 "no-var":                     "error",
                 "perfectionist/sort-imports": [
