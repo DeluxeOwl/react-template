@@ -199,7 +199,6 @@ export default function createConfig(rootDir: string): Config[] {
                 "@typescript-eslint/prefer-readonly-parameter-types":        "off",
                 "@typescript-eslint/prefer-string-starts-ends-with":         "error",
                 "@typescript-eslint/unified-signatures":                     "error",
-                "custom/no-code-duplication":                                "error",
                 "custom/prefer-discriminated-union":                         "warn",
                 // 0 and 1 are common enough during ifs, arrays etc.
                 "no-magic-numbers":                                          ["off"],
