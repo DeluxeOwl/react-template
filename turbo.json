@@ -27,9 +27,7 @@
                 "^typecheck"
             ],
             "cache": true,
-            "outputs": [
-                "node_modules/.tmp/tsconfig.tsbuildinfo"
-            ]
+            "outputs": []
         },
         "lint:oxlint": {
             "cache": true
