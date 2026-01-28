@@ -1,5 +1,5 @@
 
-import { noCodeDuplication } from "./todo/jscpd-duplication"
+import { noCodeDuplication } from "./jscpd-duplication"
 import { preferDiscriminatedUnionRule } from "./discriminated-union"
 
 export default {

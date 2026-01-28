@@ -17,7 +17,8 @@
         "**/*.yaml",
         "**/*.yml",
         "**/*.html",
-        "**/*.md"
+        "**/*.md",
+        "**/*.hbs"
     ],
     "formats": [
         "typescript",
