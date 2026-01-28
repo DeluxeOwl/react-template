@@ -61,6 +61,49 @@ export default function createReactConfig(rootDir: string): Config[] {
                 ...betterTailwindcss.configs["stylistic-warn"].rules,
                 ...betterTailwindcss.configs["correctness-error"].rules,
                 "better-tailwindcss/enforce-consistent-line-wrapping": ["error", { group: "newLine", printWidth: 120 }],
+                "better-tailwindcss/no-restricted-classes":            [
+                    // See https://github.com/schoero/eslint-plugin-better-tailwindcss/issues/267
+                    "error", {
+                        restrict: [
+                            // 1. Spacing (Padding/Margin) & Border/Rounded Left -> Start
+                            {
+                                fix:     "$1$2s$3",
+                                message: "Use logical 'start' (-s) instead of 'left' (-l) for RTL support.",
+                                pattern: "^([a-zA-Z0-9:/_-]*:)?(p|m|border-|rounded-)l([-|\\d|px|\\[].*)$",
+                            },
+                            // 2. Spacing (Padding/Margin) & Border/Rounded Right -> End
+                            {
+                                fix:     "$1$2e$3",
+                                message: "Use logical 'end' (-e) instead of 'right' (-r) for RTL support.",
+                                pattern: "^([a-zA-Z0-9:/_-]*:)?(p|m|border-|rounded-)r([-|\\d|px|\\[].*)$",
+                            },
+                            // 3. Inset Left -> Start
+                            {
+                                fix:     "$1start$2",
+                                message: "Use 'start' instead of 'left' for RTL support.",
+                                pattern: "^([a-zA-Z0-9:/_-]*:)?left([-|\\d|px|\\[].*)$",
+                            },
+                            // 4. Inset Right -> End
+                            {
+                                fix:     "$1end$2",
+                                message: "Use 'end' instead of 'right' for RTL support.",
+                                pattern: "^([a-zA-Z0-9:/_-]*:)?right([-|\\d|px|\\[].*)$",
+                            },
+                            // 5. Text Align Left -> Start
+                            {
+                                fix:     "$1text-start",
+                                message: "Use 'text-start' instead of 'text-left'.",
+                                pattern: "^([a-zA-Z0-9:/_-]*:)?text-left$",
+                            },
+                            // 6. Text Align Right -> End
+                            {
+                                fix:     "$1text-end",
+                                message: "Use 'text-end' instead of 'text-right'.",
+                                pattern: "^([a-zA-Z0-9:/_-]*:)?text-right$",
+                            },
+                        ],
+                    },
+                ],
             },
         },
 

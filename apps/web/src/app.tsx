@@ -8,7 +8,7 @@ function App(): React.ReactNode {
     const b = 12
 
     return (
-        <div className={cn("mx-2")}>Hello world {sum(a, b)}
+        <div className={cn("mx-2 ms-2")}>Hello world {sum(a, b)}
         </div>
     )
 }
