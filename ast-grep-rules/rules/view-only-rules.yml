@@ -386,12 +386,13 @@ message: "Avoid ternary assignments in components. Move conditional logic to a c
 
 ---
 # ----------------------------------------------------------------------------
-# Rule 8: No multiple hooks in component
+# Rule 8: No multiple hooks in component (triggers at >= 3)
 # ----------------------------------------------------------------------------
 # Example that MATCHES (bad - has nested JSX):
 #   const Foo = () => {
-#     const { users } = useUsers();  // <-- flagged (first of multiple)
+#     const { users } = useUsers();
 #     const { theme } = useTheme();
+#     const { foo } = useSomething(); // <-- flagged (first of multiple)
 #     return <div style={theme}><span>{users.length}</span></div>;
 #   };
 #
@@ -417,6 +418,12 @@ rule:
       kind: call_expression
       regex: ^use[A-Z]
       stopBy: end
+      precedes: # Add this block for the 3rd hook
+        kind: lexical_declaration
+        has:
+          kind: call_expression
+          regex: ^use[A-Z]
+          stopBy: end
     stopBy: end
   inside:
     any:
