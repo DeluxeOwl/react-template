@@ -63,8 +63,12 @@ export default function createReactConfig(rootDir: string): Config[] {
                 "better-tailwindcss/enforce-consistent-line-wrapping": ["error", { group: "newLine", printWidth: 120 }],
                 "better-tailwindcss/no-restricted-classes":            [
                     // See https://github.com/schoero/eslint-plugin-better-tailwindcss/issues/267
-                    "error", {
+                    "warn", {
                         restrict: [
+                            {
+                                message: "Restricted hardcoded color. Define a css variable instead.",
+                                pattern: "^([a-zA-Z0-9:/_-]*:)?(text|bg)-(red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|slate|gray|zinc|neutral|stone)-([0-9])*(\\/[0-9]{1,3})?$",
+                            },
                             // 1. Spacing (Padding/Margin) & Border/Rounded Left -> Start
                             {
                                 fix:     "$1$2s$3",

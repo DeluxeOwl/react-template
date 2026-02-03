@@ -1,0 +1,20 @@
+{
+	"React Component": {
+		"prefix": "rfc",
+		"body": [
+			"interface ${1:ComponentName}Props {",
+			"    overrideClassName?: string",
+			"    children:           React.ReactNode",
+			"}",
+			"",
+			"function ${1:ComponentName}({ children, overrideClassName }: ${1:ComponentName}Props): React.ReactNode {",
+			"    return (",
+			"        <div className={cn(overrideClassName)}>",
+			"            ${0:children}",
+			"        </div>",
+			"    )",
+			"}"
+		],
+		"description": "Functional component with className and children"
+	}
+}

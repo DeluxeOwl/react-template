@@ -176,7 +176,7 @@ export default function createConfig(rootDir: string): Config[] {
                 "@typescript-eslint/no-magic-numbers":             [
                     "error", {
                         enforceConst:              true,
-                        ignore:                    [0, 1, 60, 1000, 24, 12, 300],
+                        ignore:                    [-1, 0, 1, 60, 1000, 24, 12, 300],
                         ignoreArrayIndexes:        true,
                         ignoreNumericLiteralTypes: true,
                         ignoreTypeIndexes:         true,
