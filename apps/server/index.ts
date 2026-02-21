@@ -1,1 +1,2 @@
-console.log("Hello via Bun!")
+// oxlint-disable no-empty-file
+// TODO: read through docs, use dual rpc link and openapi.

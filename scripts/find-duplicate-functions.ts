@@ -11,7 +11,7 @@
  * Example: bun scripts/find-duplicate-functions.ts apps/ packages/
  */
 
-import { $ } from "bun"
+import { $ } from "dax"
 import { parseArgs } from "node:util"
 
 const PATTERNS = [
@@ -115,14 +115,14 @@ interface RunASTGrep {
 async function runAstGrep(params: Readonly<RunASTGrep>): Promise<FunctionInfo[]> {
     const { dirs, lang, pattern } = params
     const args = ["run", "--pattern", pattern, "--lang", lang, "--json", ...dirs]
-    const result = await $`ast-grep ${args}`.quiet().nothrow()
+    const result = await $`ast-grep ${args}`.quiet().noThrow()
 
-    if (result.exitCode !== 0 && result.stderr.toString().trim()) {
-        console.error(`ast-grep failed for pattern "${pattern}":`, result.stderr.toString())
+    if (result.code !== 0 && result.stderr.trim()) {
+        console.error(`ast-grep failed for pattern "${pattern}":`, result.stderr)
         return []
     }
 
-    return parseAstGrepOutput(result.stdout.toString())
+    return parseAstGrepOutput(result.stdout)
 }
 
 function dedupeByLocation(functions: FunctionInfo[], seen: Set<string>): FunctionInfo[] {

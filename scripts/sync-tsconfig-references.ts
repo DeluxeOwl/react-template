@@ -12,7 +12,7 @@
  * Run: bun scripts/sync-tsconfig
  */
 
-import { Glob } from "bun"
+import fg from "fast-glob"
 import { join, dirname, relative } from "node:path"
 import { readdir, readFile, writeFile } from "node:fs/promises"
 
@@ -67,9 +67,16 @@ async function findWorkspacePackages(): Promise<WorkspacePackage[]> {
     const packages: WorkspacePackage[] = []
 
     for (const pattern of workspacePatterns) {
-        const glob = new Glob(join(pattern, "package.json"))
+        // fast-glob handles Windows backslashes by converting them to forward slashes internally
+        const patternPath = join(pattern, "package.json")
 
-        for await (const pkgJsonPath of glob.scan({ absolute: true, cwd: ROOT })) {
+        const pkgJsonPaths = await fg(patternPath, {
+            absolute:  true,
+            cwd:       ROOT,
+            onlyFiles: true,
+        })
+
+        for (const pkgJsonPath of pkgJsonPaths) {
             const pkg = await parseWorkspacePackage(pkgJsonPath)
             if (pkg) {
                 packages.push(pkg)

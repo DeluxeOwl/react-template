@@ -156,6 +156,7 @@ export default function createConfig(rootDir: string): Config[] {
                 "@typescript-eslint/consistent-indexed-object-style": "error",
                 "@typescript-eslint/consistent-type-definitions":     ["error", "interface"],
                 "@typescript-eslint/consistent-type-exports":         "error",
+                "@typescript-eslint/consistent-type-imports":         ["error", { fixStyle: "inline-type-imports" }],
                 "@typescript-eslint/explicit-function-return-type":   ["error", { allowExpressions: true, allowIIFEs: true }],
                 // For ordering classes and such, conflicts with perfectionist/sort-interfaces
                 // Could maybe configure it for classes
@@ -182,9 +183,18 @@ export default function createConfig(rootDir: string): Config[] {
                         ignoreTypeIndexes:         true,
                     },
                 ],
-                "@typescript-eslint/no-require-imports":                     ["off"],
+                "@typescript-eslint/no-require-imports":    ["off"],
                 // Related to restricted imports
-                "@typescript-eslint/no-restricted-imports":                  "error",
+                "@typescript-eslint/no-restricted-imports": [
+                    "error", {
+                        paths: [
+                            {
+                                message: "Please use node-compatible APIs instead. Bun is known to be unstable. Using node compatible APIs is future-proof.",
+                                name:    "bun",
+                            },
+                        ],
+                    },
+                ],
                 // Related to restricted types
                 "@typescript-eslint/no-restricted-types":                    ["off"],
                 "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",

@@ -103,6 +103,11 @@
         "eslint/no-continue": [
             "off"
         ],
+        "oxc/no-map-spread": [
+            "off"
+        ],
+        // Important, handled by eslint
+        "typescript/consistent-type-imports": "off",
         "eslint/no-await-in-loop": [
             "off"
         ],

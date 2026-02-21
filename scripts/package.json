@@ -12,6 +12,8 @@
         "lint:eslint": "eslint --fix ."
     },
     "dependencies": {
-        "consola": "^3.4.2"
+        "consola": "^3.4.2",
+        "dax": "^0.45.0",
+        "fast-glob": "^3.3.3"
     }
 }

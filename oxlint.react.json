@@ -7,6 +7,7 @@
         "./oxlint.typescript.json"
     ],
     "rules": {
+        "react/jsx-handler-names": "off",
         "react/button-has-type": "warn",
         "react/jsx-filename-extension": [
             "error",
