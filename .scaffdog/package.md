@@ -26,7 +26,7 @@ questions:
         "typecheck": "tsc -b --noEmit"
     },
     "exports": {
-        ".": "./src"
+        ".": "./index.ts"
     }
 }
 ```
@@ -68,6 +68,7 @@ export default defineConfig([
     },
     "include": [
         "src",
+        "*.ts",
         "index.ts",
         "eslint.config.ts",
         "../../reset.d.ts"

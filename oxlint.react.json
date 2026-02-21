@@ -9,6 +9,13 @@
     "rules": {
         "react/jsx-handler-names": "off",
         "react/button-has-type": "warn",
+        "react/jsx-no-undef": "off",
+        "react/jsx-max-depth": [
+            "error",
+            {
+                "max": 6
+            }
+        ],
         "react/jsx-filename-extension": [
             "error",
             {

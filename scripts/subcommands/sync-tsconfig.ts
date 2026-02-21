@@ -15,7 +15,7 @@ import fg from "fast-glob"
 import { join, dirname, relative } from "node:path"
 import { readdir, readFile, writeFile } from "node:fs/promises"
 
-const ROOT = join(import.meta.dirname, "..")
+const ROOT = join(import.meta.dirname, "../..")
 
 interface PackageJson {
     name:             string

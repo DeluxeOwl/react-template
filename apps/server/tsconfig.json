@@ -7,9 +7,10 @@
     },
     "include": [
         "src",
+        "*.ts",
         "index.ts",
         "eslint.config.ts",
-        "../../reset.d.ts"
-    ],
-    "exclude": []
+        "../../reset.d.ts",
+        "router.ts"
+    ]
 }

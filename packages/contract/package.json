@@ -1,5 +1,6 @@
 {
-    "name": "@react-template/server",
+    "name": "@react-template/contract",
+    "version": "0.0.1",
     "module": "index.ts",
     "type": "module",
     "private": true,
@@ -12,11 +13,11 @@
         "lint:eslint": "eslint --fix .",
         "typecheck": "tsc -b --noEmit"
     },
+    "exports": {
+        ".": "./index.ts"
+    },
     "dependencies": {
-        "@orpc/openapi": "^1.13.4",
-        "@orpc/server": "^1.13.4",
-        "@orpc/zod": "^1.13.4",
-        "@react-template/contract": "workspace:*",
+        "@orpc/contract": "^1.13.5",
         "zod": "^4.3.6"
     }
 }

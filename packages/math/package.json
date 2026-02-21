@@ -8,6 +8,9 @@
     "peerDependencies": {
         "typescript": "^5"
     },
+    "exports": {
+        ".": "./index.ts"
+    },
     "scripts": {
         "lint:oxlint": "oxlint --fix .",
         "lint:eslint": "eslint --fix .",

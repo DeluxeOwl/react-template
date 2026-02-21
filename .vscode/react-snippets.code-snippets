@@ -16,5 +16,14 @@
 			"}"
 		],
 		"description": "Functional component with className and children"
+	},
+	"Arrow Function": {
+		"prefix": "af",
+		"body": [
+			"({${1:input}}) => {",
+			"\t$0",
+			"}"
+		],
+		"description": "Standard arrow function"
 	}
 }

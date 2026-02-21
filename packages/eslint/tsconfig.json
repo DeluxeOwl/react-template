@@ -6,6 +6,7 @@
     },
     "include": [
         "index.ts",
+        "*.ts",
         "react/**/*.ts",
         "custom/**/*.ts",
         "custom-react/**/*.ts",
