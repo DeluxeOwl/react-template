@@ -10,7 +10,7 @@
 			"function ${1:ComponentName}({ children, overrideClassName }: ${1:ComponentName}Props): React.ReactNode {",
 			"    return (",
 			"        <div className={cn(overrideClassName)}>",
-			"            ${0:children}",
+			"            {${0:children}}",
 			"        </div>",
 			"    )",
 			"}"

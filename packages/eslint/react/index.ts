@@ -5,6 +5,7 @@ import createConfig from "@react-template/eslint"
 import reactHooks from "eslint-plugin-react-hooks"
 import eslintReact from "@eslint-react/eslint-plugin"
 import reactRefresh from "eslint-plugin-react-refresh"
+import reactRenderTypes from "eslint-plugin-react-render-types"
 import betterTailwindcss from "eslint-plugin-better-tailwindcss"
 import {
     type Config,
@@ -37,6 +38,8 @@ export default function createReactConfig(rootDir: string): Config[] {
                 reactHooks.configs.flat.recommended,
                 eslintReact.configs["recommended-typescript"],
                 youMightNotNeedAnEffect.configs.recommended,
+                // @ts-expect-error Weird types.
+                reactRenderTypes.configs.recommended,
                 createConfig(rootDir),
             ],
             files:           ["**/*.{mjs,js,jsx,ts,tsx}"],

@@ -9,7 +9,6 @@ function App(): React.ReactNode {
 
     return (
         <div className={cn("px-2")}>Hello world {sum(a, b)}
-            HI
         </div>
     )
 }
