@@ -16,7 +16,8 @@
         "nize.oklch-preview",
         "meganrogge.template-string-converter",
         "jetpack-io.devbox",
-        "mkhl.direnv"
+        "mkhl.direnv",
+        "blazejkustra.react-compiler-marker"
     ],
     "unwantedRecommendations": [
         "esbenp.prettier-vscode"
