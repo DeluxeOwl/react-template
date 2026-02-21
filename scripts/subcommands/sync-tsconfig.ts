@@ -1,4 +1,3 @@
-#!/usr/bin/env bun
 /**
  * Syncs TypeScript project references across the monorepo.
  *
@@ -9,7 +8,7 @@
  *    - Root tsconfig.json (references all projects)
  *    - Each project's tsconfig that has a "references" field (based on workspace deps)
  *
- * Run: bun scripts/sync-tsconfig
+ * Run: bun run scripts/cli sync-tsconfig
  */
 
 import fg from "fast-glob"
@@ -62,7 +61,7 @@ async function parseWorkspacePackage(pkgJsonPath: string): Promise<null | Worksp
     }
 }
 
-async function findWorkspacePackages(): Promise<WorkspacePackage[]> {
+export async function findWorkspacePackages(): Promise<WorkspacePackage[]> {
     const workspacePatterns = await getWorkspacePatterns()
     const packages: WorkspacePackage[] = []
 
@@ -193,7 +192,7 @@ async function syncSingleTsconfig(
     console.log(`Updated: ${relative(ROOT, tsconfigPath)}`)
 }
 
-async function syncRootTsconfig(packages: WorkspacePackage[]): Promise<void> {
+export async function syncRootTsconfig(packages: WorkspacePackage[]): Promise<void> {
     const rootTsconfigPath = join(ROOT, "tsconfig.json")
     const { content, parsed } = await readTsconfig(rootTsconfigPath)
 
@@ -242,7 +241,7 @@ function buildTsconfigRefs(workspaceDeps: WorkspacePackage[], tsconfigDir: strin
     })
 }
 
-async function syncPackageTsconfigs(packages: WorkspacePackage[]): Promise<void> {
+export async function syncPackageTsconfigs(packages: WorkspacePackage[]): Promise<void> {
     const packageByName = new Map(packages.map((p) => [p.name, p]))
 
     for (const pkg of packages) {
@@ -253,23 +252,3 @@ async function syncPackageTsconfigs(packages: WorkspacePackage[]): Promise<void>
     }
 }
 
-async function main(): Promise<void> {
-    console.log("Syncing tsconfig references...\n")
-
-    const packages = await findWorkspacePackages()
-    console.log(
-        `Found ${packages.length} workspace packages: ${packages.map((p) => p.name).join(", ")}\n`,
-    )
-
-    await syncRootTsconfig(packages)
-    await syncPackageTsconfigs(packages)
-
-    console.log("\nDone!")
-}
-
-try {
-    await main()
-} catch (error) {
-    console.error(error)
-    process.exit(1)
-}

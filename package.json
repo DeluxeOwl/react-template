@@ -19,7 +19,7 @@
         "scaffdog": "^4.1.0"
     },
     "scripts": {
-        "sync:tsconfig": "bun scripts/sync-tsconfig-references.ts",
+        "sync:tsconfig": "bun run scripts/cli.ts sync-tsconfig",
         "lint:oxlint": "bun run --workspaces lint:oxlint",
         "lint:eslint": "bun run --workspaces lint:eslint",
         "lint:sg": "ast-grep scan",
@@ -29,7 +29,7 @@
         "generate": "bun run scaffdog generate",
         "deadcode": "knip",
         "lint:all": "lefthook run pre-push -f",
-        "lint:duplicates": "bun run scripts/find-duplicate-functions.ts",
+        "lint:duplicates": "bun run scripts/cli.ts find-duplicate-functions",
         "outdated": "bun outdated --filter '*'"
     }
 }

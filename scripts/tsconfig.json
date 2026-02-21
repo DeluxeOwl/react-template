@@ -13,6 +13,8 @@
     },
     "include": [
         "*.ts",
-        "../reset.d.ts"
+        "../reset.d.ts",
+        "subcommands/sync-tsconfig.ts",
+        "subcommands/find-duplicate-functions.ts"
     ]
 }

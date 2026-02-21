@@ -1,4 +1,3 @@
-#!/usr/bin/env bun
 /**
  * Finds duplicate function names across the codebase using ast-grep.
  *
@@ -7,12 +6,11 @@
  * 2. Parses the JSON output to extract function names and locations
  * 3. Reports any duplicate function names with their file locations
  *
- * Run: bun scripts/find-duplicate-functions.ts [dirs...]
- * Example: bun scripts/find-duplicate-functions.ts apps/ packages/
+ * Run: bun scripts/cli find-duplicate-functions [dirs...]
+ * Example: bun scripts/cli find-duplicate-functions apps/ packages/
  */
 
 import { $ } from "dax"
-import { parseArgs } from "node:util"
 
 const PATTERNS = [
     // Function declarations
@@ -136,7 +134,7 @@ function dedupeByLocation(functions: FunctionInfo[], seen: Set<string>): Functio
     })
 }
 
-async function findAllFunctions(dirs: readonly string[]): Promise<FunctionInfo[]> {
+export async function findAllFunctions(dirs: readonly string[]): Promise<FunctionInfo[]> {
     const allFunctions: FunctionInfo[] = []
     const seen = new Set<string>()
 
@@ -159,7 +157,7 @@ const IGNORED_NAMES = new Set([
     "main",
 ])
 
-function findDuplicates(functions: FunctionInfo[]): Map<string, FunctionInfo[]> {
+export function findDuplicates(functions: FunctionInfo[]): Map<string, FunctionInfo[]> {
     const byName = new Map<string, FunctionInfo[]>()
 
     for (const fn of functions) {
@@ -182,7 +180,7 @@ function findDuplicates(functions: FunctionInfo[]): Map<string, FunctionInfo[]> 
     return duplicates
 }
 
-function printDuplicates(duplicates: Map<string, FunctionInfo[]>): void {
+export function printDuplicates(duplicates: Map<string, FunctionInfo[]>): void {
     const sorted = [...duplicates.entries()].toSorted((a, b) => a[0].localeCompare(b[0]))
 
     for (const [name, locations] of sorted) {
@@ -196,16 +194,7 @@ function printDuplicates(duplicates: Map<string, FunctionInfo[]>): void {
     }
 }
 
-function parseCliArgs(): string[] {
-    const argsIndex = 2
-    const { positionals } = parseArgs({
-        allowPositionals: true,
-        args:             Bun.argv.slice(argsIndex),
-    })
-    return positionals.length > 0 ? positionals : ["."]
-}
-
-function reportResults(functions: FunctionInfo[], duplicates: Map<string, FunctionInfo[]>): void {
+export function reportResults(functions: FunctionInfo[], duplicates: Map<string, FunctionInfo[]>): void {
     console.log(`Found ${functions.length} named functions\n`)
 
     if (duplicates.size === 0) {
@@ -218,13 +207,3 @@ function reportResults(functions: FunctionInfo[], duplicates: Map<string, Functi
     process.exit(1)
 }
 
-async function main(): Promise<void> {
-    const dirs = parseCliArgs()
-    console.log(`Searching for duplicate function names in: ${dirs.join(", ")}\n`)
-
-    const functions = await findAllFunctions(dirs)
-    const duplicates = findDuplicates(functions)
-    reportResults(functions, duplicates)
-}
-
-await main()
