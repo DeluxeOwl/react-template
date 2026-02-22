@@ -8,25 +8,38 @@ import { OpenAPIHandler } from "@orpc/openapi/fetch"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 
 const os = implement(shared.contract)
-const planets: shared.Planet[] = [{ id: crypto.randomUUID(), name: "Earth" }]
+const todos: shared.Todo[] = [{ done: false, id: crypto.randomUUID(), name: "Do the dishes" }]
 
-const listPlanet = os.planet.list.handler(() => {
-    return { data: planets }
+const listTodo = os.todos.list.handler(() => {
+    return { data: todos }
 })
 
-const createPlanet = os.planet.create.handler(({ input }) => {
-    const newPlanet = {
+const createTodo = os.todos.create.handler(({ input }) => {
+    const newTodo: shared.Todo = {
+        done: false,
         id:   crypto.randomUUID(),
         name: input.name,
     }
-    planets.push(newPlanet)
-    return newPlanet
+    todos.push(newTodo)
+    return newTodo
+})
+
+const updateTodo = os.todos.update.handler(({ input }) => {
+    const todo = todos.find(({ id }) => id === input.params.id)
+    if (!todo) {
+        return
+    }
+
+    todo.done = input.body.done ?? todo.done
+    todo.name = input.body.name ?? todo.name
+    return todo
 })
 
 const router = os.router({
-    planet: {
-        create: createPlanet,
-        list:   listPlanet,
+    todos: {
+        create: createTodo,
+        list:   listTodo,
+        update: updateTodo,
     },
 })
 
@@ -116,3 +129,5 @@ Bun.serve({
     },
     port: port,
 })
+
+console.info(`Listening on http://localhost:${port}`)

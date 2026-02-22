@@ -1,25 +1,39 @@
 import * as z from "zod"
 import { oc, type ContractRouterClient } from "@orpc/contract"
 
-const PlanetSchema = z.object({
+export const TodoSchema = z.object({
+    done: z.boolean(),
     id:   z.uuidv4(),
-    name: z.string(),
+    name: z.string().min(1),
 })
 
-export type Planet = z.infer<typeof PlanetSchema>
+export type Todo = z.infer<typeof TodoSchema>
 
-const createPlanetContract = oc.input(
-    PlanetSchema.omit({ id: true }),
-).output(PlanetSchema)
+const createTodoContract = oc.input(
+    TodoSchema.omit({ done: true, id: true }),
+).output(TodoSchema)
 
-const listPlanetContract = oc.output(z.object({
-    data: z.array(PlanetSchema),
+const updateTodoContract = oc.route({
+    inputStructure: "detailed",
+    method:         "PUT",
+    path:           "/todos/{id}",
+}).input(z.object({
+    body: z.object({
+        done: z.boolean().optional(),
+        name: z.string().optional(),
+    }),
+    params: z.object({ id: z.uuidv4() }),
+}))
+
+const listTodosContract = oc.output(z.object({
+    data: z.array(TodoSchema),
 }))
 
 export const contract = {
-    planet: {
-        create: createPlanetContract,
-        list:   listPlanetContract,
+    todos: {
+        create: createTodoContract,
+        list:   listTodosContract,
+        update: updateTodoContract,
     },
 } as const
 

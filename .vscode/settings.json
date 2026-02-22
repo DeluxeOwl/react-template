@@ -12,7 +12,6 @@
     "files.exclude": {
         ".devbox": true
     },
-    "typescript.suggest.completeFunctionCalls": true,
     "editor.codeActionsOnSave": {
         // Note: this being "never" doesn't clash with dangling comma, let perfectionist eslint handle imports
         "source.organizeImports": "never",

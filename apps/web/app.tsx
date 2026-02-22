@@ -1,31 +1,102 @@
 
-import { QueryClient, useSuspenseQuery, QueryClientProvider } from "@tanstack/react-query"
+import { queryCollectionOptions } from "@tanstack/query-db-collection"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { createCollection, useLiveSuspenseQuery } from "@tanstack/react-db"
 
 import { api } from "~/api"
 import { cn } from "~/ui/lib/utils"
 
-function ShowPlanets(): React.ReactNode {
-    const { data:planets } = useSuspenseQuery(api.planet.list.queryOptions())
+const queryClient = new QueryClient()
+
+const todoCollection = createCollection(
+    queryCollectionOptions({
+        getKey:   (item) => item.id,
+        onInsert: async ({ transaction }) => {
+            const { modified } = transaction.mutations[0]
+            await api.todos.create.call({
+                name: modified.name,
+            })
+        },
+        onUpdate: async ({ transaction }) => {
+            const { modified } = transaction.mutations[0]
+            await api.todos.update.call({
+                body: {
+                    done: modified.done,
+                    name: modified.name,
+                },
+                params: {
+                    id: modified.id,
+                },
+            })
+        },
+        queryClient: queryClient,
+        queryFn:     async () => {
+            const res = await api.todos.list.call()
+            return res.data
+        },
+        queryKey: api.todos.key(),
+    }),
+)
+
+function TodoList(): React.ReactNode {
+    const { data:todos } = useLiveSuspenseQuery((q) => q.from({ todo: todoCollection }))
 
     return (
         <ol>
-            {planets.data.map(({ id, name }) => {
-                return <li key={id}>{name}</li>
+            {todos.map((todo) => {
+                return (
+                    <li
+                        key={todo.id}>
+                        <button
+                            className={cn(todo.done && "line-through")}
+                            onClick={() => {
+                                todoCollection.update(todo.id, (draft) => {
+                                    draft.done = !draft.done
+                                })
+                            }}
+                            type="button">{todo.name} {todo.done && "✅"}
+                        </button>
+                    </li>
+                )
             })}
         </ol>
     )
 }
 
-const queryClient = new QueryClient()
+function TodoInput(): React.ReactNode {
+    const [text, setText] = useState("")
+    return (
+        <input
+            className="border"
+            onChange={(e) => {
+                setText(e.currentTarget.value)
+            }}
+
+            onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                    todoCollection.insert({
+                        // TODO: how to remove these types?
+                        done: false,
+                        id:   "",
+                        name: text,
+                    })
+                    setText("")
+                }
+            }}
+            type="text"
+            value={text} />
+    )
+}
 
 function App(): React.ReactNode {
     return (
         <QueryClientProvider client={queryClient}>
             <div className={cn("flex flex-col px-2")}>
-                <p>Hello world</p>
+                <h1 className="font-semibold">To do:</h1>
                 <Suspense fallback={<p>Loading...</p>}>
-                    <ShowPlanets />
+                    <TodoList />
                 </Suspense>
+                <TodoInput />
             </div>
         </QueryClientProvider>
     )
