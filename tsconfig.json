@@ -3,9 +3,8 @@
     "references": [
         { "path": "./apps/server" },
         { "path": "./apps/web" },
-        { "path": "./packages/contract" },
         { "path": "./packages/eslint" },
-        { "path": "./packages/math" },
+        { "path": "./packages/shared" },
         { "path": "./scripts" }
     ]
 }

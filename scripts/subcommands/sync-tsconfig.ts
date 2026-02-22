@@ -12,10 +12,10 @@
  */
 
 import fg from "fast-glob"
-import { join, dirname, relative } from "node:path"
+import path from "node:path"
 import { readdir, readFile, writeFile } from "node:fs/promises"
 
-const ROOT = join(import.meta.dirname, "../..")
+const ROOT = path.join(import.meta.dirname, "../..")
 
 interface PackageJson {
     name:             string
@@ -39,7 +39,7 @@ interface WorkspacePackage {
 }
 
 async function getWorkspacePatterns(): Promise<string[]> {
-    const rootPkgContent = await readFile(join(ROOT, "package.json"), "utf8")
+    const rootPkgContent = await readFile(path.join(ROOT, "package.json"), "utf8")
     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
     const rootPkg = JSON.parse(rootPkgContent) as PackageJson
     return rootPkg.workspaces ?? []
@@ -50,8 +50,8 @@ async function parseWorkspacePackage(pkgJsonPath: string): Promise<null | Worksp
         const content = await readFile(pkgJsonPath, "utf8")
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
         const packageJson = JSON.parse(content) as PackageJson
-        const pkgDir = dirname(pkgJsonPath)
-        const relativePath = relative(ROOT, pkgDir)
+        const pkgDir = path.dirname(pkgJsonPath)
+        const relativePath = path.relative(ROOT, pkgDir)
         const tsconfigPaths = await findTsconfigsWithReferences(pkgDir)
 
         return { name: packageJson.name, packageJson, path: relativePath, tsconfigPaths }
@@ -67,7 +67,7 @@ export async function findWorkspacePackages(): Promise<WorkspacePackage[]> {
 
     for (const pattern of workspacePatterns) {
         // fast-glob handles Windows backslashes by converting them to forward slashes internally
-        const patternPath = join(pattern, "package.json")
+        const patternPath = path.join(pattern, "package.json")
 
         const pkgJsonPaths = await fg(patternPath, {
             absolute:  true,
@@ -115,7 +115,7 @@ async function findTsconfigsWithReferences(dir: string): Promise<string[]> {
         return []
     }
 
-    const tsconfigFiles = entries.filter((e) => isTsconfigFile(e)).map((entry) => join(dir, entry))
+    const tsconfigFiles = entries.filter((e) => isTsconfigFile(e)).map((entry) => path.join(dir, entry))
     const checks = await Promise.all(tsconfigFiles.map((f) => checkTsconfigHasReferences(f)))
     return tsconfigFiles.filter((_, i) => checks[i])
 }
@@ -176,24 +176,24 @@ async function syncSingleTsconfig(
     const { content, parsed } = await readTsconfig(tsconfigPath)
 
     if (isSolutionStyleTsconfig(parsed)) {
-        console.log(`Skipped (solution-style): ${relative(ROOT, tsconfigPath)}`)
+        console.log(`Skipped (solution-style): ${path.relative(ROOT, tsconfigPath)}`)
         return
     }
 
-    const refs = buildTsconfigRefs(workspaceDeps, dirname(tsconfigPath))
+    const refs = buildTsconfigRefs(workspaceDeps, path.dirname(tsconfigPath))
 
     if (referencesAreEqual(parsed.references, refs)) {
-        console.log(`No changes: ${relative(ROOT, tsconfigPath)}`)
+        console.log(`No changes: ${path.relative(ROOT, tsconfigPath)}`)
         return
     }
 
     const updated = updateReferences(content, refs)
     await writeFile(tsconfigPath, updated)
-    console.log(`Updated: ${relative(ROOT, tsconfigPath)}`)
+    console.log(`Updated: ${path.relative(ROOT, tsconfigPath)}`)
 }
 
 export async function syncRootTsconfig(packages: WorkspacePackage[]): Promise<void> {
-    const rootTsconfigPath = join(ROOT, "tsconfig.json")
+    const rootTsconfigPath = path.join(ROOT, "tsconfig.json")
     const { content, parsed } = await readTsconfig(rootTsconfigPath)
 
     // Root references all workspace packages
@@ -236,7 +236,7 @@ function buildTsconfigRefs(workspaceDeps: WorkspacePackage[], tsconfigDir: strin
     path: string
 }[] {
     return workspaceDeps.map((dep) => {
-        const relPath = relative(tsconfigDir, join(ROOT, dep.path))
+        const relPath = path.relative(tsconfigDir, path.join(ROOT, dep.path))
         return { path: relPath.startsWith(".") ? relPath : `./${relPath}` }
     })
 }

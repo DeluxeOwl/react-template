@@ -8,6 +8,7 @@
         "typescript": "^5"
     },
     "scripts": {
+        "dev": "bun run --watch cmd/main.ts",
         "lint:oxlint": "oxlint --fix .",
         "lint:eslint": "eslint --fix .",
         "typecheck": "tsc -b --noEmit"
@@ -16,7 +17,7 @@
         "@orpc/openapi": "^1.13.4",
         "@orpc/server": "^1.13.4",
         "@orpc/zod": "^1.13.4",
-        "@react-template/contract": "workspace:*",
+        "@react-template/shared": "workspace:*",
         "zod": "^4.3.6"
     }
 }

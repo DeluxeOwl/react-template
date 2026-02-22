@@ -1,14 +1,14 @@
 import { RPCHandler } from "@orpc/server/fetch"
 import { OpenAPIGenerator } from "@orpc/openapi"
+import * as shared from "@react-template/shared"
 import { onError, implement } from "@orpc/server"
 import { CORSPlugin } from "@orpc/server/plugins"
 import { ZodSmartCoercionPlugin } from "@orpc/zod"
 import { OpenAPIHandler } from "@orpc/openapi/fetch"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
-import { contract, type Planet } from "@react-template/contract"
 
-const os = implement(contract)
-const planets: Planet[] = [{ id: crypto.randomUUID(), name: "Earth" }]
+const os = implement(shared.contract)
+const planets: shared.Planet[] = [{ id: crypto.randomUUID(), name: "Earth" }]
 
 const listPlanet = os.planet.list.handler(() => {
     return { data: planets }

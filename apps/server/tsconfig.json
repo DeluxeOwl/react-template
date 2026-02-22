@@ -7,7 +7,7 @@
     },
     "include": [
         "src",
-        "*.ts",
+        "./**/*.ts",
         "index.ts",
         "eslint.config.ts",
         "../../reset.d.ts",

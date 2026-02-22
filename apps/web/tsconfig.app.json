@@ -19,12 +19,12 @@
         ],
         "paths": {
             "~/*": [
-                "./src/*"
+                "./*"
             ]
         }
     },
     "include": [
-        "src",
+        ".",
         "../../reset.d.ts",
         "node_modules/auto-imports.d.ts"
     ]

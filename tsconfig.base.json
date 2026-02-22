@@ -16,5 +16,8 @@
         "erasableSyntaxOnly": true,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true
-    }
+    },
+    "exclude": [
+        "node_modules/"
+    ]
 }
