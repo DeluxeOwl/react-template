@@ -27,7 +27,11 @@ const updateTodoContract = oc.route({
 
 const listTodosContract = oc.output(z.object({
     data: z.array(TodoSchema),
-}))
+})).route({
+    inputStructure: "detailed",
+    method:         "GET",
+    path:           "/todos",
+})
 
 export const contract = {
     todos: {
