@@ -13,7 +13,7 @@
     "dependencies": {
         "citty": "^0.2.1",
         "consola": "^3.4.2",
-        "dax": "^0.45.0",
-        "fast-glob": "^3.3.3"
+        "fast-glob": "^3.3.3",
+        "zx": "^8.8.5"
     }
 }

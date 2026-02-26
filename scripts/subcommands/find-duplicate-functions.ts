@@ -10,7 +10,7 @@
  * Example: bun scripts/cli find-duplicate-functions apps/ packages/
  */
 
-import { $ } from "dax"
+import { $ } from "zx"
 
 const PATTERNS = [
     // Function declarations
@@ -113,9 +113,9 @@ interface RunASTGrep {
 async function runAstGrep(params: Readonly<RunASTGrep>): Promise<FunctionInfo[]> {
     const { dirs, lang, pattern } = params
     const args = ["run", "--pattern", pattern, "--lang", lang, "--json", ...dirs]
-    const result = await $`ast-grep ${args}`.quiet().noThrow()
+    const result = await $`ast-grep ${args}`.quiet().nothrow()
 
-    if (result.code !== 0 && result.stderr.trim()) {
+    if (result.exitCode !== 0 && result.stderr.trim()) {
         console.error(`ast-grep failed for pattern "${pattern}":`, result.stderr)
         return []
     }
