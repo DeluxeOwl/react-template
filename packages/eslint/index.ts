@@ -10,6 +10,7 @@ import importZod from "eslint-plugin-import-zod"
 import perfectionist from "eslint-plugin-perfectionist"
 import eslintPluginUnicorn from "eslint-plugin-unicorn"
 import unusedImports from "eslint-plugin-unused-imports"
+import eslintPluginFunctional from "eslint-plugin-functional"
 import {
     type Config,
     defineConfig,
@@ -70,6 +71,7 @@ export default function createConfig(rootDir: string): Config[] {
                 "@typescript-eslint": tseslint.plugin,
                 // @ts-expect-error This is an issue with @typescript-eslint/utils.
                 "custom":             customPlugin,
+                "functional":         eslintPluginFunctional,
                 "sweepit":            sweepit,
                 "unicorn":            eslintPluginUnicorn,
                 "unused-imports":     unusedImports,
@@ -214,6 +216,9 @@ export default function createConfig(rootDir: string): Config[] {
                 "@typescript-eslint/unified-signatures":                     "error",
                 "custom/no-margin-on-root-jsx":                              "error",
                 "custom/prefer-discriminated-union":                         "warn",
+                "functional/no-promise-reject":                              "error",
+                "functional/no-throw-statements":                            "error",
+                "functional/prefer-property-signatures":                     "error",
                 // 0 and 1 are common enough during ifs, arrays etc.
                 "no-magic-numbers":                                          ["off"],
                 "no-restricted-imports":                                     "off",
