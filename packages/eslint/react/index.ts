@@ -108,6 +108,21 @@ export default function createReactConfig(rootDir: string): Config[] {
                                 message: "Use 'text-end' instead of 'text-right'.",
                                 pattern: "^([a-zA-Z0-9:/_-]*:)?text-right$",
                             },
+                            // 7. Space utilities cause layout issues. Use gap utilities instead.
+                            {
+                                message: "Use flex and 'gap' instead of 'space-' utilities.",
+                                pattern: "^([a-zA-Z0-9:/_-]*:)?space-",
+                            },
+                            // 8. Divide utilities can cause layout issues. Use gap with borders instead.
+                            {
+                                message: "Use 'gap' with border styling instead of 'divide-' utilities.",
+                                pattern: "^([a-zA-Z0-9:/_-]*:)?divide-",
+                            },
+                            // 9. Float utilities are outdated. Use flexbox or grid instead.
+                            {
+                                message: "Use flexbox or grid instead of 'float-' utilities.",
+                                pattern: "^([a-zA-Z0-9:/_-]*:)?float-",
+                            },
                         ],
                     },
                 ],
