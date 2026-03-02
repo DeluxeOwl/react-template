@@ -59,10 +59,9 @@ export default function createConfig(rootDir: string): Config[] {
                 parser:        tseslint.parser,
                 parserOptions: {
                     projectService: {
-                        // Extra files for the linting
                         allowDefaultProject: ["*.d.ts"],
-                        tsconfigRootDir:     rootDir,
                     },
+                    tsconfigRootDir: rootDir,
                 },
             },
 

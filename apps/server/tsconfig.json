@@ -3,7 +3,11 @@
     "compilerOptions": {
         "composite": true,
         "noEmit": false,
-        "outDir": "./dist"
+        "outDir": "./dist",
+        "types": [
+            "node",
+            "bun"
+        ]
     },
     "include": [
         "src",
