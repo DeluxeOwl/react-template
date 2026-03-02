@@ -1,6 +1,7 @@
 
 // @ts-check
 import tseslint from "typescript-eslint"
+import sweepit from "eslint-plugin-sweepit"
 import createConfig from "@react-template/eslint"
 import reactHooks from "eslint-plugin-react-hooks"
 import eslintReact from "@eslint-react/eslint-plugin"
@@ -57,11 +58,57 @@ export default function createReactConfig(rootDir: string): Config[] {
 
             plugins: {
                 "better-tailwindcss": betterTailwindcss,
+                "sweepit":            sweepit,
             },
 
             rules: {
-                "@eslint-react/no-leaked-conditional-rendering":       ["error"],
-                "react-hooks/todo":                                    "error",
+                "@eslint-react/no-leaked-conditional-rendering": ["error"],
+                "react-hooks/todo":                              "error",
+                "sweepit/jsx-bem-compound-naming":               "error",
+                "sweepit/jsx-compound-part-export-naming":       "error",
+                "sweepit/jsx-flat-owner-tree":                   "error",
+                "sweepit/jsx-on-handler-verb-suffix":            "error",
+                "sweepit/jsx-server-action-prop-suffix":         "error",
+                "sweepit/max-custom-props":                      "error",
+                "sweepit/no-array-props":                        "error",
+                "sweepit/no-boolean-capability-props":           [
+                    "error",
+                    {
+                        ignore:                   ["asChild"],
+                        ignoreNativeBooleanProps: true,
+                    },
+                ],
+                "sweepit/no-componenttype-props":     "error",
+                "sweepit/no-custom-kebab-case-props": "error",
+                "sweepit/no-element-props":           "error",
+                "sweepit/no-exported-context-hooks":  "error",
+                "sweepit/no-handle-prefix-utils":     "error",
+                "sweepit/no-handler-return-type":     "error",
+                "sweepit/no-hook-jsx":                "error",
+                "sweepit/no-object-props":            [
+                    "error",
+                    {
+                        ignore: ["ref"],
+                    },
+                ],
+                "sweepit/no-optional-props-without-defaults": [
+                    "error",
+                    {
+                        ignore: ["on*", "ref", "render"],
+                    },
+                ],
+                "sweepit/no-prefixed-prop-bundles": "error",
+                "sweepit/no-prop-drilling":         [
+                    "error",
+                    {
+                        allowedDepth:      1,
+                        ignorePropsSpread: true,
+                    },
+                ],
+                "sweepit/no-render-helper-functions":                  "error",
+                "sweepit/no-set-prefix-utils":                         "error",
+                "sweepit/no-title-case-props":                         "error",
+                "sweepit/no-useless-hook":                             "error",
                 ...betterTailwindcss.configs["stylistic-warn"].rules,
                 ...betterTailwindcss.configs["correctness-error"].rules,
                 "better-tailwindcss/enforce-consistent-line-wrapping": ["error", { group: "newLine", printWidth: 120 }],

@@ -3,6 +3,7 @@
 
 import tseslint from "typescript-eslint"
 import oxlint from "eslint-plugin-oxlint"
+import sweepit from "eslint-plugin-sweepit"
 import stylistic from "@stylistic/eslint-plugin"
 import { importX } from "eslint-plugin-import-x"
 import importZod from "eslint-plugin-import-zod"
@@ -69,6 +70,7 @@ export default function createConfig(rootDir: string): Config[] {
                 "@typescript-eslint": tseslint.plugin,
                 // @ts-expect-error This is an issue with @typescript-eslint/utils.
                 "custom":             customPlugin,
+                "sweepit":            sweepit,
                 "unicorn":            eslintPluginUnicorn,
                 "unused-imports":     unusedImports,
             },
@@ -273,8 +275,10 @@ export default function createConfig(rootDir: string): Config[] {
                         type: "line-length",
                     },
                 ],
+                "sweepit/complexity":                  ["error", { max: 10, variant: "modified" }],
+                "sweepit/no-return-object-repetition": "error",
                 // This rule isn't supported in oxlint.
-                "unicorn/import-style": [
+                "unicorn/import-style":                [
                     "error",
                     {
                         styles: {
@@ -286,8 +290,7 @@ export default function createConfig(rootDir: string): Config[] {
                     },
                 ],
                 "unused-imports/no-unused-imports": "error",
-
-                "unused-imports/no-unused-vars": [
+                "unused-imports/no-unused-vars":    [
                     "warn",
                     {
                         args:              "after-used",

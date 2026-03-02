@@ -13,9 +13,9 @@
         "typecheck": "tsc -b --noEmit"
     },
     "devDependencies": {
-        "@types/node": "^24.10.1",
         "@eslint-react/eslint-plugin": "^2.3.13",
         "@stylistic/eslint-plugin": "^5.6.1",
+        "@types/node": "^24.10.1",
         "@typescript-eslint/eslint-plugin": "^8.49.0",
         "@typescript-eslint/utils": "^8.54.0",
         "eslint": "^9.39.2",
@@ -29,6 +29,7 @@
         "eslint-plugin-react-refresh": "^0.4.24",
         "eslint-plugin-react-render-types": "^0.7.5",
         "eslint-plugin-react-you-might-not-need-an-effect": "^0.7.0",
+        "eslint-plugin-sweepit": "^0.0.21",
         "eslint-plugin-unicorn": "^63.0.0",
         "eslint-plugin-unused-imports": "^4.3.0",
         "typescript-eslint": "^8.46.4"
