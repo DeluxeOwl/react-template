@@ -6,6 +6,6 @@ import createConfig from "./index"
 
 export default defineConfig([
     {
-        extends: [createConfig(import.meta.dir)],
+        extends: [createConfig(import.meta.dirname)],
     },
 ])

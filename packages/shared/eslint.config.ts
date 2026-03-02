@@ -5,6 +5,6 @@ import {
 
 export default defineConfig([
     {
-        extends: [config(import.meta.dir)],
+        extends: [config(import.meta.dirname)],
     },
 ])

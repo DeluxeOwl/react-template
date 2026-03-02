@@ -18,7 +18,7 @@ questions:
     "private": true,
     "devDependencies": {},
     "peerDependencies": {
-        "typescript": "^5"
+        "typescript": "^6.0.0-beta"
     },
     "scripts": {
         "lint:oxlint": "oxlint --fix .",
@@ -51,7 +51,7 @@ import {
 
 export default defineConfig([
     {
-        extends: [config(import.meta.dir)],
+        extends: [config(import.meta.dirname)],
     },
 ])
 ```
