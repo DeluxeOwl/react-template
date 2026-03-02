@@ -125,6 +125,7 @@ function hasMarginClass(node: TSESTree.JSXAttribute): boolean {
     return false
 }
 
+// eslint-disable-next-line sweepit/complexity
 function hasMarginStyle(node: TSESTree.JSXAttribute): boolean {
     if (node.value?.type !== TSESTree.AST_NODE_TYPES.JSXExpressionContainer) {
         return false
