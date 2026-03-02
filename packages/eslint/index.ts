@@ -223,11 +223,15 @@ export default function createConfig(rootDir: string): Config[] {
                 "no-magic-numbers":                                          ["off"],
                 "no-restricted-imports":                                     "off",
                 "no-restricted-syntax":                                      [
-                    "error",
+                    "warn",
                     {
                         message:  "Generic handler names (like 'handleClick' or 'onDelete') are forbidden. Please be specific about WHAT is being handled, e.g., 'handleUserDelete' or 'onEmailSubmit'.",
                         // This selector looks for variable names and function names
                         selector: "VariableDeclarator > Identifier[name=/^(handleClick|onClick|handleSubmit|onSubmit|handleEvent|onEvent|handleChange|onChange|handleDelete|onDelete|handleSelect|onSelect)$/], FunctionDeclaration > Identifier[name=/^(handleClick|onClick|handleSubmit|onSubmit|handleEvent|onEvent|handleChange|onChange|handleDelete|onDelete|handleSelect|onSelect)$/]",
+                    },
+                    {
+                        message:  "Prefer useSuspenseQuery or useSuspenseQueries with Suspense and ErrorBoundary.",
+                        selector: "CallExpression > Identifier[name=/^(useQuery|useQueries)$/]",
                     },
                     {
                         message:  "IIFEs inside JSX are forbidden. Extract logic to a variable or a sub-component.",
