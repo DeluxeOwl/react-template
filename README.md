@@ -10,7 +10,7 @@ bun create github.com/DeluxeOwl/react-template <your-app>
 
 The problem: The ESLint `import-x/no-unresolved` rule was failing for `@react-template/domain/todos` in `apps/server/cmd/main.ts`.
 
-Root cause: The exports field in packages/domain/package.json used an array fallback pattern:
+Root cause: The exports field in apps/domain/package.json used an array fallback pattern:
 
 ```json
 "./*": ["./*.ts", "./*/index.ts"]
@@ -19,7 +19,7 @@ Root cause: The exports field in packages/domain/package.json used an array fall
 The eslint-import-resolver-typescript (which uses enhanced-resolve internally) doesn't properly handle array fallbacks in the exports field when the targets use .ts
 extensions. TypeScript's own resolver doesn't use the exports field at all (it does traditional node_modules lookup), which is why typecheck always passed.
 
-The fix: Changed packages/domain/package.json exports from the array form to a single string:
+The fix: Changed apps/domain/package.json exports from the array form to a single string:
 
 ```json
 "./*": "./*/index.ts"
