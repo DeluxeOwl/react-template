@@ -398,7 +398,7 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                     createTypeScriptImportResolver({
                         alwaysTryTypes: true,
                         bun:            true,
-                        project:        rootDir,
+                        project:        [rootDir],
                     }),
                 ],
             },

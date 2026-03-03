@@ -17,10 +17,7 @@
     },
     "exports": {
         ".": "./index.ts",
-        "./*": [
-            "./*.ts",
-            "./*/index.ts"
-        ]
+        "./*": "./*/index.ts"
     },
     "dependencies": {
         "@orpc/contract": "^1.13.5",
