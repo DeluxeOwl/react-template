@@ -7,15 +7,15 @@ import { OpenAPIHandler } from "@orpc/openapi/fetch"
 import * as todos from "@react-template/domain/todos"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 
-const os = implement(todos.contract)
-const memoryTodos: todos.TodoResponse[] = [{ done: false, id: crypto.randomUUID(), name: "Do the dishes" }]
+const os = implement(todos.sharedORPC.contract)
+const memoryTodos: todos.schemas.TodoOutput[] = [{ done: false, id: crypto.randomUUID(), name: "Do the dishes" }]
 
 const listTodo = os.todos.list.handler(() => {
     return { data: memoryTodos }
 })
 
 const createTodo = os.todos.create.handler(({ input }) => {
-    const newTodo: todos.TodoResponse = {
+    const newTodo: todos.schemas.TodoOutput = {
         done: false,
         id:   crypto.randomUUID(),
         name: input.name,

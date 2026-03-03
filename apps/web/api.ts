@@ -13,5 +13,5 @@ const link = new RPCLink({
     url: "http://127.0.0.1:3041/rpc",
 })
 
-const client: todos.ContractTypeClient = createORPCClient(link)
+const client: todos.sharedORPC.ContractTypeClient = createORPCClient(link)
 export const api = createTanstackQueryUtils(client)
