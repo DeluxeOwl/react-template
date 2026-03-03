@@ -1,13 +1,7 @@
 import * as z from "zod"
 import { oc, type ContractRouterClient } from "@orpc/contract"
 
-export const TodoSchema = z.object({
-    done: z.boolean(),
-    id:   z.uuidv4(),
-    name: z.string().min(1),
-})
-
-export type Todo = z.infer<typeof TodoSchema>
+import { TodoSchema } from "../schema"
 
 const createTodoContract = oc.input(
     TodoSchema.omit({ done: true, id: true }),

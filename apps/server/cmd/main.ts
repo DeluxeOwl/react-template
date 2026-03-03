@@ -1,10 +1,10 @@
 import { RPCHandler } from "@orpc/server/fetch"
 import { OpenAPIGenerator } from "@orpc/openapi"
-import * as domain from "@react-template/domain"
 import { onError, implement } from "@orpc/server"
 import { CORSPlugin } from "@orpc/server/plugins"
 import { ZodSmartCoercionPlugin } from "@orpc/zod"
 import { OpenAPIHandler } from "@orpc/openapi/fetch"
+import * as domain from "@react-template/domain/todos"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 
 const os = implement(domain.contract)
