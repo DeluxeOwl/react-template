@@ -1,2 +1,1 @@
-export * from "./schema"
-export * from "./adapters/orpc-contract"
+export * from "./adapters/http"
