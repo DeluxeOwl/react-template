@@ -16,7 +16,11 @@
         "typecheck": "tsc -b --noEmit"
     },
     "exports": {
-        ".": "./index.ts"
+        ".": "./index.ts",
+        "./*": [
+            "./*.ts",
+            "./*/index.ts"
+        ]
     },
     "dependencies": {
         "@orpc/contract": "^1.13.5",

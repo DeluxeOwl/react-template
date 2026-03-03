@@ -21,7 +21,7 @@ import customPlugin from "./custom"
 // bun run eslint --inspect-config
 
 // Using eslint for some rules that aren't available in oxlint
-export default function createConfig(rootDir: string): Config[] {
+export default function createConfig(rootDir: string, allowDefaultProject: string[] = []): Config[] {
     return defineConfig([
         {
             ignores: [
@@ -60,7 +60,7 @@ export default function createConfig(rootDir: string): Config[] {
                 parser:        tseslint.parser,
                 parserOptions: {
                     projectService: {
-                        allowDefaultProject: ["*.d.ts"],
+                        allowDefaultProject: ["*.d.ts", ...allowDefaultProject],
                     },
                     tsconfigRootDir: rootDir,
                 },

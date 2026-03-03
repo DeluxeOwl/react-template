@@ -5,6 +5,6 @@ import {
 
 export default defineConfig([
     {
-        extends: [config(import.meta.dirname)],
+        extends: [config(import.meta.dirname, ["*/*.ts"])],
     },
 ])
