@@ -16,7 +16,7 @@
     "dependencies": {
         "@orpc/client": "^1.13.5",
         "@orpc/tanstack-query": "^1.13.5",
-        "@react-template/shared": "workspace:*",
+        "@react-template/domain": "workspace:*",
         "@tailwindcss/vite": "^4.1.18",
         "@tanstack/query-db-collection": "^1.0.25",
         "@tanstack/react-db": "^0.1.72",

@@ -27,7 +27,8 @@
         "react/no-danger": "error",
         "react/no-unknown-property": "error",
         "react/react-in-jsx-scope": "allow",
-        "jsx-a11y/anchor-ambiguous-text": "warn"
+        "jsx-a11y/anchor-ambiguous-text": "warn",
+        "import/no-nodejs-modules": "error"
     },
     "settings": {
         "jsx-a11y": {

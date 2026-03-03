@@ -124,13 +124,13 @@ function parseJsonWithComments(content: string): TsConfig {
     // Strip single-line comments and trailing commas for JSON.parse compatibility
     const stripped = content
         .replaceAll(/\/\/.*$/gm, "")
-        .replaceAll(/,(\s*[}\]])/g, "$1")
+        .replaceAll(/,(\s*[\]}])/g, "$1")
     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
     return JSON.parse(stripped) as TsConfig
 }
 
-async function readTsconfig(path: string): Promise<{ content: string, parsed: TsConfig }> {
-    const content = await readFile(path, "utf8")
+async function readTsconfig(tsConfigPath: string): Promise<{ content: string, parsed: TsConfig }> {
+    const content = await readFile(tsConfigPath, "utf8")
     const parsed = parseJsonWithComments(content)
     return { content, parsed }
 }
@@ -140,7 +140,7 @@ function updateReferences(
     newRefs: { path: string }[],
 ): string {
     // Find the references array and replace it while preserving formatting
-    const refsRegex = /"references"\s*:\s*\[[\s\S]*?\]/
+    const refsRegex = /"references"\s*:\s*\[[\S\s]*?]/
 
     const newRefsStr
         = newRefs.length === 0

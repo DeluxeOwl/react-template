@@ -52,14 +52,14 @@ function extractFromMetavariable(match: AstGrepMatch): null | string {
 
 function extractFromText(text: string): null | string {
     // Function declaration: function foo(...
-    const funcMatch = text.match(/^function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/)
+    const funcMatch = text.match(/^function\s+([$A-Z_a-z][\w$]*)\s*\(/)
     if (funcMatch) {
         return funcMatch[1]
     }
 
     // Arrow function: const foo = (...) =>
     const arrowMatch = text.match(
-        /^(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=/,
+        /^(?:const|let|var)\s+([$A-Z_a-z][\w$]*)\s*=/,
     )
     if (arrowMatch) {
         return arrowMatch[1]
@@ -152,9 +152,9 @@ export async function findAllFunctions(dirs: readonly string[]): Promise<Functio
 
 const IGNORED_NAMES = new Set([
     "App",
-    "default",
-    "index",
     "main",
+    "index",
+    "default",
 ])
 
 export function findDuplicates(functions: FunctionInfo[]): Map<string, FunctionInfo[]> {

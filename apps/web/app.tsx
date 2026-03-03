@@ -65,17 +65,16 @@ function TodoList(): React.ReactNode {
 
 function TodoInput(): React.ReactNode {
     const [text, setText] = useState("")
+
     return (
         <input
             className="border"
             onChange={(e) => {
                 setText(e.currentTarget.value)
             }}
-
             onKeyDown={(e) => {
                 if (e.key === "Enter") {
                     todoCollection.insert({
-                        // TODO: how to remove these types?
                         done: false,
                         id:   "",
                         name: text,

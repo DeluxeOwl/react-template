@@ -129,7 +129,8 @@
         "eslint/yoda": "allow",
         "eslint/new-cap": "off",
         "eslint/capitalized-comments": "off",
-        "eslint/no-inline-comments": "off"
+        "eslint/no-inline-comments": "off",
+        "import/no-nodejs-modules": "off"
     },
     "env": {
         "builtin": true

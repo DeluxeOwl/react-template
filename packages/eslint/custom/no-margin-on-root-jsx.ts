@@ -26,7 +26,7 @@ import { TSESTree, ESLintUtils } from "@typescript-eslint/utils"
   * ----------------------------------------------------------------------------
   */
 
-const MARGIN_CLASS_PATTERN = /!?-?m[trblxyse]?-(\d+|\[.+?\])|!?-?ms-(\d+|\[.+?\])|!?-?me-(\d+|\[.+?\])|!?-?mb-(\d+|\[.+?\])|!?-?mt-(\d+|\[.+?\])|!?-?ml-(\d+|\[.+?\])|!?-?mr-(\d+|\[.+?\])|!?-?mx-(\d+|\[.+?\])|!?-?my-(\d+|\[.+?\])/
+const MARGIN_CLASS_PATTERN = /!?-?m[belr-txy]?-(\d+|\[.+?])|!?-?ms-(\d+|\[.+?])|!?-?me-(\d+|\[.+?])|!?-?mb-(\d+|\[.+?])|!?-?mt-(\d+|\[.+?])|!?-?ml-(\d+|\[.+?])|!?-?mr-(\d+|\[.+?])|!?-?mx-(\d+|\[.+?])|!?-?my-(\d+|\[.+?])/
 
 function extractStringsFromLiteral(node: TSESTree.Literal): string[] {
     if (typeof node.value === "string") {

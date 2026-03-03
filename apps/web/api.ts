@@ -1,4 +1,4 @@
-import type * as shared from "@react-template/shared"
+import type * as shared from "@react-template/domain"
 
 import { RPCLink } from "@orpc/client/fetch"
 import { onError, createORPCClient } from "@orpc/client"

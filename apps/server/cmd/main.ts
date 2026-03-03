@@ -1,21 +1,21 @@
 import { RPCHandler } from "@orpc/server/fetch"
 import { OpenAPIGenerator } from "@orpc/openapi"
-import * as shared from "@react-template/shared"
+import * as domain from "@react-template/domain"
 import { onError, implement } from "@orpc/server"
 import { CORSPlugin } from "@orpc/server/plugins"
 import { ZodSmartCoercionPlugin } from "@orpc/zod"
 import { OpenAPIHandler } from "@orpc/openapi/fetch"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 
-const os = implement(shared.contract)
-const todos: shared.Todo[] = [{ done: false, id: crypto.randomUUID(), name: "Do the dishes" }]
+const os = implement(domain.contract)
+const todos: domain.Todo[] = [{ done: false, id: crypto.randomUUID(), name: "Do the dishes" }]
 
 const listTodo = os.todos.list.handler(() => {
     return { data: todos }
 })
 
 const createTodo = os.todos.create.handler(({ input }) => {
-    const newTodo: shared.Todo = {
+    const newTodo: domain.Todo = {
         done: false,
         id:   crypto.randomUUID(),
         name: input.name,
@@ -65,6 +65,7 @@ const openAPIGenerator = new OpenAPIGenerator({
 
 const port = 3041
 
+// eslint-disable-next-line no-restricted-globals -- This is the only instance that's okay.
 Bun.serve({
     async fetch(request: Request) {
         const url = new URL(request.url)

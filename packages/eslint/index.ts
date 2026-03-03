@@ -10,7 +10,6 @@ import importZod from "eslint-plugin-import-zod"
 import perfectionist from "eslint-plugin-perfectionist"
 import eslintPluginUnicorn from "eslint-plugin-unicorn"
 import unusedImports from "eslint-plugin-unused-imports"
-import eslintPluginFunctional from "eslint-plugin-functional"
 import {
     type Config,
     defineConfig,
@@ -71,7 +70,6 @@ export default function createConfig(rootDir: string): Config[] {
                 "@typescript-eslint": tseslint.plugin,
                 // @ts-expect-error This is an issue with @typescript-eslint/utils.
                 "custom":             customPlugin,
-                "functional":         eslintPluginFunctional,
                 "sweepit":            sweepit,
                 "unicorn":            eslintPluginUnicorn,
                 "unused-imports":     unusedImports,
@@ -169,8 +167,9 @@ export default function createConfig(rootDir: string): Config[] {
                     "off",
                     { default: ["signature", "method", "constructor", "field"] },
                 ],
+                "@typescript-eslint/method-signature-style": ["error", "property"],
                 // Naming conventions
-                "@typescript-eslint/naming-convention": [
+                "@typescript-eslint/naming-convention":      [
                     "off",
                     { format: ["camelCase"], selector: "variableLike" },
                 ],
@@ -216,14 +215,34 @@ export default function createConfig(rootDir: string): Config[] {
                 "@typescript-eslint/unified-signatures":                     "error",
                 "custom/no-margin-on-root-jsx":                              "error",
                 "custom/prefer-discriminated-union":                         "warn",
-                "functional/no-promise-reject":                              "error",
-                "functional/no-throw-statements":                            "error",
-                "functional/prefer-property-signatures":                     "error",
                 // 0 and 1 are common enough during ifs, arrays etc.
                 "no-magic-numbers":                                          ["off"],
-                "no-restricted-imports":                                     "off",
-                "no-restricted-syntax":                                      [
+                "no-restricted-globals":                                     [
+                    "error",
+                    {
+                        message: "Do not use Bun global APIs unless 100% necessary. Prefer node-js compatible APIs or other libs.",
+                        name:    "Bun",
+                    },
+                ],
+                "no-restricted-imports": "off",
+                "no-restricted-syntax":  [
                     "warn",
+                    {
+                        message:  "Do not use 'Promise.reject()'. Return a custom error object instead.",
+                        selector: "CallExpression[callee.object.name='Promise'][callee.property.name='reject']",
+                    },
+                    {
+                        message:  "Do not use 'throw'. Use a return object or a custom error handling function instead.",
+                        selector: "ThrowStatement",
+                    },
+                    {
+                        message:  "Specify a reason after '--' when disabling ESLint rules.",
+                        selector: "Program > LineComment[value=/(eslint|oxlint)-disable/]:not([value=/--/])",
+                    },
+                    {
+                        message:  "Specify a reason after '--' when disabling ESLint rules.",
+                        selector: "Program > BlockComment[value=/(eslint|oxlint)-disable/]:not([value=/--/])",
+                    },
                     {
                         message:  "Generic handler names (like 'handleClick' or 'onDelete') are forbidden. Please be specific about WHAT is being handled, e.g., 'handleUserDelete' or 'onEmailSubmit'.",
                         // This selector looks for variable names and function names
@@ -243,7 +262,37 @@ export default function createConfig(rootDir: string): Config[] {
                         selector: "BinaryExpression[operator='instanceof'][right.name='Error']",
                     },
                 ],
-                "no-var":                     "error",
+                "no-var":                            "error",
+                "perfectionist/sort-array-includes": [
+                    "error",
+                    {
+                        fallbackSort: {
+                            order: "asc",
+                            type:  "alphabetical",
+                        },
+                        type: "line-length",
+                    },
+                ],
+                "perfectionist/sort-exports": [
+                    "error",
+                    {
+                        fallbackSort: {
+                            order: "asc",
+                            type:  "alphabetical",
+                        },
+                        type: "line-length",
+                    },
+                ],
+                "perfectionist/sort-heritage-clauses": [
+                    "error",
+                    {
+                        fallbackSort: {
+                            order: "asc",
+                            type:  "alphabetical",
+                        },
+                        type: "line-length",
+                    },
+                ],
                 "perfectionist/sort-imports": [
                     "error",
                     {
@@ -255,6 +304,16 @@ export default function createConfig(rootDir: string): Config[] {
                     },
                 ],
                 "perfectionist/sort-interfaces": [
+                    "error",
+                    {
+                        fallbackSort: {
+                            order: "asc",
+                            type:  "alphabetical",
+                        },
+                        type: "line-length",
+                    },
+                ],
+                "perfectionist/sort-maps": [
                     "error",
                     {
                         fallbackSort: {
@@ -284,20 +343,35 @@ export default function createConfig(rootDir: string): Config[] {
                         type: "line-length",
                     },
                 ],
+                "perfectionist/sort-sets": [
+                    "error",
+                    {
+                        fallbackSort: {
+                            order: "asc",
+                            type:  "alphabetical",
+                        },
+                        type: "line-length",
+                    },
+                ],
                 "sweepit/complexity":                  ["error", { max: 10, variant: "modified" }],
                 "sweepit/no-return-object-repetition": "error",
+                "unicorn/better-regex":                "error",
+                "unicorn/consistent-destructuring":    "error",
+                // e.g. // TODO [2200-12-25, +popura, lodash@>10]: Combo.
+                "unicorn/expiring-todo-comments":      ["error", { allowWarningComments: false }],
                 // This rule isn't supported in oxlint.
                 "unicorn/import-style":                [
                     "error",
                     {
                         styles: {
-                            "@react-template/shared": {
+                            "@react-template/domain": {
                                 named:     false,
                                 namespace: true,
                             },
                         },
                     },
                 ],
+
                 "unused-imports/no-unused-imports": "error",
                 "unused-imports/no-unused-vars":    [
                     "warn",

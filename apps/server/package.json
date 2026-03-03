@@ -20,7 +20,7 @@
         "@orpc/openapi": "^1.13.4",
         "@orpc/server": "^1.13.4",
         "@orpc/zod": "^1.13.4",
-        "@react-template/shared": "workspace:*",
+        "@react-template/domain": "workspace:*",
         "zod": "^4.3.6"
     }
 }
