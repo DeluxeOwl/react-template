@@ -4,28 +4,28 @@ import { onError, implement } from "@orpc/server"
 import { CORSPlugin } from "@orpc/server/plugins"
 import { ZodSmartCoercionPlugin } from "@orpc/zod"
 import { OpenAPIHandler } from "@orpc/openapi/fetch"
-import * as domain from "@react-template/domain/todos"
+import * as todos from "@react-template/domain/todos"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 
-const os = implement(domain.contract)
-const todos: domain.Todo[] = [{ done: false, id: crypto.randomUUID(), name: "Do the dishes" }]
+const os = implement(todos.contract)
+const memoryTodos: todos.Todo[] = [{ done: false, id: crypto.randomUUID(), name: "Do the dishes" }]
 
 const listTodo = os.todos.list.handler(() => {
-    return { data: todos }
+    return { data: memoryTodos }
 })
 
 const createTodo = os.todos.create.handler(({ input }) => {
-    const newTodo: domain.Todo = {
+    const newTodo: todos.Todo = {
         done: false,
         id:   crypto.randomUUID(),
         name: input.name,
     }
-    todos.push(newTodo)
+    memoryTodos.push(newTodo)
     return newTodo
 })
 
 const updateTodo = os.todos.update.handler(({ input }) => {
-    const todo = todos.find(({ id }) => id === input.params.id)
+    const todo = memoryTodos.find(({ id }) => id === input.params.id)
     if (!todo) {
         return
     }
