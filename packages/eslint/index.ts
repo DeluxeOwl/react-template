@@ -171,7 +171,21 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                 // Naming conventions
                 "@typescript-eslint/naming-convention":      [
                     "off",
-                    { format: ["camelCase"], selector: "variableLike" },
+                    // Default: Internal variables must be camelCase
+                    {
+                        format:   ["camelCase"],
+                        selector: "variable",
+                    },
+                    // Types and interfaces
+                    {
+                        format:   ["PascalCase"],
+                        selector: "typeLike",
+                    },
+                    {
+                        format:    ["PascalCase"],
+                        modifiers: ["const", "global", "exported"],
+                        selector:  "variable",
+                    },
                 ],
                 "@typescript-eslint/no-confusing-void-expression": "error",
                 "@typescript-eslint/no-deprecated":                "error",
