@@ -72,10 +72,10 @@ function extractFunctionName(match: AstGrepMatch): null | string {
     return extractFromMetavariable(match) ?? extractFromText(match.text)
 }
 
-const PREVIEW_LINES = 3
+const PreviewLines = 3
 
 function getPreview(text: string): string {
-    const lines = text.split("\n").slice(0, PREVIEW_LINES)
+    const lines = text.split("\n").slice(0, PreviewLines)
     return lines.map((line) => `      ${line}`).join("\n")
 }
 
@@ -150,7 +150,7 @@ export async function findAllFunctions(dirs: readonly string[]): Promise<Functio
     return allFunctions
 }
 
-const IGNORED_NAMES = new Set([
+const IgnoredNames = new Set([
     "App",
     "main",
     "index",
@@ -161,7 +161,7 @@ export function findDuplicates(functions: FunctionInfo[]): Map<string, FunctionI
     const byName = new Map<string, FunctionInfo[]>()
 
     for (const fn of functions) {
-        if (IGNORED_NAMES.has(fn.name)) {
+        if (IgnoredNames.has(fn.name)) {
             continue
         }
         const existing = byName.get(fn.name) ?? []

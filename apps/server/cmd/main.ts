@@ -21,7 +21,6 @@ const listTodo = os.todos.list.handler(() => {
 // Need an eslint custom plugin for this.
 // could we enforce the import name?
 // also, import rules.
-// And play around with @typescript-eslint/naming-convention, maybe as warning
 const createTodo = os.todos.create.handler(({ input }) => {
     const newTodo: todos.schemas.TodoOutput = {
         done: false,

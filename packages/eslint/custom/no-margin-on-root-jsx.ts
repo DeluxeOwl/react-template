@@ -26,7 +26,7 @@ import { TSESTree, ESLintUtils } from "@typescript-eslint/utils"
   * ----------------------------------------------------------------------------
   */
 
-const MARGIN_CLASS_PATTERN = /!?-?m[belr-txy]?-(\d+|\[.+?])|!?-?ms-(\d+|\[.+?])|!?-?me-(\d+|\[.+?])|!?-?mb-(\d+|\[.+?])|!?-?mt-(\d+|\[.+?])|!?-?ml-(\d+|\[.+?])|!?-?mr-(\d+|\[.+?])|!?-?mx-(\d+|\[.+?])|!?-?my-(\d+|\[.+?])/
+const MarginClassPattern = /!?-?m[belr-txy]?-(\d+|\[.+?])|!?-?ms-(\d+|\[.+?])|!?-?me-(\d+|\[.+?])|!?-?mb-(\d+|\[.+?])|!?-?mt-(\d+|\[.+?])|!?-?ml-(\d+|\[.+?])|!?-?mr-(\d+|\[.+?])|!?-?mx-(\d+|\[.+?])|!?-?my-(\d+|\[.+?])/
 
 function extractStringsFromLiteral(node: TSESTree.Literal): string[] {
     if (typeof node.value === "string") {
@@ -116,11 +116,11 @@ function hasMarginClass(node: TSESTree.JSXAttribute): boolean {
         if (typeof value !== "string") {
             return false
         }
-        return MARGIN_CLASS_PATTERN.test(value)
+        return MarginClassPattern.test(value)
     }
     if (node.value?.type === TSESTree.AST_NODE_TYPES.JSXExpressionContainer) {
         const strings = extractStringsFromExpression(node.value.expression)
-        return strings.some((s) => MARGIN_CLASS_PATTERN.test(s))
+        return strings.some((s) => MarginClassPattern.test(s))
     }
     return false
 }
@@ -187,7 +187,7 @@ function hasMarginInSpread(node: TSESTree.JSXSpreadAttribute): boolean {
         }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
         const strings = extractStringsFromExpression(prop.value as TSESTree.Expression)
-        if (strings.some((s) => MARGIN_CLASS_PATTERN.test(s))) {
+        if (strings.some((s) => MarginClassPattern.test(s))) {
             return true
         }
     }

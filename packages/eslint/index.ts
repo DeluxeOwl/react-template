@@ -169,22 +169,42 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                 ],
                 "@typescript-eslint/method-signature-style": ["error", "property"],
                 // Naming conventions
+                // NOTE: I would like Go's naming conventions, like PascalCase anywhere, or at least for exports.
+                // But I've decided against it. It would confuse the AI a lot or create an additional format step.
+                // Typescript already has the `export` keyword.
                 "@typescript-eslint/naming-convention":      [
-                    "off",
-                    // Default: Internal variables must be camelCase
+                    "warn",
+                    // 1. Exemption: Allow strictly underscores for unused parameters (e.g., _, __).
+                    // "format": null disables further casing checks for these specific matches.
                     {
-                        format:   ["camelCase"],
-                        selector: "variable",
+                        filter: {
+                            match: true,
+                            regex: "^_+$",
+                        },
+                        format:   null,
+                        selector: "parameter",
                     },
-                    // Types and interfaces
+                    // 2. Parameters: Must be strictly camelCase.
+                    // This rule applies to all parameters that did not match the _ exemption above.
                     {
-                        format:   ["PascalCase"],
-                        selector: "typeLike",
+                        format:             ["camelCase"],
+                        leadingUnderscore:  "forbid",
+                        selector:           "parameter",
+                        trailingUnderscore: "forbid",
                     },
+
+                    // 3. Properties: allow anything
                     {
-                        format:    ["PascalCase"],
-                        modifiers: ["const", "global", "exported"],
-                        selector:  "variable",
+                        format:   null,
+                        selector: "property",
+                    },
+                    // 4. Global Default: Apply to all other identifiers (variables, functions, classes, etc.).
+                    // Enforcing camelCase and PascalCase automatically rejects snake_case and UPPER_SNAKE_CASE.
+                    {
+                        format:             ["camelCase", "PascalCase"],
+                        leadingUnderscore:  "forbid",
+                        selector:           "default",
+                        trailingUnderscore: "forbid",
                     },
                 ],
                 "@typescript-eslint/no-confusing-void-expression": "error",
