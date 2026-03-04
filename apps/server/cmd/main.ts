@@ -14,6 +14,11 @@ const listTodo = os.todos.list.handler(() => {
     return { data: memoryTodos }
 })
 
+// TODO [2026-03-06]: create todos domain logic and repos and directories
+// like this works: import * as todos from "@react-template/domain/todos"
+// import * as todossomething from "@react-template/domain/todos/something"
+// could we enforce the import name?
+// also, import rules.
 const createTodo = os.todos.create.handler(({ input }) => {
     const newTodo: todos.schemas.TodoOutput = {
         done: false,
