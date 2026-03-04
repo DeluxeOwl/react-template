@@ -247,6 +247,7 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                 "@typescript-eslint/prefer-readonly-parameter-types":        "off",
                 "@typescript-eslint/prefer-string-starts-ends-with":         "error",
                 "@typescript-eslint/unified-signatures":                     "error",
+                "custom/enforce-namespace-import":                           ["error", { packages: ["@react-template/domain"] }],
                 "custom/no-margin-on-root-jsx":                              "error",
                 "custom/prefer-discriminated-union":                         "warn",
                 // 0 and 1 are common enough during ifs, arrays etc.
