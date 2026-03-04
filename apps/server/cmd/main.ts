@@ -15,6 +15,7 @@ const listTodo = os.todos.list.handler(() => {
 })
 
 // TODO [2026-03-06]: create todos domain logic and repos and directories
+// Idea: make exports pascal case? Would that be too much?
 // like this works: import * as todos from "@react-template/domain/todos"
 // import * as todossomething from "@react-template/domain/todos/something"
 // could we enforce the import name?
