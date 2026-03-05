@@ -1,10 +1,12 @@
 import * as z from "zod"
+
+import { TodoNameMinLength } from "./todo"
 // Schema definitions, used for forms, http communication etc.
 
 export const TodoOutputSchema = z.object({
     done: z.boolean(),
     id:   z.uuidv4(),
-    name: z.string().min(1),
+    name: z.string().min(TodoNameMinLength),
 })
 
 export const CreateTodoInputSchema = TodoOutputSchema.omit({

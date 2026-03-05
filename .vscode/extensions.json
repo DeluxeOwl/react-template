@@ -17,7 +17,8 @@
         "meganrogge.template-string-converter",
         "jetpack-io.devbox",
         "mkhl.direnv",
-        "blazejkustra.react-compiler-marker"
+        "blazejkustra.react-compiler-marker",
+        "vitest.explorer"
     ],
     "unwantedRecommendations": [
         "esbenp.prettier-vscode"

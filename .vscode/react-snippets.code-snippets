@@ -25,5 +25,26 @@
 			"}"
 		],
 		"description": "Standard arrow function"
+	},
+	"Branded Class Entity": {
+		"prefix": "sclass",
+		"body": [
+			"export type ${1:ClassName}ID = string & z.\\$brand<\"${1:ClassName}ID\">",
+			"export class ${1:ClassName} {",
+			"    private constructor(",
+			"        private state: {",
+			"            id: ${1:ClassName}ID",
+			"        },",
+			"    ) {}",
+			"",
+			"    static create(): ${1:ClassName} {",
+			"        return new ${1:ClassName}({",
+			"            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion",
+			"            id: crypto.randomUUID() as ${1:ClassName}ID,",
+			"        })",
+			"    }",
+			"}"
+		],
+		"description": "Creates a class with a branded Zod ID and a static factory method."
 	}
 }

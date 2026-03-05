@@ -14,7 +14,6 @@ const listTodo = os.todos.list.handler(() => {
     return { data: memoryTodos }
 })
 
-// TODO [2026-03-06]: create todos domain logic and repos and directories
 const createTodo = os.todos.create.handler(({ input }) => {
     const newTodo: todos.schemas.TodoOutput = {
         done: false,

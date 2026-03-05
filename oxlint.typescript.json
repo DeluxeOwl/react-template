@@ -130,7 +130,13 @@
         "eslint/new-cap": "off",
         "eslint/capitalized-comments": "off",
         "eslint/no-inline-comments": "off",
-        "import/no-nodejs-modules": "off"
+        "import/no-nodejs-modules": "off",
+        "typescript/parameter-properties": [
+            "error",
+            {
+                "prefer": "parameter-property"
+            }
+        ]
     },
     "env": {
         "builtin": true

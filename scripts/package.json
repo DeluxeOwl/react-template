@@ -1,14 +1,17 @@
 {
     "name": "scripts",
     "private": true,
-    "devDependencies": {},
+    "devDependencies": {
+        "vitest": "^4.0.18"
+    },
     "peerDependencies": {
         "typescript": "^6.0.0-beta"
     },
     "scripts": {
         "lint:oxlint": "oxlint --fix .",
         "lint:eslint": "eslint --fix .",
-        "typecheck": "tsc -b --noEmit"
+        "typecheck": "tsc -b --noEmit",
+        "test": "vitest --run --passWithNoTests"
     },
     "dependencies": {
         "citty": "^0.2.1",

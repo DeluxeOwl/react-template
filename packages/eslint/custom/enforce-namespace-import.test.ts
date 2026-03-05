@@ -1,3 +1,4 @@
+/* eslint-disable vitest/require-hook */
 import tseslint from "typescript-eslint"
 import { it, afterAll, describe } from "vitest"
 import { RuleTester } from "@typescript-eslint/rule-tester"

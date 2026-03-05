@@ -3,10 +3,12 @@
 
 import tseslint from "typescript-eslint"
 import oxlint from "eslint-plugin-oxlint"
+import vitest from "@vitest/eslint-plugin"
 import sweepit from "eslint-plugin-sweepit"
 import stylistic from "@stylistic/eslint-plugin"
 import { importX } from "eslint-plugin-import-x"
 import importZod from "eslint-plugin-import-zod"
+import gitignore from "eslint-config-flat-gitignore"
 import perfectionist from "eslint-plugin-perfectionist"
 import eslintPluginUnicorn from "eslint-plugin-unicorn"
 import unusedImports from "eslint-plugin-unused-imports"
@@ -21,8 +23,10 @@ import customPlugin from "./custom"
 // bun run eslint --inspect-config
 
 // Using eslint for some rules that aren't available in oxlint
+// oxlint-disable-next-line max-lines-per-function
 export default function createConfig(rootDir: string, allowDefaultProject: string[] = []): Config[] {
     return defineConfig([
+        gitignore(),
         {
             ignores: [
                 "dist/**",
@@ -247,9 +251,10 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                 "@typescript-eslint/prefer-readonly-parameter-types":        "off",
                 "@typescript-eslint/prefer-string-starts-ends-with":         "error",
                 "@typescript-eslint/unified-signatures":                     "error",
-                "custom/enforce-namespace-import":                           ["error", { packages: ["@react-template/domain"] }],
+                "custom/enforce-namespace-import":                           ["error", { packages: ["@react-template/domain", "errore"] }],
                 "custom/no-margin-on-root-jsx":                              "error",
                 "custom/prefer-discriminated-union":                         "warn",
+                "custom/prefer-state-class":                                 "error",
                 // 0 and 1 are common enough during ifs, arrays etc.
                 "no-magic-numbers":                                          ["off"],
                 "no-restricted-globals":                                     [
@@ -262,6 +267,14 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                 "no-restricted-imports": "off",
                 "no-restricted-syntax":  [
                     "warn",
+                    {
+                        message:  "Public constructors are not allowed. Use private or protected instead.",
+                        selector: "MethodDefinition[kind='constructor'][accessibility!='private'][accessibility!='protected']",
+                    },
+                    {
+                        message:  "Usage of private class members (#) is not allowed. Use `private` instead.",
+                        selector: "PrivateIdentifier",
+                    },
                     {
                         message:  "Do not use 'Promise.reject()'. Return a custom error object instead.",
                         selector: "CallExpression[callee.object.name='Promise'][callee.property.name='reject']",
@@ -392,7 +405,6 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                 "sweepit/no-return-object-repetition": "error",
                 "unicorn/better-regex":                "error",
                 "unicorn/consistent-destructuring":    "error",
-                // e.g. // TODO [2200-12-25, +popura, lodash@>10]: Combo.
                 "unicorn/expiring-todo-comments":      ["error", { allowWarningComments: false }],
                 // This rule isn't supported in oxlint.
                 "unicorn/import-style":                [
@@ -436,6 +448,20 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                         project:        [rootDir],
                     }),
                 ],
+            },
+        },
+        {
+            files:   ["**/*.test.ts"], // or any other pattern
+            plugins: {
+                vitest,
+            },
+            rules: {
+                ...vitest.configs.all.rules, // you can also use vitest.configs.all.rules to enable all rules
+            },
+            settings: {
+                vitest: {
+                    typecheck: true,
+                },
             },
         },
     ])

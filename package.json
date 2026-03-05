@@ -17,7 +17,8 @@
         "jscpd": "^4.0.7",
         "knip": "^5.73.4",
         "oxlint": "^1.38.0",
-        "scaffdog": "^4.1.0"
+        "scaffdog": "^4.1.0",
+        "vitest": "^4.0.18"
     },
     "scripts": {
         "sync:tsconfig": "bun run scripts/cli.ts sync-tsconfig",
@@ -31,6 +32,7 @@
         "deadcode": "knip",
         "lint:all": "lefthook run pre-push -f",
         "lint:duplicates": "bun run scripts/cli.ts find-duplicate-functions",
-        "outdated": "bun outdated --filter '*'"
+        "outdated": "bun outdated --filter '*'",
+        "test": "bun run --workspaces --sequential test"
     }
 }
