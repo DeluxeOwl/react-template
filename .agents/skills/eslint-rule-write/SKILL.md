@@ -12,17 +12,19 @@ incompatible with the `RuleModule` type returned by `ESLintUtils.RuleCreator` fr
 methods (`getAncestors`, `getDeclaredVariables`, etc.).
 
 Writing a custom rule:
+
 1. Create the rule file (e.g., `my-rule.ts`) using `ESLintUtils.RuleCreator` from
    `@typescript-eslint/utils`. This gives you typed `context`, `node`, and `messageId`.
    See `no-margin-on-root-jsx.ts` for a full example.
 2. Export the rule as a named constant (e.g., `export const myRule = ...`).
 
 Writing the test file:
+
 1. Import `RuleTester` from `@typescript-eslint/rule-tester` (NOT from `eslint`).
 2. Import `afterAll`, `describe`, `it` from `vitest` and wire them up:
-     RuleTester.afterAll = afterAll
-     RuleTester.describe = describe
-     RuleTester.it = it
+   RuleTester.afterAll = afterAll
+   RuleTester.describe = describe
+   RuleTester.it = it
 3. Create a `RuleTester` instance with `languageOptions` (flat config style).
 4. Call `ruleTester.run()` at the TOP LEVEL of the file (or directly inside a `describe`).
    Do NOT wrap it inside an `it()` block — `@typescript-eslint/rule-tester` generates
@@ -95,28 +97,28 @@ only see the structural nodes — much easier to read.
 
 ```json
 {
-  "type": "Program",
-  "body": [
-    {
-      "type": "VariableDeclaration",
-      "declarations": [
+    "type": "Program",
+    "body": [
         {
-          "type": "VariableDeclarator",
-          "id": {
-            "type": "Identifier",
-            "name": "x",
-            "typeAnnotation": {
-              "type": "TSTypeAnnotation",
-              "typeAnnotation": { "type": "TSStringKeyword" }
-            }
-          },
-          "init": { "type": "Literal", "value": "hello" }
+            "type": "VariableDeclaration",
+            "declarations": [
+                {
+                    "type": "VariableDeclarator",
+                    "id": {
+                        "type": "Identifier",
+                        "name": "x",
+                        "typeAnnotation": {
+                            "type": "TSTypeAnnotation",
+                            "typeAnnotation": { "type": "TSStringKeyword" }
+                        }
+                    },
+                    "init": { "type": "Literal", "value": "hello" }
+                }
+            ],
+            "kind": "const"
         }
-      ],
-      "kind": "const"
-    }
-  ],
-  "sourceType": "module"
+    ],
+    "sourceType": "module"
 }
 ```
 
