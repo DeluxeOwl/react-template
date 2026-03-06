@@ -7,7 +7,12 @@
         "types": [
             "node",
             "bun"
-        ]
+        ],
+        "paths": {
+            "~/*": [
+                "./*"
+            ]
+        }
     },
     "include": [
         "src",

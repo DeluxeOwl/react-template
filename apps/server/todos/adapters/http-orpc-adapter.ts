@@ -63,52 +63,48 @@ const openAPIGenerator = new OpenAPIGenerator({
     schemaConverters: [new ZodToJsonSchemaConverter()],
 })
 
-const port = 3041
+export async function fetchORPC(request: Request): Promise<Response> {
+    const url = new URL(request.url)
 
-// eslint-disable-next-line no-restricted-globals -- This is the only instance that's okay.
-Bun.serve({
-    async fetch(request: Request) {
-        const url = new URL(request.url)
-
-        // 1. Route to RPC Handler
-        if (url.pathname.startsWith("/rpc")) {
-            const { matched, response } = await rpcHandler.handle(request, {
-                prefix: "/rpc",
-            })
-            if (matched) {
-                return response
-            }
+    // 1. Route to RPC Handler
+    if (url.pathname.startsWith("/rpc")) {
+        const { matched, response } = await rpcHandler.handle(request, {
+            prefix: "/rpc",
+        })
+        if (matched) {
+            return response
         }
+    }
 
-        // 2. Route to OpenAPI Spec
-        if (url.pathname === "/spec.json") {
-            const spec = await openAPIGenerator.generate(router, {
-                components: {
-                    securitySchemes: {
-                        bearerAuth: { scheme: "bearer", type: "http" },
-                    },
+    // 2. Route to OpenAPI Spec
+    if (url.pathname === "/spec.json") {
+        const spec = await openAPIGenerator.generate(router, {
+            components: {
+                securitySchemes: {
+                    bearerAuth: { scheme: "bearer", type: "http" },
                 },
-                info: {
-                    title:   "My Playground",
-                    version: "1.0.0",
-                },
-                servers: [{ url: "/api" }],
-            })
-            return Response.json(spec)
-        }
+            },
+            info: {
+                title:   "My Playground",
+                version: "1.0.0",
+            },
+            servers: [{ url: "/api" }],
+        })
+        return Response.json(spec)
+    }
 
-        // 3. Route to OpenAPI Handler
-        if (url.pathname.startsWith("/api")) {
-            const { matched, response } = await openAPIHandler.handle(request, {
-                prefix: "/api",
-            })
-            if (matched) {
-                return response
-            }
+    // 3. Route to OpenAPI Handler
+    if (url.pathname.startsWith("/api")) {
+        const { matched, response } = await openAPIHandler.handle(request, {
+            prefix: "/api",
+        })
+        if (matched) {
+            return response
         }
+    }
 
-        // 4. Default: Scalar HTML Reference
-        const html = `
+    // 4. Default: Scalar HTML Reference
+    const html = `
           <!doctype html>
           <html>
             <head>
@@ -124,11 +120,7 @@ Bun.serve({
             </body>
           </html>`
 
-        return new Response(html, {
-            headers: { "Content-Type": "text/html; charset=utf-8" },
-        })
-    },
-    port: port,
-})
-
-console.info(`Listening on http://localhost:${port}`)
+    return new Response(html, {
+        headers: { "Content-Type": "text/html; charset=utf-8" },
+    })
+}

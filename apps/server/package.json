@@ -12,7 +12,7 @@
         "typescript": "^6.0.0-beta"
     },
     "scripts": {
-        "dev": "bun run --watch cmd/main.ts",
+        "dev": "bun run --watch cmd/http.ts",
         "lint:oxlint": "oxlint --fix .",
         "lint:eslint": "eslint --fix .",
         "typecheck": "tsc -b --noEmit",
