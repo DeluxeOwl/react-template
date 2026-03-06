@@ -321,6 +321,19 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                         type: "line-length",
                     },
                 ],
+                "perfectionist/sort-classes": [
+                    "error",
+                    {
+                        groups: [
+                            "property", // Variable declarations first
+                            "constructor", // Followed by constructor
+                            "static-method", // Followed by static methods
+                            "unknown", // Everything else (no specific order enforced relative to predefined groups)
+                        ],
+                        order: "asc",
+                        type:  "alphabetical",
+                    },
+                ],
                 "perfectionist/sort-exports": [
                     "error",
                     {
