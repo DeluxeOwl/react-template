@@ -1,2 +1,2 @@
-export * as sharedORPC from "./shared-orpc"
-export * as schemas from "./shared-schemas"
+export * as schemas from "./adapters/http-orpc-adapter-schemas"
+export * as sharedORPC from "./adapters/http-orpc-adapter-routes"

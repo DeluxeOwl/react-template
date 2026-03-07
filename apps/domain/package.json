@@ -14,7 +14,7 @@
         "lint:oxlint": "oxlint --fix .",
         "lint:eslint": "eslint --fix .",
         "typecheck": "tsc -b --noEmit",
-        "test": "vitest --run --passWithNoTests"
+        "test": "vitest --run --passWithNoTests --reporter=tree"
     },
     "exports": {
         ".": "./index.ts",

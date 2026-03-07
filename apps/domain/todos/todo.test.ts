@@ -1,28 +1,40 @@
-
 import { it, expect, describe } from "vitest"
 
 import { Todo, NameLengthError } from "./todo"
 
 describe("creating a todo", () => {
-    describe("given a valid name", () => {
-        it("should return a Todo instance", () => {
-            expect.hasAssertions()
+    describe("given a valid name string", () => {
+        describe("when calling Todo.create with that name", () => {
+            it("then it should return a Todo instance", () => {
+                expect.hasAssertions()
 
-            const name = "hello"
-            const result = Todo.create(name)
+                // GIVEN
+                const name = "hello"
 
-            expect(result).toBeInstanceOf(Todo)
+                // WHEN
+                const result = Todo.create(name)
+
+                // THEN
+                expect(result).toBeInstanceOf(Todo)
+                expect((result as Todo).toDTO().name).toBe("hello")
+            })
         })
     })
 
-    describe("given an empty name", () => {
-        it("should return a NameLengthError", () => {
-            expect.hasAssertions()
+    describe("given an empty name string", () => {
+        describe("when calling Todo.create with that empty string", () => {
+            it("then it should return a NameLengthError", () => {
+                expect.hasAssertions()
 
-            const name = ""
-            const result = Todo.create(name)
+                // GIVEN
+                const name = ""
 
-            expect(result).toBeInstanceOf(NameLengthError)
+                // WHEN
+                const result = Todo.create(name)
+
+                // THEN
+                expect(result).toBeInstanceOf(NameLengthError)
+            })
         })
     })
 })

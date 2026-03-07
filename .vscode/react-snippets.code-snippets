@@ -46,5 +46,12 @@
 			"}"
 		],
 		"description": "Creates a class with a branded Zod ID and a static factory method."
+	},
+	"Import start": {
+		"prefix": "imps",
+		"body": [
+			"import * as $2 from \"$1\"",
+		],
+		"description": "Imports as star."
 	}
 }

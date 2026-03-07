@@ -19,11 +19,7 @@ const todoCollection = createCollection(
         },
         onUpdate: async ({ transaction }) => {
             const { modified } = transaction.mutations[0]
-            await api.todos.update.call({
-                body: {
-                    done: modified.done,
-                    name: modified.name,
-                },
+            await api.todos.toggle.call({
                 params: {
                     id: modified.id,
                 },

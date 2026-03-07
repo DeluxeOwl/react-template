@@ -7,104 +7,137 @@ import { OpenAPIHandler } from "@orpc/openapi/fetch"
 import * as todos from "@react-template/domain/todos"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 
-const os = implement(todos.sharedORPC.contract)
-const memoryTodos: todos.schemas.TodoOutput[] = [{ done: false, id: crypto.randomUUID(), name: "Do the dishes" }]
+export interface TodoORPCParams {
+    /** @default "/api" */
+    apiPath: `/${string}`
 
-const listTodo = os.todos.list.handler(() => {
-    return { data: memoryTodos }
-})
+    /** @default "/rpc" */
+    rpcPath: `/${string}`
 
-const createTodo = os.todos.create.handler(({ input }) => {
-    const newTodo: todos.schemas.TodoOutput = {
-        done: false,
-        id:   crypto.randomUUID(),
-        name: input.name,
-    }
-    memoryTodos.push(newTodo)
-    return newTodo
-})
+    /** @default "/spec.json" */
+    specPath: `/${string}`
 
-const updateTodo = os.todos.update.handler(({ input }) => {
-    const todo = memoryTodos.find(({ id }) => id === input.params.id)
-    if (!todo) {
-        return
-    }
+    /** @default "0.0.1" */
+    version: `${number}.${number}.${number}`
+}
 
-    todo.done = input.body.done ?? todo.done
-    todo.name = input.body.name ?? todo.name
-    return todo
-})
+export const defaultTodoORPCParams: TodoORPCParams = {
+    apiPath:  "/api",
+    rpcPath:  "/rpc",
+    specPath: "/spec.json",
+    version:  "0.0.1",
+}
 
-const router = os.router({
-    todos: {
-        create: createTodo,
-        list:   listTodo,
-        update: updateTodo,
-    },
-})
+export class TodoORPC {
+    private constructor(
+        private state: TodoORPCParams,
+    ) {}
 
-const rpcHandler = new RPCHandler(router, {
-    interceptors: [
-        onError((error) => {
-            console.error(error)
-        }),
-    ],
-    plugins: [new CORSPlugin()],
-})
-
-const openAPIHandler = new OpenAPIHandler(router, {
-    plugins: [
-        new CORSPlugin(),
-        new ZodSmartCoercionPlugin(),
-    ],
-})
-
-const openAPIGenerator = new OpenAPIGenerator({
-    schemaConverters: [new ZodToJsonSchemaConverter()],
-})
-
-export async function fetchORPC(request: Request): Promise<Response> {
-    const url = new URL(request.url)
-
-    // 1. Route to RPC Handler
-    if (url.pathname.startsWith("/rpc")) {
-        const { matched, response } = await rpcHandler.handle(request, {
-            prefix: "/rpc",
+    static create(params: Partial<TodoORPCParams> = {}): TodoORPC {
+        return new TodoORPC({
+            ...defaultTodoORPCParams,
+            ...params,
         })
-        if (matched) {
-            return response
-        }
     }
 
-    // 2. Route to OpenAPI Spec
-    if (url.pathname === "/spec.json") {
-        const spec = await openAPIGenerator.generate(router, {
-            components: {
-                securitySchemes: {
-                    bearerAuth: { scheme: "bearer", type: "http" },
-                },
+    fetchORPC() {
+        const os = implement(todos.sharedORPC.contract)
+        const memoryTodos: todos.schemas.TodoOutputHTTP[] = [{ done: false, id: crypto.randomUUID(), name: "Do the dishes" }]
+
+        const listTodo = os.todos.list.handler(() => {
+            return { data: memoryTodos }
+        })
+
+        const createTodo = os.todos.create.handler(({ input }) => {
+            const newTodo: todos.schemas.TodoOutputHTTP = {
+                done: false,
+                id:   crypto.randomUUID(),
+                name: input.name,
+            }
+            memoryTodos.push(newTodo)
+            return newTodo
+        })
+
+        const toggleTodo = os.todos.toggle.handler(({ input }) => {
+            const todo = memoryTodos.find(({ id }) => id === input.params.id)
+            if (!todo) {
+                return
+            }
+
+            todo.done = !todo.done
+            return todo
+        })
+
+        const router = os.router({
+            todos: {
+                create: createTodo,
+                list:   listTodo,
+                toggle: toggleTodo,
             },
-            info: {
-                title:   "My Playground",
-                version: "1.0.0",
-            },
-            servers: [{ url: "/api" }],
         })
-        return Response.json(spec)
-    }
 
-    // 3. Route to OpenAPI Handler
-    if (url.pathname.startsWith("/api")) {
-        const { matched, response } = await openAPIHandler.handle(request, {
-            prefix: "/api",
+        const rpcHandler = new RPCHandler(router, {
+            interceptors: [
+                onError((error) => {
+                    console.error(error)
+                }),
+            ],
+            plugins: [new CORSPlugin()],
         })
-        if (matched) {
-            return response
-        }
-    }
 
-    // 4. Default: Scalar HTML Reference
-    const html = `
+        const openAPIHandler = new OpenAPIHandler(router, {
+            plugins: [
+                new CORSPlugin(),
+                new ZodSmartCoercionPlugin(),
+            ],
+        })
+
+        const openAPIGenerator = new OpenAPIGenerator({
+            schemaConverters: [new ZodToJsonSchemaConverter()],
+        })
+
+        return async (request: Request): Promise<Response> => {
+            const url = new URL(request.url)
+
+            // 1. Route to RPC Handler
+            if (url.pathname.startsWith(this.state.rpcPath)) {
+                const { matched, response } = await rpcHandler.handle(request, {
+                    prefix: this.state.rpcPath,
+                })
+                if (matched) {
+                    return response
+                }
+            }
+
+            // 2. Route to OpenAPI Spec
+            if (url.pathname === this.state.specPath) {
+                const spec = await openAPIGenerator.generate(router, {
+                    components: {
+                        securitySchemes: {
+                            bearerAuth: { scheme: "bearer", type: "http" },
+                        },
+                    },
+                    info: {
+                        title:   "My Playground",
+                        version: this.state.version,
+                    },
+                    servers: [{ url: this.state.apiPath }],
+                })
+                return Response.json(spec)
+            }
+
+            // 3. Route to OpenAPI Handler
+            if (url.pathname.startsWith(this.state.apiPath)) {
+                const { matched, response } = await openAPIHandler.handle(request, {
+                    prefix: this.state.apiPath,
+                })
+                if (matched) {
+                    return response
+                }
+            }
+
+            // 4. Default: Scalar HTML Reference
+            const html = `
           <!doctype html>
           <html>
             <head>
@@ -115,12 +148,15 @@ export async function fetchORPC(request: Request): Promise<Response> {
             <body>
               <div id="app"></div>
               <script>
-                Scalar.createApiReference('#app', { url: '/spec.json' })
+                Scalar.createApiReference('#app', { url: '${this.state.specPath}' })
               </script>
             </body>
           </html>`
 
-    return new Response(html, {
-        headers: { "Content-Type": "text/html; charset=utf-8" },
-    })
+            return new Response(html, {
+                headers: { "Content-Type": "text/html; charset=utf-8" },
+            })
+        }
+    }
 }
+

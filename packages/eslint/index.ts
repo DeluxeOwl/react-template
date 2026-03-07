@@ -171,7 +171,8 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                     "off",
                     { default: ["signature", "method", "constructor", "field"] },
                 ],
-                "@typescript-eslint/method-signature-style": ["error", "property"],
+                // Classes use method, react uses signature
+                "@typescript-eslint/method-signature-style": ["off"],
                 // Naming conventions
                 // NOTE: I would like Go's naming conventions, like PascalCase anywhere, or at least for exports.
                 // But I've decided against it. It would confuse the AI a lot or create an additional format step.
@@ -246,12 +247,13 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                 "@typescript-eslint/no-unsafe-type-assertion":               "error",
                 "@typescript-eslint/no-unused-vars":                         "off",
                 "@typescript-eslint/no-useless-default-assignment":          "error",
+                "@typescript-eslint/only-throw-error":                       "error",
                 "@typescript-eslint/prefer-function-type":                   "error",
                 // This is not bad but really, it will confuse the LLMs
                 "@typescript-eslint/prefer-readonly-parameter-types":        "off",
                 "@typescript-eslint/prefer-string-starts-ends-with":         "error",
                 "@typescript-eslint/unified-signatures":                     "error",
-                "custom/enforce-namespace-import":                           ["error", { packages: ["@react-template/domain", "errore"] }],
+                "custom/enforce-namespace-import":                           ["error", { packages: ["@react-template/domain", "errore", "@react-template/domain/cqrs", "~/cqrs"] }],
                 "custom/no-margin-on-root-jsx":                              "error",
                 "custom/prefer-discriminated-union":                         "warn",
                 "custom/prefer-state-class":                                 "error",
@@ -310,6 +312,7 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                         selector: "BinaryExpression[operator='instanceof'][right.name='Error']",
                     },
                 ],
+                "no-throw-literal":                  "off",
                 "no-var":                            "error",
                 "perfectionist/sort-array-includes": [
                     "error",
@@ -431,7 +434,6 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                         },
                     },
                 ],
-
                 "unused-imports/no-unused-imports": "error",
                 "unused-imports/no-unused-vars":    [
                     "warn",
@@ -464,17 +466,34 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
             },
         },
         {
-            files:   ["**/*.test.ts"], // or any other pattern
+            files:   ["**/*.test.ts"],
             plugins: {
                 vitest,
             },
             rules: {
-                ...vitest.configs.all.rules, // you can also use vitest.configs.all.rules to enable all rules
+                ...vitest.configs.all.rules,
+                "vitest/no-identical-title": "off",
             },
             settings: {
                 vitest: {
                     typecheck: true,
                 },
+            },
+        },
+        // Override rules for test files
+        {
+            files: ["**/*.test.ts", "**/*.test.tsx"],
+            rules: {
+                "@typescript-eslint/no-magic-numbers":         "off",
+                "@typescript-eslint/no-unsafe-type-assertion": "off",
+                "@typescript-eslint/only-throw-error":         "off",
+            },
+        },
+        // Commands and queries dont specify output
+        {
+            files: ["**/commands/*.ts", "**/queries/*.ts"],
+            rules: {
+                "@typescript-eslint/explicit-function-return-type": "off",
             },
         },
     ])

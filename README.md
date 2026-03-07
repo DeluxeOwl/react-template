@@ -27,3 +27,17 @@ The fix: Changed apps/domain/package.json exports from the array form to a singl
 
 This is sufficient because all subpath imports in the domain package go through index.ts barrel files (e.g., @react-template/domain/todos → ./todos/index.ts). Both
 TypeScript and eslint-import-resolver-typescript can now resolve it correctly.
+
+## Typescript import issue when using relative paths
+
+Packages that aren't `apps/web`, `apps/server` or `apps/mobile` use relative import paths internally.
+
+Because we're not compiling packages, you can't add
+
+```json
+"paths": {
+	"~/*": [
+		"./*"
+	]
+}
+```

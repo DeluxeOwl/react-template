@@ -3,10 +3,10 @@
     "compilerOptions": {
         "composite": true,
         "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-        "target": "ES2023",
+        "target": "esnext",
         "noEmit": true,
         "lib": [
-            "ES2023"
+            "ESNext"
         ],
         "types": [
             "node",

@@ -1,6 +1,6 @@
 ---
 name: eslint-rule-write
-description: Write eslint rules and test them.
+description: You must load this skill if asked to write eslint rules.
 ---
 
 Testing Custom ESLint Rules (ESLint v9 + typescript-eslint + Vitest)

@@ -156,5 +156,16 @@
         "node_modules/**",
         "public/**",
         "**/*.d.ts"
+    ],
+    "overrides": [
+        {
+            "files": [
+                "*.test.ts",
+                "*.test.tsx"
+            ],
+            "rules": {
+                "eslint/max-nested-callbacks": "off"
+            }
+        }
     ]
 }

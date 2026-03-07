@@ -45,7 +45,7 @@ import { TSESTree, ESLintUtils } from "@typescript-eslint/utils"
 
 export const preferStateClassRule = ESLintUtils.RuleCreator(
     (name) => `https://github.com/react-template/eslint-rules#${name}`,
-)<[], "multipleParameters" | "noPrivateConstructor" | "noStateParameter" | "noStaticCreateMethod" | "stateNotObject" | "wrongStateParameterName">({
+)<[], "multipleParameters" | "noPrivateConstructor" | "noStateParameter" | "noStaticCreateMethod" | "wrongStateParameterName">({
     create(context) {
         return {
             ClassDeclaration(node: TSESTree.ClassDeclaration) {
@@ -133,40 +133,7 @@ export const preferStateClassRule = ESLintUtils.RuleCreator(
                     return
                 }
 
-                // Rule 4: State must be typed as an object
-                // Check the type annotation
-                const typeAnnotation = parameterProperty.parameter.typeAnnotation
-
-                if (!typeAnnotation) {
-                    context.report({
-                        messageId: "stateNotObject",
-                        node:      parameterProperty,
-                    })
-                    return
-                }
-
-                const tsType = typeAnnotation.typeAnnotation
-
-                // Check if it's an object type (TSTypeLiteral or TSNamedTupleMember within TSTuple)
-                // We need to check for:
-                // - TSTypeLiteral: `{ ... }`
-                // - TSNamedTupleMember: `state: { ... }` where the type is TSTypeLiteral
-                // - The actual type could be a named type that resolves to an object
-
-                const isObjectType = (
-                    tsType.type === TSESTree.AST_NODE_TYPES.TSTypeLiteral
-                )
-
-                if (!isObjectType) {
-                    context.report({
-                        data:      { className },
-                        messageId: "stateNotObject",
-                        node:      parameterProperty,
-                    })
-                    return
-                }
-
-                // Rule 5: Must have a static method starting with "create"
+                // Rule 4: Must have a static method starting with "create"
                 const hasStaticCreateMethod = node.body.body.some(
                     (member): member is TSESTree.MethodDefinition =>
                         member.type === TSESTree.AST_NODE_TYPES.MethodDefinition
@@ -201,8 +168,6 @@ export const preferStateClassRule = ESLintUtils.RuleCreator(
                 "Class '{{className}}' constructor must have a private 'state' parameter.",
             noStaticCreateMethod:
                 "Class '{{className}}' must have a static method starting with 'create'.",
-            stateNotObject:
-                "The 'state' parameter must be typed as an object type.",
             wrongStateParameterName:
                 "Constructor parameter must be named 'state', but found '{{paramName}}'.",
         },

@@ -51,35 +51,10 @@ ruleTester.run("prefer-state-class", preferStateClassRule, {
             code:   `class Foo { private constructor(private data: { done: boolean }) {} }`,
             errors: [{ messageId: "wrongStateParameterName" }],
         },
-        // Private constructor with state but wrong type (not an object)
-        {
-            code:   `class Foo { private constructor(private state: string) {} }`,
-            errors: [{ messageId: "stateNotObject" }],
-        },
-        // Private constructor with state but type is a primitive
-        {
-            code:   `class Foo { private constructor(private state: number) {} }`,
-            errors: [{ messageId: "stateNotObject" }],
-        },
-        // Private constructor with state but type is an array
-        {
-            code:   `class Foo { private constructor(private state: string[]) {} }`,
-            errors: [{ messageId: "stateNotObject" }],
-        },
         // Private constructor with multiple parameters
         {
             code:   `class Foo { private constructor(private state: { done: boolean }, private other: string) {} }`,
             errors: [{ messageId: "multipleParameters" }],
-        },
-        // Private constructor with state but no type annotation
-        {
-            code:   `class Foo { private constructor(private state) {} }`,
-            errors: [{ messageId: "stateNotObject" }],
-        },
-        // Private constructor with state but state type is a type reference (not object literal)
-        {
-            code:   `type State = { done: boolean }; class Foo { private constructor(private state: State) {} }`,
-            errors: [{ messageId: "stateNotObject" }],
         },
         // Private constructor with valid state but no static create method
         {
@@ -202,6 +177,77 @@ ruleTester.run("prefer-state-class", preferStateClassRule, {
 
                     static createTodo(props: { done: boolean }) {
                         return new Todo2({ done: props.done })
+                    }
+                }
+            `,
+        },
+        // Valid with state as a primitive type (string)
+        {
+            code: `
+                class ValueString {
+                    private constructor(
+                        private state: string,
+                    ) {}
+
+                    static create(value: string) {
+                        return new ValueString(value)
+                    }
+                }
+            `,
+        },
+        // Valid with state as a primitive type (number)
+        {
+            code: `
+                class ValueNumber {
+                    private constructor(
+                        private state: number,
+                    ) {}
+
+                    static create(value: number) {
+                        return new ValueNumber(value)
+                    }
+                }
+            `,
+        },
+        // Valid with state as an array
+        {
+            code: `
+                class Items {
+                    private constructor(
+                        private state: string[],
+                    ) {}
+
+                    static create(items: string[]) {
+                        return new Items(items)
+                    }
+                }
+            `,
+        },
+        // Valid with state as a type reference
+        {
+            code: `
+                type State = { done: boolean };
+                class Todo {
+                    private constructor(
+                        private state: State,
+                    ) {}
+
+                    static create(props: State) {
+                        return new Todo(props)
+                    }
+                }
+            `,
+        },
+        // Valid with state having no type annotation
+        {
+            code: `
+                class AnyState {
+                    private constructor(
+                        private state,
+                    ) {}
+
+                    static create(value: any) {
+                        return new AnyState(value)
                     }
                 }
             `,

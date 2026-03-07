@@ -12,7 +12,7 @@
         "format": "eslint --fix .",
         "lint": "eslint --fix . && oxlint --fix .",
         "preview": "vite preview",
-        "test": "vitest --run --passWithNoTests"
+        "test": "vitest --run --passWithNoTests --reporter=tree"
     },
     "dependencies": {
         "@orpc/client": "^1.13.5",
