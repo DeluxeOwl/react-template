@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/only-throw-error -- orpc handlers throw custom error objects */
+
 /* eslint-disable no-restricted-syntax */
 
 import type { TodoApp } from "@react-template/domain/todos/app"

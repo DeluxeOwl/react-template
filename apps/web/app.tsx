@@ -50,7 +50,7 @@ function TodoList(): React.ReactNode {
         ToggleMutation["data"],
         ToggleMutation["error"],
         string>({
-        mutationFn: async (id: string) => {
+        mutationFn: (id: string) => {
             return todoCollection.update(id, (draft) => {
                 draft.done = !draft.done
             }).isPersisted.promise

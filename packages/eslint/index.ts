@@ -247,7 +247,8 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                 "@typescript-eslint/no-unsafe-type-assertion":               "error",
                 "@typescript-eslint/no-unused-vars":                         "off",
                 "@typescript-eslint/no-useless-default-assignment":          "error",
-                "@typescript-eslint/only-throw-error":                       "error",
+                // Disabled, too many positives
+                "@typescript-eslint/only-throw-error":                       "off",
                 "@typescript-eslint/prefer-function-type":                   "error",
                 // This is not bad but really, it will confuse the LLMs
                 "@typescript-eslint/prefer-readonly-parameter-types":        "off",
@@ -487,7 +488,6 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
             rules: {
                 "@typescript-eslint/no-magic-numbers":         "off",
                 "@typescript-eslint/no-unsafe-type-assertion": "off",
-                "@typescript-eslint/only-throw-error":         "off",
             },
         },
         // Commands and queries dont specify output
