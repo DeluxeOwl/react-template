@@ -314,7 +314,7 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                         selector: "BinaryExpression[operator='instanceof'][right.name='Error']",
                     },
                 ],
-                "no-throw-literal":                  "off",
+                "no-throw-literal":                  "error",
                 "no-var":                            "error",
                 "perfectionist/sort-array-includes": [
                     "error",
