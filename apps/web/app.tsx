@@ -1,7 +1,8 @@
 
+import { isDefinedError } from "@orpc/client"
 import { queryCollectionOptions } from "@tanstack/query-db-collection"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { createCollection, useLiveSuspenseQuery } from "@tanstack/react-db"
+import { QueryClient, useMutation, QueryClientProvider, type UseMutationOptions } from "@tanstack/react-query"
 
 import { api } from "~/api"
 import { cn } from "~/ui/lib/utils"
@@ -19,6 +20,7 @@ const todoCollection = createCollection(
         },
         onUpdate: async ({ transaction }) => {
             const { modified } = transaction.mutations[0]
+            api.todos.toggle.mutationOptions()
             await api.todos.toggle.call({
                 params: {
                     id: modified.id,
@@ -34,8 +36,26 @@ const todoCollection = createCollection(
     }),
 )
 
+type MutationParams<T> = T extends UseMutationOptions<infer TData, infer TError, infer TVariables>
+    ? { data: TData, error: TError, variables: TVariables }
+    : never
+
+// Specifically for your toggle procedure:
+type ToggleMutation = MutationParams<ReturnType<typeof api.todos.toggle.mutationOptions>>
+
 function TodoList(): React.ReactNode {
     const { data:todos } = useLiveSuspenseQuery((q) => q.from({ todo: todoCollection }))
+
+    const mutation = useMutation<
+        ToggleMutation["data"],
+        ToggleMutation["error"],
+        string>({
+        mutationFn: async (id: string) => {
+            return todoCollection.update(id, (draft) => {
+                draft.done = !draft.done
+            }).isPersisted.promise
+        },
+    })
 
     return (
         <ol>
@@ -46,12 +66,11 @@ function TodoList(): React.ReactNode {
                         <button
                             className={cn(todo.done && "line-through")}
                             onClick={() => {
-                                todoCollection.update(todo.id, (draft) => {
-                                    draft.done = !draft.done
-                                })
+                                mutation.mutate(todo.id)
                             }}
                             type="button">{todo.name} {todo.done && "✅"}
                         </button>
+                        {mutation.isError && isDefinedError(mutation.error) && <div>{mutation.error.code === "NOT_FOUND"}</div> }
                     </li>
                 )
             })}

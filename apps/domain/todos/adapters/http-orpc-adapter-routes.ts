@@ -2,19 +2,28 @@ import { oc, type ContractRouterClient } from "@orpc/contract"
 
 import { TodoOutputHTTPSchema, CreateTodoInputHTTPSchema, ListTodosOutputHTTPSchema, ToggleTodoInputHTTPSchema } from "./http-orpc-adapter-schemas"
 
+const commonErrors = {
+    INTERNAL_SERVER_ERROR: {},
+}
+
 const createTodoContract = oc.route({
     inputStructure: "detailed",
     method:         "POST",
     path:           "/todos/create",
 })
     .input(CreateTodoInputHTTPSchema)
-    .output(TodoOutputHTTPSchema)
+    .output(TodoOutputHTTPSchema).errors({
+        ...commonErrors,
+    })
 
 const toggleTodoContract = oc.route({
     inputStructure: "detailed",
     method:         "POST",
     path:           "/todos/{id}/toggle",
-}).input(ToggleTodoInputHTTPSchema)
+}).input(ToggleTodoInputHTTPSchema).errors({
+    ...commonErrors,
+    NOT_FOUND: {},
+})
 
 const listTodosContract = oc
     .output(ListTodosOutputHTTPSchema)
@@ -22,6 +31,8 @@ const listTodosContract = oc
         inputStructure: "detailed",
         method:         "GET",
         path:           "/todos",
+    }).errors({
+        ...commonErrors,
     })
 
 export const contract = {

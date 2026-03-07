@@ -6,15 +6,15 @@ import { it, expect, describe } from "vitest"
 import { Todo, type TodoDTO } from "../todo"
 import { TodoNotFoundError } from "../todo-repository"
 import { TransactionError } from "../../helpers/repo-helpers"
-import { InMemoryTodoRepository } from "./repo-memory-adapter"
+import { TodoRepositoryInMemory } from "./repo-memory-adapter"
 
 // Helper to create a domain object from a DTO for testing
 function createTestTodo(dto: TodoDTO): Todo {
     return Todo.fromDTO(dto)
 }
 
-function setupInMemoryRepo(): InMemoryTodoRepository {
-    return InMemoryTodoRepository.create()
+function setupInMemoryRepo(): TodoRepositoryInMemory {
+    return TodoRepositoryInMemory.create()
 }
 
 describe("todo repository", () => {

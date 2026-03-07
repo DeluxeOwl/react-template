@@ -46,10 +46,6 @@ function getFullErrorMessage(error: unknown): string {
 
 export class CQRSError extends Error {}
 
-// TODO [2026-03-30] I'm not even sure if it's worth the effort to make the cause
-// typesafe, like isn't that a CQRS layer 'leak'? Why would the adapters even need type safe access to underlying error?
-// Wouldn't it be better to pass some error codes around?
-// Or make these error have a certain format: code, message etc.
 export class CommandError<E extends Error = Error> extends errore.createTaggedError({
     extends: CQRSError,
     message: "command error",

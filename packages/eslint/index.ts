@@ -253,7 +253,8 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                 "@typescript-eslint/prefer-readonly-parameter-types":        "off",
                 "@typescript-eslint/prefer-string-starts-ends-with":         "error",
                 "@typescript-eslint/unified-signatures":                     "error",
-                "custom/enforce-namespace-import":                           ["error", { packages: ["@react-template/domain", "errore", "@react-template/domain/cqrs", "~/cqrs"] }],
+                // Interesting but it's a bit of a pain.
+                "custom/enforce-namespace-import":                           ["off", { packages: ["@react-template/domain", "errore", "@react-template/domain/cqrs", "~/cqrs"] }],
                 "custom/no-margin-on-root-jsx":                              "error",
                 "custom/prefer-discriminated-union":                         "warn",
                 "custom/prefer-state-class":                                 "error",

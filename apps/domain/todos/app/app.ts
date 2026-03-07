@@ -7,7 +7,7 @@ import { CreateTodoHandler } from "./commands/create-todo"
 import { ToggleTodoHandler } from "./commands/toggle-todo"
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function create(params: {
+export function createTodoApp(params: {
     todoRepository: TodoRepository
 }) {
     return cqrs.createApplication({
@@ -21,4 +21,4 @@ export function create(params: {
     })
 }
 
-export type TodoApp = ReturnType<typeof create>
+export type TodoApp = ReturnType<typeof createTodoApp>

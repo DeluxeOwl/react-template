@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/only-throw-error -- orpc handlers throw custom error objects */
+/* eslint-disable no-restricted-syntax */
+
+import type { TodoApp } from "@react-template/domain/todos/app"
+
+import * as errore from "errore"
 import { RPCHandler } from "@orpc/server/fetch"
 import { OpenAPIGenerator } from "@orpc/openapi"
 import { onError, implement } from "@orpc/server"
@@ -7,7 +13,9 @@ import { OpenAPIHandler } from "@orpc/openapi/fetch"
 import * as todos from "@react-template/domain/todos"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 
-export interface TodoORPCParams {
+export interface TodoHTTPParams {
+    app: TodoApp
+
     /** @default "/api" */
     apiPath: `/${string}`
 
@@ -21,51 +29,59 @@ export interface TodoORPCParams {
     version: `${number}.${number}.${number}`
 }
 
-export const defaultTodoORPCParams: TodoORPCParams = {
+type RequiredTodoHTTPParams = Pick<TodoHTTPParams, "app">
+type OptionalTodoHTTPParams = Omit<TodoHTTPParams, "app">
+
+export const defaultTodoHTTPParams: OptionalTodoHTTPParams = {
     apiPath:  "/api",
     rpcPath:  "/rpc",
     specPath: "/spec.json",
     version:  "0.0.1",
 }
 
-export class TodoORPC {
+export class TodoHTTP {
+    private app: TodoApp
     private constructor(
-        private state: TodoORPCParams,
-    ) {}
+        private state: TodoHTTPParams,
+    ) {
+        this.app = state.app
+    }
 
-    static create(params: Partial<TodoORPCParams> = {}): TodoORPC {
-        return new TodoORPC({
-            ...defaultTodoORPCParams,
+    static create(params: Partial<TodoHTTPParams> & RequiredTodoHTTPParams): TodoHTTP {
+        return new TodoHTTP({
+            ...defaultTodoHTTPParams,
             ...params,
         })
     }
 
     fetchORPC() {
         const os = implement(todos.sharedORPC.contract)
-        const memoryTodos: todos.schemas.TodoOutputHTTP[] = [{ done: false, id: crypto.randomUUID(), name: "Do the dishes" }]
 
-        const listTodo = os.todos.list.handler(() => {
-            return { data: memoryTodos }
+        const listTodo = os.todos.list.handler(async () => {
+            const res = await this.app.queries.listTodos.handle(undefined)
+            return { data: res.data }
         })
 
-        const createTodo = os.todos.create.handler(({ input }) => {
-            const newTodo: todos.schemas.TodoOutputHTTP = {
-                done: false,
-                id:   crypto.randomUUID(),
-                name: input.name,
+        const createTodo = os.todos.create.handler(async ({ input }) => {
+            const res = await this.app.commands.createTodo.handle({ name: input.name })
+            // This is handled by validation before, so no special cases here
+            if (Error.isError(res)) {
+                throw res
             }
-            memoryTodos.push(newTodo)
-            return newTodo
+            return res
         })
 
-        const toggleTodo = os.todos.toggle.handler(({ input }) => {
-            const todo = memoryTodos.find(({ id }) => id === input.params.id)
-            if (!todo) {
-                return
+        const toggleTodo = os.todos.toggle.handler(async ({ errors, input }) => {
+            const res = await this.app.commands.toggleTodo.handle({ id: input.params.id })
+            if (Error.isError(res)) {
+                errore.matchErrorPartial(res.cause, {
+                    TodoNotFoundError: () => {
+                        throw errors.NOT_FOUND({ message: "Todo not found" })
+                    },
+                }, () => {
+                    throw errors.INTERNAL_SERVER_ERROR()
+                })
             }
-
-            todo.done = !todo.done
-            return todo
         })
 
         const router = os.router({

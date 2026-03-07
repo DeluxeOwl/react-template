@@ -157,6 +157,10 @@
         "public/**",
         "**/*.d.ts"
     ],
+    "options": {
+        // This is needed otherwise it removes "eslint-disable @typescript-eslint/only-throw-error"
+        "reportUnusedDisableDirectives": "off"
+    },
     "overrides": [
         {
             "files": [
