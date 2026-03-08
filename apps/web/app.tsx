@@ -73,6 +73,7 @@ function TodoList(): React.ReactNode {
 
 type CreateMutation = MutationParams<ReturnType<typeof api.todos.create.mutationOptions>>
 function TodoInput(): React.ReactNode {
+    // ast-grep-ignore
     const [text, setText] = useState("")
 
     const mutation = useMutation<CreateMutation["data"], CreateMutation["error"], string>({
@@ -93,8 +94,6 @@ function TodoInput(): React.ReactNode {
             return todoCollection.get(TodoOutputHTTPSchema.parse(tx.mutations[0].modified).id)!
         },
     })
-
-    console.info(isDefinedError(mutation.error))
 
     return (
         <div className="flex flex-col gap-2">
