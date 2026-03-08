@@ -40,7 +40,7 @@
 			"    static create(): ${1:ClassName} {",
 			"        return new ${1:ClassName}({",
 			"            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion",
-			"            id: crypto.randomUUID() as ${1:ClassName}ID,",
+			"            id: \"123\",",
 			"        })",
 			"    }",
 			"}"

@@ -103,7 +103,7 @@ export class NameLengthError extends errore.createTaggedError({
 // Return type union instead of throwing
 static create(name: string): NameLengthError | Todo {
     if (name.length === 0) return new NameLengthError({ length: 100 })
-    return new Todo({ done: false, id: crypto.randomUUID() as TodoID, name })
+    return new Todo({ done: false, id: generateTodoID(), name })
 }
 ```
 

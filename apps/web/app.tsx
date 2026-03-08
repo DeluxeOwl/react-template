@@ -68,7 +68,7 @@ function TodoList(): React.ReactNode {
                             onClick={() => {
                                 mutation.mutate(todo.id)
                             }}
-                            type="button">{todo.name} {todo.done && "✅"}
+                            type="button">{todo.name} ({todo.id}) {todo.done && "✅"}
                         </button>
                         {mutation.isError && isDefinedError(mutation.error) && <div>{mutation.error.code === "NOT_FOUND"}</div> }
                     </li>

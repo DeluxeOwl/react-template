@@ -1,11 +1,15 @@
 
-import type * as z from "zod"
-
 import * as errore from "errore"
+import { TypeID, typeid } from "typeid-js"
 
 export const TodoNameMinLength = 1
 
-export type TodoID = string & z.$brand<"TodoID">
+const TodoIDPrefix = "todo" as const
+export type TodoID = TypeID<typeof TodoIDPrefix>
+
+export function generateTodoID(): TodoID {
+    return typeid(TodoIDPrefix)
+}
 
 // These are all domain errors.
 export class TodoError extends Error {}
@@ -41,8 +45,8 @@ export class Todo {
 
         return new Todo({
             done: false,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-            id:   crypto.randomUUID() as TodoID,
+
+            id:   generateTodoID(),
             name: name,
         })
     }
@@ -50,15 +54,18 @@ export class Todo {
     static fromDTO(data: TodoDTO): Todo {
         return new Todo({
             done: data.done,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-            id:   data.id as TodoID,
+            id:   TypeID.fromString(data.id, TodoIDPrefix),
             name: data.name,
         })
     }
 
     // Exposes internal state to adapters.
     toDTO(): TodoDTO {
-        return this.state
+        return {
+            done: this.state.done,
+            id:   this.state.id.toString(),
+            name: this.state.name,
+        }
     }
 
     toggle(): void {
