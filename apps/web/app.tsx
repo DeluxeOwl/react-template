@@ -3,6 +3,7 @@ import { isDefinedError } from "@orpc/client"
 import { generateTodoID } from "@react-template/domain/todos/todo"
 import { queryCollectionOptions } from "@tanstack/query-db-collection"
 import { createCollection, useLiveSuspenseQuery } from "@tanstack/react-db"
+import { TodoOutputHTTPSchema } from "@react-template/domain/todos/adapter-http-schemas"
 import { QueryClient, useMutation, QueryClientProvider, type UseMutationOptions } from "@tanstack/react-query"
 
 import { api } from "~/api"
@@ -15,13 +16,17 @@ const todoCollection = createCollection(
         getKey:   (item) => item.id,
         onInsert: async ({ transaction }) => {
             const { modified } = transaction.mutations[0]
-            await api.todos.create.call({
+            const serverResponse = await api.todos.create.call({
                 name: modified.name,
             })
+
+            // This writes the "real" result directly after creating, telling tanstack to not refetch.
+            todoCollection.utils.writeInsert(serverResponse)
+            return { refetch: false }
         },
         onUpdate: async ({ transaction }) => {
             const { modified } = transaction.mutations[0]
-            api.todos.toggle.mutationOptions()
+
             await api.todos.toggle.call({
                 params: {
                     id: modified.id,
@@ -79,28 +84,50 @@ function TodoList(): React.ReactNode {
     )
 }
 
+type CreateMutation = MutationParams<ReturnType<typeof api.todos.create.mutationOptions>>
 function TodoInput(): React.ReactNode {
     const [text, setText] = useState("")
 
+    const mutation2 = useMutation<
+        CreateMutation["data"],
+        CreateMutation["error"],
+        string
+    >({
+        mutationFn: async (name: string) => {
+            const tx = todoCollection.insert({
+                done: false,
+                id:   generateTodoID().toString(),
+                name,
+            })
+
+            // If you want the 'real' object here, your onInsert
+            // needs a way to pass it back. Currently, the easiest way
+            // is to just get it from the collection after persistence:
+            await tx.isPersisted.promise
+
+            // At this point, onInsert has finished and updated the collection
+            // oxlint-disable-next-line typescript/no-non-null-assertion -- We know for sure it's the real object.
+            return todoCollection.get(TodoOutputHTTPSchema.parse(tx.mutations[0].modified).id)!
+        },
+    })
+
     return (
-        <input
-            className="border"
-            onChange={(e) => {
-                setText(e.currentTarget.value)
-            }}
-            onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                    todoCollection.insert({
-                        done: false,
-                        // If its empty it flashes
-                        id:   generateTodoID().toString(),
-                        name: text,
-                    })
-                    setText("")
-                }
-            }}
-            type="text"
-            value={text} />
+        <div className="flex flex-col gap-2">
+            <input
+                className="border"
+                onChange={(e) => {
+                    setText(e.currentTarget.value)
+                }}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        mutation2.mutate(text)
+                        setText("")
+                    }
+                }}
+                type="text"
+                value={text} />
+            <div>{JSON.stringify(mutation2.error)}</div>
+        </div>
     )
 }
 
@@ -109,10 +136,10 @@ function App(): React.ReactNode {
         <QueryClientProvider client={queryClient}>
             <div className={cn("flex flex-col px-2")}>
                 <h1 className="font-semibold">To do:</h1>
+                <TodoInput />
                 <Suspense fallback={<p>Loading...</p>}>
                     <TodoList />
                 </Suspense>
-                <TodoInput />
             </div>
         </QueryClientProvider>
     )
