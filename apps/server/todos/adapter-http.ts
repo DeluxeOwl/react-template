@@ -3,15 +3,16 @@
 
 import type { TodoApp } from "@react-template/domain/todos/app"
 
+import * as z from "zod"
 import * as errore from "errore"
 import { RPCHandler } from "@orpc/server/fetch"
 import { OpenAPIGenerator } from "@orpc/openapi"
-import { onError, implement } from "@orpc/server"
 import { CORSPlugin } from "@orpc/server/plugins"
 import { ZodSmartCoercionPlugin } from "@orpc/zod"
 import { OpenAPIHandler } from "@orpc/openapi/fetch"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 import { contract } from "@react-template/domain/todos/adapter-http-routes"
+import { onError, implement, ORPCError, ValidationError } from "@orpc/server"
 
 export interface TodoHTTPParams {
     app: TodoApp
@@ -93,6 +94,37 @@ export class TodoHTTP {
         })
 
         const rpcHandler = new RPCHandler(router, {
+            clientInterceptors: [
+                onError((error) => {
+                    console.error(error)
+                    if (
+                        error instanceof ORPCError
+                        && error.code === "BAD_REQUEST"
+                        && error.cause instanceof ValidationError
+                    ) {
+                        // If you only use Zod you can safely cast to ZodIssue[]
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+                        const zodError = new z.ZodError(error.cause.issues as z.core.$ZodIssue[])
+
+                        throw new ORPCError("INPUT_VALIDATION_FAILED", {
+                            cause:   error.cause,
+                            data:    z.flattenError(zodError),
+                            message: z.prettifyError(zodError),
+                            status:  422,
+                        })
+                    }
+
+                    if (
+                        error instanceof ORPCError
+                        && error.code === "INTERNAL_SERVER_ERROR"
+                        && error.cause instanceof ValidationError
+                    ) {
+                        throw new ORPCError("OUTPUT_VALIDATION_FAILED", {
+                            cause: error.cause,
+                        })
+                    }
+                }),
+            ],
             interceptors: [
                 onError((error) => {
                     console.error(error)

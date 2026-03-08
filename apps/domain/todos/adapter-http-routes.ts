@@ -1,9 +1,21 @@
+import * as z from "zod"
 import { oc, type ContractRouterClient } from "@orpc/contract"
 
 import { TodoOutputHTTPSchema, CreateTodoInputHTTPSchema, ListTodosOutputHTTPSchema, ToggleTodoInputHTTPSchema } from "./adapter-http-schemas"
 
-const commonErrors = {
+const sharedErrors = {
     INTERNAL_SERVER_ERROR: {},
+}
+
+// For fields that require validation
+const sharedErrorsMutating = {
+    INPUT_VALIDATION_FAILED: {
+        data: z.object({
+            fieldErrors: z.record(z.string(), z.array(z.string()).optional()),
+            formErrors:  z.array(z.string()),
+        }),
+        status: 422,
+    },
 }
 
 const createTodoContract = oc.route({
@@ -13,7 +25,8 @@ const createTodoContract = oc.route({
 })
     .input(CreateTodoInputHTTPSchema)
     .output(TodoOutputHTTPSchema).errors({
-        ...commonErrors,
+        ...sharedErrors,
+        ...sharedErrorsMutating,
     })
 
 const toggleTodoContract = oc.route({
@@ -21,7 +34,8 @@ const toggleTodoContract = oc.route({
     method:         "POST",
     path:           "/todos/{id}/toggle",
 }).input(ToggleTodoInputHTTPSchema).errors({
-    ...commonErrors,
+    ...sharedErrors,
+    ...sharedErrorsMutating,
     NOT_FOUND: {},
 })
 
@@ -32,7 +46,7 @@ const listTodosContract = oc
         method:         "GET",
         path:           "/todos",
     }).errors({
-        ...commonErrors,
+        ...sharedErrors,
     })
 
 export const contract = {

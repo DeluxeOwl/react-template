@@ -46,22 +46,8 @@ type MutationParams<T> = T extends UseMutationOptions<infer TData, infer TError,
     ? { data: TData, error: TError, variables: TVariables }
     : never
 
-// Specifically for your toggle procedure:
-type ToggleMutation = MutationParams<ReturnType<typeof api.todos.toggle.mutationOptions>>
-
 function TodoList(): React.ReactNode {
     const { data:todos } = useLiveSuspenseQuery((q) => q.from({ todo: todoCollection }))
-
-    const mutation = useMutation<
-        ToggleMutation["data"],
-        ToggleMutation["error"],
-        string>({
-        mutationFn: (id: string) => {
-            return todoCollection.update(id, (draft) => {
-                draft.done = !draft.done
-            }).isPersisted.promise
-        },
-    })
 
     return (
         <ol>
@@ -72,11 +58,12 @@ function TodoList(): React.ReactNode {
                         <button
                             className={cn(todo.done && "line-through")}
                             onClick={() => {
-                                mutation.mutate(todo.id)
+                                todoCollection.update(todo.id, (draft) => {
+                                    draft.done = !draft.done
+                                })
                             }}
                             type="button">{todo.name} ({todo.id}) {todo.done && "✅"}
                         </button>
-                        {mutation.isError && isDefinedError(mutation.error) && <div>{mutation.error.code === "NOT_FOUND"}</div> }
                     </li>
                 )
             })}
@@ -88,11 +75,7 @@ type CreateMutation = MutationParams<ReturnType<typeof api.todos.create.mutation
 function TodoInput(): React.ReactNode {
     const [text, setText] = useState("")
 
-    const mutation2 = useMutation<
-        CreateMutation["data"],
-        CreateMutation["error"],
-        string
-    >({
+    const mutation = useMutation<CreateMutation["data"], CreateMutation["error"], string>({
         mutationFn: async (name: string) => {
             const tx = todoCollection.insert({
                 done: false,
@@ -111,6 +94,8 @@ function TodoInput(): React.ReactNode {
         },
     })
 
+    console.info(isDefinedError(mutation.error))
+
     return (
         <div className="flex flex-col gap-2">
             <input
@@ -120,13 +105,13 @@ function TodoInput(): React.ReactNode {
                 }}
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                        mutation2.mutate(text)
+                        mutation.mutate(text)
                         setText("")
                     }
                 }}
                 type="text"
                 value={text} />
-            <div>{JSON.stringify(mutation2.error)}</div>
+            <div>{isDefinedError(mutation.error) && mutation.error.message}</div>
         </div>
     )
 }
