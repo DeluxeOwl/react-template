@@ -1,4 +1,4 @@
-import type { TodoRepository } from "../../todo-repository"
+import type { TodoRepository } from "./todo-repository"
 
 export type ListTodosQuery = undefined
 

@@ -1,6 +1,6 @@
 import * as z from "zod"
 
-import { TodoNameMinLength } from "../todo"
+import { TodoNameMinLength } from "./todo"
 
 // Schema definitions, used for forms, http communication etc.
 

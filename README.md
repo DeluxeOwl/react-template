@@ -41,3 +41,5 @@ Because we're not compiling packages, you can't add
 	]
 }
 ```
+
+NOTE: fixed with paths in `tsconfig.base.json`, and now only apps/web uses relative import paths.

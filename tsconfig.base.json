@@ -19,7 +19,16 @@
         "noUnusedParameters": true,
         "erasableSyntaxOnly": false,
         "noFallthroughCasesInSwitch": true,
-        "noUncheckedSideEffectImports": true
+        "noUncheckedSideEffectImports": true,
+        "paths": {
+            "@react-template/domain": [
+                "./packages/domain/index.ts"
+            ],
+            "@react-template/domain/*": [
+                "./packages/domain/*.ts",
+                "./packages/domain/*/index.ts"
+            ]
+        }
     },
     "exclude": [
         "node_modules/"

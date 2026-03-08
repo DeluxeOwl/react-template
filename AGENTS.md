@@ -73,7 +73,6 @@ bun run lint:all         # run the full pre-push gate (lefthook)
 ### Imports
 
 - Named imports for utilities and types: `import { foo, type Bar } from "..."`.
-- **Namespace imports** for domain packages: `import * as todos from "@react-template/domain/todos"`.
 - Imports are **sorted by line-length** (longest first within each group) via `eslint-plugin-perfectionist`.
 - No barrel re-exports that cause circular dependencies.
 - Path alias `~/` maps to `apps/web/` root (configured in `tsconfig.app.json` and Vite).
@@ -85,6 +84,7 @@ bun run lint:all         # run the full pre-push gate (lefthook)
 - No underscore prefix/suffix (use `_` only as an explicit unused parameter placeholder).
 - Event handlers must be descriptive: `handleTodoDelete`, not `handleClick`.
 - Boolean variables should read as predicates: `isDone`, `hasError`, `canSubmit`.
+- Flat files.
 
 ### Error Handling
 

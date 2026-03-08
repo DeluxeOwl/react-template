@@ -1,7 +1,7 @@
 import { createTodoApp } from "@react-template/domain/todos/app"
-import { TodoRepositoryInMemory } from "@react-template/domain/todos/adapters"
+import { TodoRepositoryInMemory } from "@react-template/domain/todos/adapter-repo-memory"
 
-import { TodoHTTP } from "~/todos/adapters"
+import { TodoHTTP } from "../todos/adapter-http"
 
 function main(): void {
     const port = 3041

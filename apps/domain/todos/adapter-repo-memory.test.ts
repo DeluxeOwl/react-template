@@ -3,10 +3,10 @@
 /* eslint-disable @typescript-eslint/require-await */
 import { it, expect, describe } from "vitest"
 
-import { Todo, type TodoDTO } from "../todo"
-import { TodoNotFoundError } from "../todo-repository"
-import { TransactionError } from "../../helpers/repo-helpers"
-import { TodoRepositoryInMemory } from "./repo-memory-adapter"
+import { Todo, type TodoDTO } from "./todo"
+import { TodoNotFoundError } from "./todo-repository"
+import { TransactionError } from "../helpers/repo-helpers"
+import { TodoRepositoryInMemory } from "./adapter-repo-memory"
 
 // Helper to create a domain object from a DTO for testing
 function createTestTodo(dto: TodoDTO): Todo {

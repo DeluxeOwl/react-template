@@ -492,7 +492,7 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
         },
         // Commands and queries dont specify output
         {
-            files: ["**/commands/*.ts", "**/queries/*.ts"],
+            files: ["**/command-*.ts", "**/query-*.ts"],
             rules: {
                 "@typescript-eslint/explicit-function-return-type": "off",
             },

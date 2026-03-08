@@ -1,6 +1,6 @@
-import { Todo, type TodoDTO } from "../../todos/todo"
-import { TodoNotFoundError, type TodoRepository } from "../todo-repository"
-import { type TransactionError, executeTransactionFlow } from "../../helpers/repo-helpers"
+import { Todo, type TodoDTO } from "./todo"
+import { TodoNotFoundError, type TodoRepository } from "./todo-repository"
+import { type TransactionError, executeTransactionFlow } from "../helpers/repo-helpers"
 
 interface TodoMemoryData {
     id:   string

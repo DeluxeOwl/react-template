@@ -1,8 +1,8 @@
 import * as errore from "errore"
 
-import type { TodoRepository } from "../../todo-repository"
+import type { TodoRepository } from "./todo-repository"
 
-import { CommandError } from "../../../cqrs"
+import { CommandError } from "../cqrs"
 
 export interface ToggleTodoCommand {
     id: string

@@ -1,10 +1,10 @@
 
-import type { TodoRepository } from "../todo-repository"
+import type { TodoRepository } from "./todo-repository"
 
-import * as cqrs from "../../cqrs"
-import { ListTodosHandler } from "./queries/list-todos"
-import { CreateTodoHandler } from "./commands/create-todo"
-import { ToggleTodoHandler } from "./commands/toggle-todo"
+import * as cqrs from "../cqrs"
+import { ListTodosHandler } from "./query-list-todos"
+import { CreateTodoHandler } from "./command-create-todo"
+import { ToggleTodoHandler } from "./command-toggle-todo"
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function createTodoApp(params: {

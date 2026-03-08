@@ -1,4 +1,4 @@
-import type * as todos from "@react-template/domain/todos"
+import type { ContractTypeClient } from "@react-template/domain/todos/adapter-http-routes"
 
 import { RPCLink } from "@orpc/client/fetch"
 import { onError, createORPCClient } from "@orpc/client"
@@ -13,5 +13,5 @@ const link = new RPCLink({
     url: "http://127.0.0.1:3041/rpc",
 })
 
-const client: todos.sharedORPC.ContractTypeClient = createORPCClient(link)
+const client: ContractTypeClient = createORPCClient(link)
 export const api = createTanstackQueryUtils(client)

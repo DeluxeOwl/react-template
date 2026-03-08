@@ -1,7 +1,7 @@
-import type { TodoRepository } from "../../todo-repository"
+import type { TodoRepository } from "./todo-repository"
 
-import { Todo } from "../../todo"
-import { CommandError } from "../../../cqrs"
+import { Todo } from "./todo"
+import { CommandError } from "../cqrs"
 
 export interface CreateTodoCommand {
     name: string

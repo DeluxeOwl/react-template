@@ -1,6 +1,6 @@
 import { oc, type ContractRouterClient } from "@orpc/contract"
 
-import { TodoOutputHTTPSchema, CreateTodoInputHTTPSchema, ListTodosOutputHTTPSchema, ToggleTodoInputHTTPSchema } from "./http-orpc-adapter-schemas"
+import { TodoOutputHTTPSchema, CreateTodoInputHTTPSchema, ListTodosOutputHTTPSchema, ToggleTodoInputHTTPSchema } from "./adapter-http-schemas"
 
 const commonErrors = {
     INTERNAL_SERVER_ERROR: {},

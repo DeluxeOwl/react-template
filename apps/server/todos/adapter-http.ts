@@ -10,8 +10,8 @@ import { onError, implement } from "@orpc/server"
 import { CORSPlugin } from "@orpc/server/plugins"
 import { ZodSmartCoercionPlugin } from "@orpc/zod"
 import { OpenAPIHandler } from "@orpc/openapi/fetch"
-import * as todos from "@react-template/domain/todos"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
+import { contract } from "@react-template/domain/todos/adapter-http-routes"
 
 export interface TodoHTTPParams {
     app: TodoApp
@@ -55,7 +55,7 @@ export class TodoHTTP {
     }
 
     fetchORPC() {
-        const os = implement(todos.sharedORPC.contract)
+        const os = implement(contract)
 
         const listTodo = os.todos.list.handler(async () => {
             const res = await this.app.queries.listTodos.handle(undefined)
