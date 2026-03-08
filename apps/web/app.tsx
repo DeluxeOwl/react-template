@@ -3,7 +3,6 @@ import { isDefinedError } from "@orpc/client"
 import { generateTodoID } from "@react-template/domain/todos/todo"
 import { queryCollectionOptions } from "@tanstack/query-db-collection"
 import { createCollection, useLiveSuspenseQuery } from "@tanstack/react-db"
-import { TodoOutputHTTPSchema } from "@react-template/domain/todos/adapter-http-schemas"
 import { QueryClient, useMutation, QueryClientProvider, type UseMutationOptions } from "@tanstack/react-query"
 
 import { api } from "~/api"
@@ -16,13 +15,9 @@ const todoCollection = createCollection(
         getKey:   (item) => item.id,
         onInsert: async ({ transaction }) => {
             const { modified } = transaction.mutations[0]
-            const serverResponse = await api.todos.create.call({
+            await api.todos.create.call({
                 name: modified.name,
             })
-
-            // This writes the "real" result directly after creating, telling tanstack to not refetch.
-            todoCollection.utils.writeInsert(serverResponse)
-            return { refetch: false }
         },
         onUpdate: async ({ transaction }) => {
             const { modified } = transaction.mutations[0]
@@ -41,10 +36,6 @@ const todoCollection = createCollection(
         queryKey: api.todos.key(),
     }),
 )
-
-type MutationParams<T> = T extends UseMutationOptions<infer TData, infer TError, infer TVariables>
-    ? { data: TData, error: TError, variables: TVariables }
-    : never
 
 function TodoList(): React.ReactNode {
     const { data:todos } = useLiveSuspenseQuery((q) => q.from({ todo: todoCollection }))
@@ -71,28 +62,24 @@ function TodoList(): React.ReactNode {
     )
 }
 
+type MutationParams<T> = T extends UseMutationOptions<infer TData, infer TError, infer TVariables>
+    ? { data: TData, error: TError, variables: TVariables }
+    : never
 type CreateMutation = MutationParams<ReturnType<typeof api.todos.create.mutationOptions>>
+
 function TodoInput(): React.ReactNode {
     // ast-grep-ignore
     const [text, setText] = useState("")
 
-    const mutation = useMutation<CreateMutation["data"], CreateMutation["error"], string>({
-        mutationFn: async (name: string) => {
-            const tx = todoCollection.insert({
+    const mutation = useMutation<void, CreateMutation["error"], CreateMutation["variables"]>({
+        mutationFn: async ({ name }) => {
+            await todoCollection.insert({
                 done: false,
                 id:   generateTodoID().toString(),
-                name,
-            })
-
-            // If you want the 'real' object here, your onInsert
-            // needs a way to pass it back. Currently, the easiest way
-            // is to just get it from the collection after persistence:
-            await tx.isPersisted.promise
-
-            // At this point, onInsert has finished and updated the collection
-            // oxlint-disable-next-line typescript/no-non-null-assertion -- We know for sure it's the real object.
-            return todoCollection.get(TodoOutputHTTPSchema.parse(tx.mutations[0].modified).id)!
+                name: name,
+            }).isPersisted.promise
         },
+        mutationKey: api.todos.create.mutationKey(),
     })
 
     return (
@@ -104,13 +91,13 @@ function TodoInput(): React.ReactNode {
                 }}
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                        mutation.mutate(text)
+                        mutation.mutate({ name: text })
                         setText("")
                     }
                 }}
                 type="text"
                 value={text} />
-            <div>{isDefinedError(mutation.error) && mutation.error.message}</div>
+            <div className={mutation.isError ? "h-10" : "invisible h-10"}>{isDefinedError(mutation.error) && mutation.error.message}</div>
         </div>
     )
 }
