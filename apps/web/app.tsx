@@ -5,7 +5,9 @@ import { ErrorBoundary } from "react-error-boundary"
 import { generateTodoID } from "@react-template/domain/todos/todo"
 import { queryCollectionOptions } from "@tanstack/query-db-collection"
 import { createCollection, useLiveSuspenseQuery } from "@tanstack/react-db"
-import { QueryClient, useMutation, QueryClientProvider, type UseMutationOptions } from "@tanstack/react-query"
+import {
+    QueryClient, useMutation, QueryClientProvider, type UseMutationOptions,
+} from "@tanstack/react-query"
 
 import { cn } from "~/ui/lib/utils"
 import { api, isKnownORPCError } from "~/api"
@@ -42,6 +44,13 @@ const todoCollection = createCollection(
 function TodoList(): React.ReactNode {
     const { data:todos } = useLiveSuspenseQuery((q) => q.from({ todo: todoCollection }))
 
+    // Note: tanstack db is weird, this checks only the
+    // query error, e.g. if I have an insert error, it wont be tracked here.
+    if (todoCollection.utils.isError) {
+        // eslint-disable-next-line no-restricted-syntax
+        throw todoCollection.utils.lastError
+    }
+
     return (
         <ol>
             {todos.map((todo) => {
@@ -65,7 +74,11 @@ function TodoList(): React.ReactNode {
 }
 
 type MutationParams<T> = T extends UseMutationOptions<infer TData, infer TError, infer TVariables>
-    ? { data: TData, error: TError, variables: TVariables }
+    ? {
+            data:      TData
+            error:     TError
+            variables: TVariables
+        }
     : never
 type CreateMutation = MutationParams<ReturnType<typeof api.todos.create.mutationOptions>>
 

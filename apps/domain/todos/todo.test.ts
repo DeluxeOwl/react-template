@@ -1,4 +1,6 @@
-import { it, expect, describe } from "vitest"
+import {
+    it, expect, describe,
+} from "vitest"
 
 import { Todo, NameLengthError } from "./todo"
 

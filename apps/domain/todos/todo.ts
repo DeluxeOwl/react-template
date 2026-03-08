@@ -40,7 +40,10 @@ export class Todo {
 
     static create(name: string): NameLengthError | Todo {
         if (name.length < TodoNameMinLength) {
-            return new NameLengthError({ length: name.length, lengthMin: TodoNameMinLength })
+            return new NameLengthError({
+                length:    name.length,
+                lengthMin: TodoNameMinLength,
+            })
         }
 
         return new Todo({

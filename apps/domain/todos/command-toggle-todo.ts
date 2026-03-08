@@ -1,8 +1,8 @@
-import * as errore from "errore"
 
-import type { TodoRepository } from "./todo-repository"
+import { P, match } from "ts-pattern"
 
 import { CommandError } from "../cqrs"
+import { TodoNotFoundError, type TodoRepository } from "./todo-repository"
 
 export interface ToggleTodoCommand {
     id: string
@@ -30,9 +30,8 @@ export class ToggleTodoHandler {
         })
 
         if (Error.isError(res)) {
-            return errore.matchErrorPartial(res, {
-                TodoNotFoundError: (e) => CommandError.create({ cause: e }),
-            }, (e) => CommandError.create({ cause: e }))
+            return match(res).with(P.instanceOf(TodoNotFoundError), (e) => CommandError.create({ cause: e }))
+                .otherwise((e) => CommandError.create({ cause: e }))
         }
     }
 }

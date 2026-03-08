@@ -83,7 +83,10 @@ export class TodoRepositoryInMemory implements TodoRepository {
                     }
                 }
 
-                return { rollback, txRepo }
+                return {
+                    rollback,
+                    txRepo,
+                }
             },
         })
     }

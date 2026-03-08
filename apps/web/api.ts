@@ -2,7 +2,9 @@ import type { ContractTypeClient } from "@react-template/domain/todos/adapter-ht
 
 import { RPCLink } from "@orpc/client/fetch"
 import { createTanstackQueryUtils } from "@orpc/tanstack-query"
-import { onError, ORPCError, createORPCClient, type InferClientErrorUnion } from "@orpc/client"
+import {
+    onError, ORPCError, createORPCClient, type InferClientErrorUnion,
+} from "@orpc/client"
 
 const link = new RPCLink({
     interceptors: [

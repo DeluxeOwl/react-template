@@ -4,7 +4,7 @@
 import type { TodoApp } from "@react-template/domain/todos/app"
 
 import * as z from "zod"
-import * as errore from "errore"
+import { P, match } from "ts-pattern"
 import { RPCHandler } from "@orpc/server/fetch"
 import { OpenAPIGenerator } from "@orpc/openapi"
 import { CORSPlugin } from "@orpc/server/plugins"
@@ -12,8 +12,10 @@ import { ZodSmartCoercionPlugin } from "@orpc/zod"
 import { OpenAPIHandler } from "@orpc/openapi/fetch"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 import { contract } from "@react-template/domain/todos/adapter-http-routes"
-import { onError, implement, ORPCError, ValidationError } from "@orpc/server"
-
+import { TodoNotFoundError } from "@react-template/domain/todos/todo-repository"
+import {
+    onError, implement, ORPCError, ValidationError,
+} from "@orpc/server"
 export interface TodoHTTPParams {
     app: TodoApp
 
@@ -75,13 +77,13 @@ export class TodoHTTP {
         const toggleTodo = os.todos.toggle.handler(async ({ errors, input }) => {
             const res = await this.app.commands.toggleTodo.handle({ id: input.params.id })
             if (Error.isError(res)) {
-                errore.matchErrorPartial(res.cause, {
-                    TodoNotFoundError: () => {
+                match(res.cause)
+                    .with(P.instanceOf(TodoNotFoundError), () => {
                         throw errors.NOT_FOUND({ message: "Todo not found" })
-                    },
-                }, () => {
-                    throw errors.INTERNAL_SERVER_ERROR()
-                })
+                    })
+                    .otherwise(() => {
+                        throw errors.INTERNAL_SERVER_ERROR()
+                    })
             }
         })
 
@@ -162,7 +164,10 @@ export class TodoHTTP {
                 const spec = await openAPIGenerator.generate(router, {
                     components: {
                         securitySchemes: {
-                            bearerAuth: { scheme: "bearer", type: "http" },
+                            bearerAuth: {
+                                scheme: "bearer",
+                                type:   "http",
+                            },
                         },
                     },
                     info: {

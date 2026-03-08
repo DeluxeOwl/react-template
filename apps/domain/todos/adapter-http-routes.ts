@@ -1,7 +1,9 @@
 import * as z from "zod"
 import { oc, type ContractRouterClient } from "@orpc/contract"
 
-import { TodoOutputHTTPSchema, CreateTodoInputHTTPSchema, ListTodosOutputHTTPSchema, ToggleTodoInputHTTPSchema } from "./adapter-http-schemas"
+import {
+    TodoOutputHTTPSchema, CreateTodoInputHTTPSchema, ListTodosOutputHTTPSchema, ToggleTodoInputHTTPSchema,
+} from "./adapter-http-schemas"
 
 const sharedErrors = {
     INTERNAL_SERVER_ERROR: {},
@@ -24,7 +26,8 @@ const createTodoContract = oc.route({
     path:           "/todos/create",
 })
     .input(CreateTodoInputHTTPSchema)
-    .output(TodoOutputHTTPSchema).errors({
+    .output(TodoOutputHTTPSchema)
+    .errors({
         ...sharedErrors,
         ...sharedErrorsMutating,
     })
@@ -33,11 +36,12 @@ const toggleTodoContract = oc.route({
     inputStructure: "detailed",
     method:         "POST",
     path:           "/todos/{id}/toggle",
-}).input(ToggleTodoInputHTTPSchema).errors({
-    ...sharedErrors,
-    ...sharedErrorsMutating,
-    NOT_FOUND: {},
-})
+}).input(ToggleTodoInputHTTPSchema)
+    .errors({
+        ...sharedErrors,
+        ...sharedErrorsMutating,
+        NOT_FOUND: {},
+    })
 
 const listTodosContract = oc
     .output(ListTodosOutputHTTPSchema)
@@ -45,7 +49,8 @@ const listTodosContract = oc
         inputStructure: "detailed",
         method:         "GET",
         path:           "/todos",
-    }).errors({
+    })
+    .errors({
         ...sharedErrors,
     })
 

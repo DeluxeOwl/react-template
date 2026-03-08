@@ -1,7 +1,9 @@
 
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable @typescript-eslint/require-await */
-import { it, expect, describe } from "vitest"
+import {
+    it, expect, describe,
+} from "vitest"
 
 import { Todo, type TodoDTO } from "./todo"
 import { TodoNotFoundError } from "./todo-repository"
@@ -25,7 +27,11 @@ describe("todo repository", () => {
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
-                const dto: TodoDTO = { done: false, id: "123", name: "Test Todo" }
+                const dto: TodoDTO = {
+                    done: false,
+                    id:   "123",
+                    name: "Test Todo",
+                }
                 const todo = createTestTodo(dto)
 
                 // WHEN
@@ -47,10 +53,18 @@ describe("todo repository", () => {
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
-                const initialDto: TodoDTO = { done: false, id: "123", name: "Initial Todo" }
+                const initialDto: TodoDTO = {
+                    done: false,
+                    id:   "123",
+                    name: "Initial Todo",
+                }
                 await repository.upsert(createTestTodo(initialDto))
 
-                const updatedDto: TodoDTO = { done: true, id: "123", name: "Updated Todo" }
+                const updatedDto: TodoDTO = {
+                    done: true,
+                    id:   "123",
+                    name: "Updated Todo",
+                }
                 const updatedTodo = createTestTodo(updatedDto)
 
                 // WHEN
@@ -78,7 +92,11 @@ describe("getting a todo by id", () => {
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
-                const dto: TodoDTO = { done: false, id: "123", name: "Test Todo" }
+                const dto: TodoDTO = {
+                    done: false,
+                    id:   "123",
+                    name: "Test Todo",
+                }
                 const todo = createTestTodo(dto)
                 await repository.upsert(todo)
 
@@ -136,8 +154,16 @@ describe("listing all todos", () => {
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
-                const dto1: TodoDTO = { done: false, id: "1", name: "Todo 1" }
-                const dto2: TodoDTO = { done: true, id: "2", name: "Todo 2" }
+                const dto1: TodoDTO = {
+                    done: false,
+                    id:   "1",
+                    name: "Todo 1",
+                }
+                const dto2: TodoDTO = {
+                    done: true,
+                    id:   "2",
+                    name: "Todo 2",
+                }
                 await repository.upsert(createTestTodo(dto1))
                 await repository.upsert(createTestTodo(dto2))
 
@@ -161,7 +187,11 @@ describe("deleting a todo", () => {
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
-                const dto: TodoDTO = { done: false, id: "123", name: "Test Todo" }
+                const dto: TodoDTO = {
+                    done: false,
+                    id:   "123",
+                    name: "Test Todo",
+                }
                 await repository.upsert(createTestTodo(dto))
 
                 // WHEN
@@ -201,7 +231,11 @@ describe("running within a transaction", () => {
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
-                const dto: TodoDTO = { done: false, id: "123", name: "Test Todo" }
+                const dto: TodoDTO = {
+                    done: false,
+                    id:   "123",
+                    name: "Test Todo",
+                }
                 const todo = createTestTodo(dto)
                 await repository.upsert(todo)
 
@@ -231,7 +265,11 @@ describe("running within a transaction", () => {
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
-                const dto: TodoDTO = { done: false, id: "123", name: "Test Todo" }
+                const dto: TodoDTO = {
+                    done: false,
+                    id:   "123",
+                    name: "Test Todo",
+                }
                 const todo = createTestTodo(dto)
                 await repository.upsert(todo)
 
@@ -264,7 +302,11 @@ describe("running within a transaction", () => {
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
-                const dto: TodoDTO = { done: false, id: "123", name: "Initial Todo" }
+                const dto: TodoDTO = {
+                    done: false,
+                    id:   "123",
+                    name: "Initial Todo",
+                }
                 await repository.upsert(createTestTodo(dto))
 
                 // WHEN
@@ -316,7 +358,11 @@ describe("running within a transaction", () => {
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
-                const dto: TodoDTO = { done: false, id: "123", name: "Initial Todo" }
+                const dto: TodoDTO = {
+                    done: false,
+                    id:   "123",
+                    name: "Initial Todo",
+                }
                 await repository.upsert(createTestTodo(dto))
 
                 // WHEN
@@ -354,7 +400,11 @@ describe("running within a transaction", () => {
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
-                const dto: TodoDTO = { done: false, id: "123", name: "Test Todo" }
+                const dto: TodoDTO = {
+                    done: false,
+                    id:   "123",
+                    name: "Test Todo",
+                }
                 await repository.upsert(createTestTodo(dto))
 
                 // WHEN

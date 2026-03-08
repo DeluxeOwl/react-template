@@ -23,6 +23,7 @@
     "dependencies": {
         "@orpc/contract": "^1.13.5",
         "errore": "^0.14.0",
+        "ts-pattern": "^5.9.0",
         "typeid-js": "^1.2.0",
         "zod": "^4.3.6"
     }
