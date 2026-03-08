@@ -1,5 +1,6 @@
 
 import { isDefinedError } from "@orpc/client"
+import { generateTodoID } from "@react-template/domain/todos/todo"
 import { queryCollectionOptions } from "@tanstack/query-db-collection"
 import { createCollection, useLiveSuspenseQuery } from "@tanstack/react-db"
 import { QueryClient, useMutation, QueryClientProvider, type UseMutationOptions } from "@tanstack/react-query"
@@ -91,7 +92,8 @@ function TodoInput(): React.ReactNode {
                 if (e.key === "Enter") {
                     todoCollection.insert({
                         done: false,
-                        id:   "",
+                        // If its empty it flashes
+                        id:   generateTodoID().toString(),
                         name: text,
                     })
                     setText("")
