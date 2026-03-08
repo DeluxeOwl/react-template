@@ -1,12 +1,14 @@
 
+import { match } from "ts-pattern"
 import { isDefinedError } from "@orpc/client"
+import { ErrorBoundary } from "react-error-boundary"
 import { generateTodoID } from "@react-template/domain/todos/todo"
 import { queryCollectionOptions } from "@tanstack/query-db-collection"
 import { createCollection, useLiveSuspenseQuery } from "@tanstack/react-db"
 import { QueryClient, useMutation, QueryClientProvider, type UseMutationOptions } from "@tanstack/react-query"
 
-import { api } from "~/api"
 import { cn } from "~/ui/lib/utils"
+import { api, isKnownORPCError } from "~/api"
 
 const queryClient = new QueryClient()
 
@@ -108,9 +110,21 @@ function App(): React.ReactNode {
             <div className={cn("flex flex-col px-2")}>
                 <h1 className="font-semibold">To do:</h1>
                 <TodoInput />
-                <Suspense fallback={<p>Loading...</p>}>
-                    <TodoList />
-                </Suspense>
+                <ErrorBoundary fallbackRender={({ error }) => {
+                    return match(error)
+                        .when(isKnownORPCError, (err) =>
+                            // ast-grep-ignore
+                            match(err)
+                                .with({ code: "INPUT_VALIDATION_FAILED" }, (validationErr) => <p>Bad Form {validationErr.data.formErrors[0]}</p>)
+                                .with({ code: "INTERNAL_SERVER_ERROR" }, () => <p>Internal server error</p>)
+                                .otherwise(() => <p>Generic ORPC Error</p>),
+                        )
+                        .otherwise(() => <p>foo</p>)
+                }}>
+                    <Suspense fallback={<p>Loading...</p>}>
+                        <TodoList />
+                    </Suspense>
+                </ErrorBoundary>
             </div>
         </QueryClientProvider>
     )

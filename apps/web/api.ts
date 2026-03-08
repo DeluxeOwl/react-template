@@ -1,8 +1,8 @@
 import type { ContractTypeClient } from "@react-template/domain/todos/adapter-http-routes"
 
 import { RPCLink } from "@orpc/client/fetch"
-import { onError, createORPCClient } from "@orpc/client"
 import { createTanstackQueryUtils } from "@orpc/tanstack-query"
+import { onError, ORPCError, createORPCClient, type InferClientErrorUnion } from "@orpc/client"
 
 const link = new RPCLink({
     interceptors: [
@@ -15,3 +15,12 @@ const link = new RPCLink({
 
 const client: ContractTypeClient = createORPCClient(link)
 export const api = createTanstackQueryUtils(client)
+
+type AllORPCErrors = InferClientErrorUnion<typeof client>
+type OnlyKnownORPCErrors = Exclude<AllORPCErrors, Error & { code?: never }>
+
+// The normal isDefinedError only works for client methods.
+// This is for usage in ErrorBoundaries.
+export function isKnownORPCError(error: unknown): error is OnlyKnownORPCErrors {
+    return error instanceof ORPCError
+}
