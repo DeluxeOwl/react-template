@@ -34,8 +34,14 @@ interface AstGrepMatch {
         }
     }
     range: {
-        end:   { column: number, line: number }
-        start: { column: number, line: number }
+        end:   {
+            column: number
+            line:   number
+        }
+        start: {
+            column: number
+            line:   number
+        }
     }
 }
 
@@ -111,7 +117,9 @@ interface RunASTGrep {
 }
 
 async function runAstGrep(params: Readonly<RunASTGrep>): Promise<FunctionInfo[]> {
-    const { dirs, lang, pattern } = params
+    const {
+        dirs, lang, pattern,
+    } = params
     const args = ["run", "--pattern", pattern, "--lang", lang, "--json", ...dirs]
     const result = await $`ast-grep ${args}`.quiet().nothrow()
 
@@ -141,7 +149,9 @@ export async function findAllFunctions(dirs: readonly string[]): Promise<Functio
     for (const lang of ["ts", "tsx"]) {
         for (const pattern of PATTERNS) {
             const functions = await runAstGrep({
-                dirs, lang, pattern,
+                dirs,
+                lang,
+                pattern,
             })
             allFunctions.push(...dedupeByLocation(functions, seen))
         }

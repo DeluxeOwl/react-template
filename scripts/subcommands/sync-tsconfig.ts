@@ -13,7 +13,9 @@
 
 import fg from "fast-glob"
 import path from "node:path"
-import { readdir, readFile, writeFile } from "node:fs/promises"
+import {
+    readdir, readFile, writeFile,
+} from "node:fs/promises"
 
 const ROOT = path.join(import.meta.dirname, "../..")
 
@@ -54,7 +56,12 @@ async function parseWorkspacePackage(pkgJsonPath: string): Promise<null | Worksp
         const relativePath = path.relative(ROOT, pkgDir)
         const tsconfigPaths = await findTsconfigsWithReferences(pkgDir)
 
-        return { name: packageJson.name, packageJson, path: relativePath, tsconfigPaths }
+        return {
+            name: packageJson.name,
+            packageJson,
+            path: relativePath,
+            tsconfigPaths,
+        }
     } catch {
     // Skip if invalid package.json
         return null
@@ -129,10 +136,16 @@ function parseJsonWithComments(content: string): TsConfig {
     return JSON.parse(stripped) as TsConfig
 }
 
-async function readTsconfig(tsConfigPath: string): Promise<{ content: string, parsed: TsConfig }> {
+async function readTsconfig(tsConfigPath: string): Promise<{
+    content: string
+    parsed:  TsConfig
+}> {
     const content = await readFile(tsConfigPath, "utf8")
     const parsed = parseJsonWithComments(content)
-    return { content, parsed }
+    return {
+        content,
+        parsed,
+    }
 }
 
 function updateReferences(
@@ -215,7 +228,10 @@ function getWorkspaceDeps(
     pkg: WorkspacePackage,
     packageByName: Map<string, WorkspacePackage>,
 ): WorkspacePackage[] {
-    const allDeps = { ...pkg.packageJson.dependencies, ...pkg.packageJson.devDependencies }
+    const allDeps = {
+        ...pkg.packageJson.dependencies,
+        ...pkg.packageJson.devDependencies,
+    }
 
     return Object.entries(allDeps)
         .filter(([_, version]) => version.startsWith("workspace:"))

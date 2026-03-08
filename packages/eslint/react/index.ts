@@ -111,8 +111,13 @@ export default function createReactConfig(rootDir: string): Config[] {
                 "sweepit/no-useless-hook":                             "error",
                 ...betterTailwindcss.configs["stylistic-warn"].rules,
                 ...betterTailwindcss.configs["correctness-error"].rules,
-                "better-tailwindcss/enforce-consistent-line-wrapping": ["error", { group: "newLine", printWidth: 120 }],
-                "better-tailwindcss/no-restricted-classes":            [
+                "better-tailwindcss/enforce-consistent-line-wrapping": [
+                    "error", {
+                        group:      "newLine",
+                        printWidth: 120,
+                    },
+                ],
+                "better-tailwindcss/no-restricted-classes": [
                     // See https://github.com/schoero/eslint-plugin-better-tailwindcss/issues/267
                     "warn", {
                         restrict: [

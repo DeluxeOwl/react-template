@@ -1,7 +1,11 @@
 import { runMain, defineCommand } from "citty"
 
-import { reportResults, findDuplicates, findAllFunctions } from "./subcommands/find-duplicate-functions"
-import { syncRootTsconfig, syncPackageTsconfigs, findWorkspacePackages } from "./subcommands/sync-tsconfig"
+import {
+    reportResults, findDuplicates, findAllFunctions,
+} from "./subcommands/find-duplicate-functions"
+import {
+    syncRootTsconfig, syncPackageTsconfigs, findWorkspacePackages,
+} from "./subcommands/sync-tsconfig"
 
 const findDuplicatesCommand = defineCommand({
     args: {

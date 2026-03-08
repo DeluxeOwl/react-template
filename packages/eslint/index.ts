@@ -80,7 +80,6 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
             },
 
             rules: {
-                // "@stylistic/max-len": ["error", { code: 80 }], this doesnt work https://github.com/eslint-stylistic/eslint-stylistic/issues/686
                 "@stylistic/array-bracket-newline": [
                     "error",
                     {
@@ -128,12 +127,14 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                         mode: "strict",
                     },
                 ],
+                // "@stylistic/max-len":           ["error", { code: 120 }],
                 "@stylistic/multiline-ternary": [
                     "error", "always-multiline", {
                         ignoreJSX: true,
                     },
                 ],
-                "@stylistic/no-multi-spaces": [
+                "@stylistic/newline-per-chained-call": ["error", { ignoreChainWithDepth: 2 }],
+                "@stylistic/no-multi-spaces":          [
                     "error",
                     {
                         exceptions: {
@@ -152,8 +153,9 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                 "@stylistic/object-curly-newline": [
                     "error",
                     {
-                        consistent: true,
-                        multiline:  true,
+                        consistent:    true,
+                        minProperties: 3,
+                        multiline:     true,
                     },
                 ],
                 "@stylistic/object-property-newline":                 ["error", { allowAllPropertiesOnSameLine: true }],
@@ -164,10 +166,15 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                 "@typescript-eslint/consistent-type-definitions":     ["error", "interface"],
                 "@typescript-eslint/consistent-type-exports":         "error",
                 "@typescript-eslint/consistent-type-imports":         ["error", { fixStyle: "inline-type-imports" }],
-                "@typescript-eslint/explicit-function-return-type":   ["error", { allowExpressions: true, allowIIFEs: true }],
+                "@typescript-eslint/explicit-function-return-type":   [
+                    "error", {
+                        allowExpressions: true,
+                        allowIIFEs:       true,
+                    },
+                ],
                 // For ordering classes and such, conflicts with perfectionist/sort-interfaces
                 // Could maybe configure it for classes
-                "@typescript-eslint/member-ordering":                 [
+                "@typescript-eslint/member-ordering": [
                     "off",
                     { default: ["signature", "method", "constructor", "field"] },
                 ],
@@ -419,7 +426,12 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                         type: "line-length",
                     },
                 ],
-                "sweepit/complexity":                  ["error", { max: 10, variant: "modified" }],
+                "sweepit/complexity": [
+                    "error", {
+                        max:     10,
+                        variant: "modified",
+                    },
+                ],
                 "sweepit/no-return-object-repetition": "error",
                 "unicorn/better-regex":                "error",
                 "unicorn/consistent-destructuring":    "error",
