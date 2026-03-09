@@ -18,7 +18,8 @@
         "jetpack-io.devbox",
         "mkhl.direnv",
         "blazejkustra.react-compiler-marker",
-        "vitest.explorer"
+        "vitest.explorer",
+        "LachyFS.kanban-markdown"
     ],
     "unwantedRecommendations": [
         "esbenp.prettier-vscode"
