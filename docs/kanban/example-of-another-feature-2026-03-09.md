@@ -10,7 +10,7 @@ completedAt: null
 labels: []
 order: "a0"
 ---
-# Example of another feature
 
+# Example of another feature
 
 Testing
