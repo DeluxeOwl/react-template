@@ -1,3 +1,5 @@
+import { Result } from "@praha/byethrow"
+
 import type { TodoRepository } from "./todo-repository"
 
 export type ListTodosQuery = undefined
@@ -19,11 +21,12 @@ export class ListTodosHandler {
         return new ListTodosHandler({ repo })
     }
 
-    async handle(_: ListTodosQuery) {
-        const todos = await this.state.repo.listTodos()
-
-        return {
-            data: todos.map((t) => t.toDTO()),
-        } satisfies ListTodoQueryOutput
+    handle(_: ListTodosQuery) {
+        return Result.pipe(
+            this.state.repo.listTodos(),
+            Result.andThen((todos) => Result.succeed({
+                data: todos.map((t) => t.toDTO()),
+            } satisfies ListTodoQueryOutput)),
+        )
     }
 }

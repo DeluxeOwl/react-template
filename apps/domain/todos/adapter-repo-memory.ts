@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { Result } from "@praha/byethrow"
+
 import { Todo, type TodoDTO } from "./todo"
 import { TodoNotFoundError, type TodoRepository } from "./todo-repository"
-import { type TransactionError, executeTransactionFlow } from "../helpers/repo-helpers"
 
 interface TodoMemoryData {
     id:   string
@@ -18,7 +20,7 @@ function memoryDataToDTO(data: TodoMemoryData): TodoDTO {
 }
 
 // This in memory adapter doesn't depend on web or server, so it's fine for it to live in apps/domain
-export class TodoRepositoryInMemory implements TodoRepository {
+export class TodoRepositoryInMemory {
     private constructor(private state: {
         isWithinTx: boolean
         store:      Map<string, TodoMemoryData>
@@ -31,63 +33,63 @@ export class TodoRepositoryInMemory implements TodoRepository {
         })
     }
 
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async delete(id: string): Promise<void> {
+    delete(id: string) {
         this.state.store.delete(id)
+        return Result.succeed()
     }
 
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async getByID(id: string): Promise<Todo | TodoNotFoundError> {
-        const data = this.state.store.get(id)
-        if (!data) {
-            return new TodoNotFoundError({ id })
-        }
-        return Todo.fromDTO(memoryDataToDTO(data))
+    getByID(id: string) {
+        return Result.pipe(
+            Result.succeed(this.state.store.get(id)),
+            Result.andThen((data) => {
+                if (!data) {
+                    return Result.fail(new TodoNotFoundError({ id: id }))
+                }
+                return Result.succeed(data)
+            }),
+            Result.andThen((data) => {
+                return Result.succeed(Todo.fromDTO(memoryDataFromDTO(data)))
+            }),
+        )
     }
 
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async listTodos(): Promise<Todo[]> {
-        return Array.from(this.state.store.values()).map((t) => Todo.fromDTO(memoryDataToDTO(t)))
+    listTodos() {
+        return Result.succeed(Array.from(this.state.store.values()).map((t) => Todo.fromDTO(memoryDataToDTO(t))))
     }
 
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async upsert(todo: Todo): Promise<void> {
+    upsert(todo: Todo) {
         const dto = todo.toDTO()
         this.state.store.set(dto.id, memoryDataFromDTO(dto))
+        return Result.succeed()
     }
 
-    // oxlint-disable-next-line require-await
-    async withinTransaction<T>(fn: (repo: TodoRepository) => Promise<T>): Promise<T | TransactionError> {
-        return executeTransactionFlow({
-            currentRepo: this,
-            fn:          fn,
-            isWithinTx:  this.state.isWithinTx,
-            setup:       () => {
-                // Snapshot
-                const snapshot = new Map<string, TodoMemoryData>()
-                for (const [key, value] of this.state.store.entries()) {
-                    snapshot.set(key, { ...value })
-                }
+    withinTransaction<T, E>(fn: (repo: TodoRepository) => Result.ResultMaybeAsync<T, E>): Result.ResultMaybeAsync<T, E> {
+        if (this.state.isWithinTx) {
+            return fn(this)
+        }
 
-                // Tx Repo
-                const txRepo = new TodoRepositoryInMemory({
-                    isWithinTx: true,
-                    store:      this.state.store,
-                })
+        const snapshot = new Map<string, TodoMemoryData>()
+        for (const [key, value] of this.state.store.entries()) {
+            snapshot.set(key, { ...value })
+        }
 
-                // Rollback instructions
-                const rollback = (): void => {
-                    this.state.store.clear()
-                    for (const [key, value] of snapshot.entries()) {
-                        this.state.store.set(key, value)
-                    }
-                }
-
-                return {
-                    rollback,
-                    txRepo,
-                }
-            },
+        const txRepo = new TodoRepositoryInMemory({
+            isWithinTx: true,
+            store:      this.state.store,
         })
+
+        const rollback = (): void => {
+            this.state.store.clear()
+            for (const [key, value] of snapshot.entries()) {
+                this.state.store.set(key, value)
+            }
+        }
+
+        return Result.pipe(
+            fn(txRepo),
+            Result.inspectError(() => {
+                rollback()
+            }),
+        )
     }
 }

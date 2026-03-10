@@ -2,8 +2,8 @@
 import { match } from "ts-pattern"
 import { isDefinedError } from "@orpc/client"
 import { ErrorBoundary } from "react-error-boundary"
-import { generateTodoID } from "@react-template/domain/todos/todo"
 import { queryCollectionOptions } from "@tanstack/query-db-collection"
+import { generateTodoIDString } from "@react-template/domain/todos/todo"
 import { createCollection, useLiveSuspenseQuery } from "@tanstack/react-db"
 import {
     QueryClient, useMutation, QueryClientProvider, type UseMutationOptions,
@@ -90,7 +90,7 @@ function TodoInput(): React.ReactNode {
         mutationFn: async ({ name }) => {
             await todoCollection.insert({
                 done: false,
-                id:   generateTodoID().toString(),
+                id:   generateTodoIDString(),
                 name: name,
             }).isPersisted.promise
         },

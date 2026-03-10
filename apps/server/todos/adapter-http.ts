@@ -4,7 +4,8 @@
 import type { TodoApp } from "@react-template/domain/todos/app"
 
 import * as z from "zod"
-import { P, match } from "ts-pattern"
+import { match } from "ts-pattern"
+import { Result } from "@praha/byethrow"
 import { RPCHandler } from "@orpc/server/fetch"
 import { OpenAPIGenerator } from "@orpc/openapi"
 import { CORSPlugin } from "@orpc/server/plugins"
@@ -12,7 +13,6 @@ import { ZodSmartCoercionPlugin } from "@orpc/zod"
 import { OpenAPIHandler } from "@orpc/openapi/fetch"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 import { contract } from "@react-template/domain/todos/adapter-http-routes"
-import { TodoNotFoundError } from "@react-template/domain/todos/todo-repository"
 import {
     onError, implement, ORPCError, ValidationError,
 } from "@orpc/server"
@@ -61,29 +61,29 @@ export class TodoHTTP {
         const os = implement(contract)
 
         const listTodo = os.todos.list.handler(async () => {
-            const res = await this.app.queries.listTodos.handle(undefined)
+            const res = await Result.unwrap(this.app.queries.listTodos.handle(undefined))
             return { data: res.data }
         })
 
         const createTodo = os.todos.create.handler(async ({ input }) => {
             const res = await this.app.commands.createTodo.handle({ name: input.name })
+
             // This is handled by validation before, so no special cases here
-            if (Error.isError(res)) {
-                throw res
+            if (Result.isFailure(res)) {
+                throw res.error
             }
-            return res
+
+            return res.value
         })
 
         const toggleTodo = os.todos.toggle.handler(async ({ errors, input }) => {
             const res = await this.app.commands.toggleTodo.handle({ id: input.params.id })
-            if (Error.isError(res)) {
-                match(res.cause)
-                    .with(P.instanceOf(TodoNotFoundError), () => {
+            if (Result.isFailure(res)) {
+                match(res.error.name)
+                    .with("TodoNotFoundError", () => {
                         throw errors.NOT_FOUND({ message: "Todo not found" })
                     })
-                    .otherwise(() => {
-                        throw errors.INTERNAL_SERVER_ERROR()
-                    })
+                    .exhaustive()
             }
         })
 

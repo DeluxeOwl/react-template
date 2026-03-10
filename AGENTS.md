@@ -89,24 +89,36 @@ bun run lint:all         # run the full pre-push gate (lefthook)
 ### Error Handling
 
 - **Never `throw`** — `ThrowStatement` and `Promise.reject()` are banned by ESLint rule.
-- Return errors as values using the `errore` library:
+- Return errors as values in the cqrs, domain and repositories using the `byethrow` library:
 
 ```ts
-import * as errore from "errore"
+import { Result } from "@praha/byethrow"
 
-export class NameLengthError extends errore.createTaggedError({
-    extends: TodoError,
-    message: "name length must be less than $length",
+export class NameLengthError extends ErrorFactory({
+    fields:  ErrorFactory.fields<{ length: number }>(),
+    message: `name length must be greater than ${TodoNameMinLength}`,
     name:    "NameLengthError",
 }) {}
 
-// Return type union instead of throwing
-static create(name: string): NameLengthError | Todo {
-    if (name.length === 0) return new NameLengthError({ length: 100 })
-    return new Todo({ done: false, id: generateTodoID(), name })
+// Return result
+export class Todo {
+    static create(name: string): Result.Result<Todo, NameLengthError> {
+        if (name.length < TodoNameMinLength) {
+            return Result.fail(new NameLengthError({
+                length: name.length,
+            }))
+        }
+
+        return Result.succeed(new Todo({
+            done: false,
+            id:   generateTodoID(),
+            name: name,
+        }))
+    }
 }
 ```
 
+- You should load the `byethrow` skill to learn more.
 - Check the returned value at the call site; never ignore it.
 
 ### Domain Classes (Private Constructor Pattern)

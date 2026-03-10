@@ -1,8 +1,7 @@
 
-import { P, match } from "ts-pattern"
+import { Result } from "@praha/byethrow"
 
-import { CommandError } from "../cqrs"
-import { TodoNotFoundError, type TodoRepository } from "./todo-repository"
+import type { TodoRepository } from "./todo-repository"
 
 export interface ToggleTodoCommand {
     id: string
@@ -17,21 +16,15 @@ export class ToggleTodoHandler {
         return new ToggleTodoHandler({ repo })
     }
 
-    async handle(cmd: ToggleTodoCommand) {
-        const res = await this.state.repo.withinTransaction(async (repo) => {
-            const todo = await repo.getByID(cmd.id)
-            if (Error.isError(todo)) {
-                return todo
-            }
-
-            todo.toggle()
-
-            await repo.upsert(todo)
+    handle(cmd: ToggleTodoCommand) {
+        return this.state.repo.withinTransaction((repo) => {
+            return Result.pipe(
+                repo.getByID(cmd.id),
+                Result.andThen((todo) => {
+                    todo.toggle()
+                    return repo.upsert(todo)
+                }),
+            )
         })
-
-        if (Error.isError(res)) {
-            return match(res).with(P.instanceOf(TodoNotFoundError), (e) => CommandError.create({ cause: e }))
-                .otherwise((e) => CommandError.create({ cause: e }))
-        }
     }
 }

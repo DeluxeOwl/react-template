@@ -1,6 +1,7 @@
 
-import * as errore from "errore"
+import { Result } from "@praha/byethrow"
 import { TypeID, typeid } from "typeid-js"
+import { ErrorFactory } from "@praha/error-factory"
 
 export const TodoNameMinLength = 1
 
@@ -11,12 +12,15 @@ export function generateTodoID(): TodoID {
     return typeid(TodoIDPrefix)
 }
 
-// These are all domain errors.
-export class TodoError extends Error {}
+export function generateTodoIDString(): string {
+    return typeid(TodoIDPrefix).toString()
+}
 
-export class NameLengthError extends errore.createTaggedError({
-    extends: TodoError,
-    message: "name length $length must be greater than $lengthMin",
+// These are all domain errors.
+
+export class NameLengthError extends ErrorFactory({
+    fields:  ErrorFactory.fields<{ length: number }>(),
+    message: `name length must be greater than ${TodoNameMinLength}`,
     name:    "NameLengthError",
 }) {}
 
@@ -38,20 +42,18 @@ export class Todo {
         },
     ) {}
 
-    static create(name: string): NameLengthError | Todo {
+    static create(name: string): Result.Result<Todo, NameLengthError> {
         if (name.length < TodoNameMinLength) {
-            return new NameLengthError({
-                length:    name.length,
-                lengthMin: TodoNameMinLength,
-            })
+            return Result.fail(new NameLengthError({
+                length: name.length,
+            }))
         }
 
-        return new Todo({
+        return Result.succeed(new Todo({
             done: false,
-
             id:   generateTodoID(),
             name: name,
-        })
+        }))
     }
 
     static fromDTO(data: TodoDTO): Todo {

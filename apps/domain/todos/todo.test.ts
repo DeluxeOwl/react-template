@@ -1,3 +1,4 @@
+import { Result } from "@praha/byethrow"
 import {
     it, expect, describe,
 } from "vitest"
@@ -14,11 +15,10 @@ describe("creating a todo", () => {
                 const name = "hello"
 
                 // WHEN
-                const result = Todo.create(name)
+                const todoEntry = Result.unwrap(Todo.create(name))
 
                 // THEN
-                expect(result).toBeInstanceOf(Todo)
-                expect((result as Todo).toDTO().name).toBe("hello")
+                expect(todoEntry.toDTO().name).toBe("hello")
             })
         })
     })
@@ -35,7 +35,7 @@ describe("creating a todo", () => {
                 const result = Todo.create(name)
 
                 // THEN
-                expect(result).toBeInstanceOf(NameLengthError)
+                expect(() => Result.unwrap(result)).toThrowError(NameLengthError)
             })
         })
     })

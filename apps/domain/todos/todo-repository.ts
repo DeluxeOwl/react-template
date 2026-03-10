@@ -1,24 +1,27 @@
-import * as errore from "errore"
+
+import type { Result } from "@praha/byethrow"
+
+import { ErrorFactory } from "@praha/error-factory"
 
 import type { Todo } from "./todo"
-import type { TransactionError } from "../helpers/repo-helpers"
 
-export class TodoRepositoryError extends Error {}
-
-export class TodoNotFoundError extends errore.createTaggedError({
-    extends: TodoRepositoryError,
-    message: "todo with id $id not found",
+export class TodoNotFoundError extends ErrorFactory({
+    fields:  ErrorFactory.fields<{ id: string }>(),
+    message: "Todo not found",
     name:    "TodoNotFoundError",
 }) {}
 
 // This can be split into smaller interfaces if needed.
+// Repositories use Result.ResultMaybeAsync, because some of the repos (in memory)
+// are not async.
 export interface TodoRepository {
-    listTodos(): Promise<Todo[]>
-    delete(id: string): Promise<void>
-    upsert(todo: Todo): Promise<void>
-    getByID(id: string): Promise<Todo | TodoNotFoundError>
+    listTodos(): Result.ResultMaybeAsync<Todo[], never>
+    delete(id: string): Result.ResultMaybeAsync<void, never>
+    upsert(todo: Todo):  Result.ResultMaybeAsync<void, never>
+    getByID(id: string): Result.ResultMaybeAsync<Todo, TodoNotFoundError>
+
     // Executes the given function wrapped in a database transaction.
-    withinTransaction<T>(
-        fn: (repo: TodoRepository) => Promise<T>
-    ): Promise<T | TransactionError>
+    withinTransaction<T, E>(
+        fn: (repo: TodoRepository) => Result.ResultMaybeAsync<T, E>
+    ): Result.ResultMaybeAsync<T, E>
 }

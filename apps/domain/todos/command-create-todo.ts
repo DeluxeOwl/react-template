@@ -1,7 +1,9 @@
+
+import { Result } from "@praha/byethrow"
+
 import type { TodoRepository } from "./todo-repository"
 
 import { Todo } from "./todo"
-import { CommandError } from "../cqrs"
 
 export interface CreateTodoCommand {
     name: string
@@ -16,15 +18,11 @@ export class CreateTodoHandler {
         return new CreateTodoHandler({ repo })
     }
 
-    async handle(cmd: CreateTodoCommand) {
-        const todo = Todo.create(cmd.name)
-
-        if (Error.isError(todo)) {
-            return CommandError.create({ cause: todo })
-        }
-
-        await this.state.repo.upsert(todo)
-
-        return todo.toDTO()
+    handle(cmd: CreateTodoCommand) {
+        return Result.pipe(
+            Todo.create(cmd.name),
+            Result.andThrough((todo) => this.state.repo.upsert(todo)),
+            Result.andThen((todo) => Result.succeed(todo.toDTO())),
+        )
     }
 }

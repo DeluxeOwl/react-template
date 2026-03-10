@@ -72,7 +72,7 @@ ruleTester.run("prefer-state-class", preferStateClassRule, {
         // Extends expression with no constructor
         {
             code: `
-                export class NameLengthError extends errore.createTaggedError({
+                export class NameLengthError extends something.createTaggedError({
                     extends: TodoError,
                     message: "name length must be less than $length",
                     name:    "NameLengthError",

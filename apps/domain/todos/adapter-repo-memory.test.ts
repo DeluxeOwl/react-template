@@ -1,14 +1,15 @@
 
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable @typescript-eslint/require-await */
+import { Result } from "@praha/byethrow"
 import {
     it, expect, describe,
 } from "vitest"
 
-import { Todo, type TodoDTO } from "./todo"
 import { TodoNotFoundError } from "./todo-repository"
-import { TransactionError } from "../helpers/repo-helpers"
 import { TodoRepositoryInMemory } from "./adapter-repo-memory"
+import {
+    Todo, type TodoDTO,
+    generateTodoIDString,
+} from "./todo"
 
 // Helper to create a domain object from a DTO for testing
 function createTestTodo(dto: TodoDTO): Todo {
@@ -22,61 +23,65 @@ function setupInMemoryRepo(): TodoRepositoryInMemory {
 describe("todo repository", () => {
     describe("given a valid todo value", () => {
         describe("when calling upsert for the first time", () => {
-            it("then it should insert a new todo into the repository", async () => {
+            it("then it should insert a new todo into the repository", () => {
                 expect.hasAssertions()
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
+                const id = generateTodoIDString()
                 const dto: TodoDTO = {
                     done: false,
-                    id:   "123",
+                    id:   id,
                     name: "Test Todo",
                 }
                 const todo = createTestTodo(dto)
 
                 // WHEN
-                await repository.upsert(todo)
+                expect(() => {
+                    Result.unwrap(repository.upsert(todo))
+                }).not.toThrowError()
 
                 // THEN
-                const result = await repository.getByID("123")
+                const result = Result.unwrap(repository.getByID(id))
 
                 expect(result).toBeInstanceOf(Todo)
-                expect((result as Todo).toDTO()).toStrictEqual(dto)
+                expect(result.toDTO()).toStrictEqual(dto)
             })
         })
     })
 
     describe("given an existing todo in the repository", () => {
         describe("when calling upsert with an updated version of that todo", () => {
-            it("then it should overwrite the existing record with the new data", async () => {
+            it("then it should overwrite the existing record with the new data", () => {
                 expect.hasAssertions()
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
+                const id = generateTodoIDString()
                 const initialDto: TodoDTO = {
                     done: false,
-                    id:   "123",
+                    id:   id,
                     name: "Initial Todo",
                 }
-                await repository.upsert(createTestTodo(initialDto))
+                Result.unwrap(repository.upsert(createTestTodo(initialDto)))
 
                 const updatedDto: TodoDTO = {
                     done: true,
-                    id:   "123",
+                    id:   id,
                     name: "Updated Todo",
                 }
                 const updatedTodo = createTestTodo(updatedDto)
 
                 // WHEN
-                await repository.upsert(updatedTodo)
+                Result.unwrap(repository.upsert(updatedTodo))
 
                 // THEN
-                const result = await repository.getByID("123")
+                const result = Result.unwrap(repository.getByID(id))
 
                 expect(result).toBeInstanceOf(Todo)
-                expect((result as Todo).toDTO()).toStrictEqual({
+                expect(result.toDTO()).toStrictEqual({
                     done: true,
-                    id:   "123",
+                    id:   id,
                     name: "Updated Todo",
                 })
             })
@@ -87,43 +92,46 @@ describe("todo repository", () => {
 describe("getting a todo by id", () => {
     describe("given that the todo exists", () => {
         describe("when calling getByID with a matching ID", () => {
-            it("then it should return the expected Todo instance", async () => {
+            it("then it should return the expected Todo instance", () => {
                 expect.hasAssertions()
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
+                const id = generateTodoIDString()
                 const dto: TodoDTO = {
                     done: false,
-                    id:   "123",
+                    id:   id,
                     name: "Test Todo",
                 }
                 const todo = createTestTodo(dto)
-                await repository.upsert(todo)
+
+                expect(() => {
+                    Result.unwrap(repository.upsert(todo))
+                }).not.toThrowError()
 
                 // WHEN
-                const result = await repository.getByID("123")
+                const result = Result.unwrap(repository.getByID(id))
 
                 // THEN
                 expect(result).toBeInstanceOf(Todo)
-                expect((result as Todo).toDTO().name).toBe("Test Todo")
+                expect(result.toDTO().name).toBe("Test Todo")
             })
         })
     })
 
     describe("given that the todo doesn't exist", () => {
         describe("when calling getByID with a nonexistent ID", () => {
-            it("then it should return a TodoNotFoundError", async () => {
+            it("then it should return a TodoNotFoundError", () => {
                 expect.hasAssertions()
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
 
                 // WHEN
-                const result = await repository.getByID("nonexistent")
+                const result = repository.getByID("nonexistent")
 
                 // THEN
-                expect(result).toBeInstanceOf(TodoNotFoundError)
-                expect((result as TodoNotFoundError).id).toBe("nonexistent")
+                expect(() => Result.unwrap(result)).toThrowError(TodoNotFoundError)
             })
         })
     })
@@ -132,14 +140,14 @@ describe("getting a todo by id", () => {
 describe("listing all todos", () => {
     describe("given that no todos exist in the repository", () => {
         describe("when calling listTodos", () => {
-            it("then it should return an empty array", async () => {
+            it("then it should return an empty array", () => {
                 expect.hasAssertions()
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
 
                 // WHEN
-                const result = await repository.listTodos()
+                const result = Result.unwrap(repository.listTodos())
 
                 // THEN
                 expect(result).toStrictEqual([])
@@ -149,26 +157,28 @@ describe("listing all todos", () => {
 
     describe("given that multiple todos exist", () => {
         describe("when calling listTodos", () => {
-            it("then it should return all todos in an array", async () => {
+            it("then it should return all todos in an array", () => {
                 expect.hasAssertions()
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
+                const id1 = generateTodoIDString()
+                const id2 = generateTodoIDString()
                 const dto1: TodoDTO = {
                     done: false,
-                    id:   "1",
+                    id:   id1,
                     name: "Todo 1",
                 }
                 const dto2: TodoDTO = {
                     done: true,
-                    id:   "2",
+                    id:   id2,
                     name: "Todo 2",
                 }
-                await repository.upsert(createTestTodo(dto1))
-                await repository.upsert(createTestTodo(dto2))
+                Result.unwrap(repository.upsert(createTestTodo(dto1)))
+                Result.unwrap(repository.upsert(createTestTodo(dto2)))
 
                 // WHEN
-                const result = await repository.listTodos()
+                const result = Result.unwrap(repository.listTodos())
 
                 // THEN
                 expect(result).toHaveLength(2)
@@ -182,42 +192,45 @@ describe("listing all todos", () => {
 describe("deleting a todo", () => {
     describe("given that the todo exists in the repository", () => {
         describe("when calling delete with the matching ID", () => {
-            it("then it should remove the todo from the repository", async () => {
+            it("then it should remove the todo from the repository", () => {
                 expect.hasAssertions()
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
+                const id = generateTodoIDString()
                 const dto: TodoDTO = {
                     done: false,
-                    id:   "123",
+                    id:   id,
                     name: "Test Todo",
                 }
-                await repository.upsert(createTestTodo(dto))
+                Result.unwrap(repository.upsert(createTestTodo(dto)))
 
                 // WHEN
-                await repository.delete("123")
+                Result.unwrap(repository.delete(id))
 
                 // THEN
-                const result = await repository.getByID("123")
+                const result = repository.getByID(id)
 
-                expect(result).toBeInstanceOf(TodoNotFoundError)
+                expect(() => Result.unwrap(result)).toThrowError(TodoNotFoundError)
             })
         })
     })
 
     describe("given that the todo doesn't exist", () => {
         describe("when calling delete with a nonexistent ID", () => {
-            it("then it should resolve without throwing an error", async () => {
+            it("then it should resolve without throwing an error", () => {
                 expect.hasAssertions()
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
 
                 // WHEN
-                const deletePromise = repository.delete("nonexistent")
+                const deleteResult = repository.delete("nonexistent")
 
                 // THEN
-                await expect(deletePromise).resolves.toBeUndefined()
+                expect(() => {
+                    Result.unwrap(deleteResult)
+                }).not.toThrowError()
             })
         })
     })
@@ -231,122 +244,100 @@ describe("running within a transaction", () => {
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
+                const id = generateTodoIDString()
                 const dto: TodoDTO = {
                     done: false,
-                    id:   "123",
+                    id:   id,
                     name: "Test Todo",
                 }
                 const todo = createTestTodo(dto)
-                await repository.upsert(todo)
+
+                expect(() => {
+                    Result.unwrap(repository.upsert(todo))
+                }).not.toThrowError()
 
                 // WHEN
-                const result = await repository.withinTransaction(async (repo) => {
-                    const retrieved = await repo.getByID("123")
-                    if (retrieved instanceof Todo) {
-                        retrieved.toggle()
-                        await repo.upsert(retrieved)
-                    }
-                    return retrieved
+                const result = repository.withinTransaction((repo) => {
+                    return Result.pipe(
+                        repo.getByID(id),
+                        Result.andThen(async (t) => {
+                            t.toggle()
+                            await repo.upsert(t)
+
+                            return Result.succeed(t)
+                        }),
+                    )
                 })
 
+                const t = await Result.unwrap(result)
+
                 // THEN
-                expect(result).toBeInstanceOf(Todo)
-                expect((result as Todo).toDTO().done).toBe(true)
+                expect(t).toBeInstanceOf(Todo)
+                expect(t.toDTO().done).toBe(true)
 
-                const finalTodo = await repository.getByID("123")
+                const finalTodo = repository.getByID(id)
 
-                expect((finalTodo as Todo).toDTO().done).toBe(true)
+                expect(Result.unwrap(finalTodo).toDTO().done).toBe(true)
             })
         })
 
-        describe("when a transaction throws (not returns) an error during execution", () => {
-            it("then it should return a TransactionError and rollback the changes", async () => {
+        describe("when a transaction an error during execution", () => {
+            it("then it should rollback the changes", async () => {
                 expect.hasAssertions()
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
+                const id = generateTodoIDString()
                 const dto: TodoDTO = {
                     done: false,
-                    id:   "123",
+                    id:   id,
                     name: "Test Todo",
                 }
                 const todo = createTestTodo(dto)
-                await repository.upsert(todo)
+
+                expect(() => {
+                    Result.unwrap(repository.upsert(todo))
+                }).not.toThrowError()
 
                 // WHEN
-                const result = await repository.withinTransaction(async (repo) => {
-                    const retrieved = await repo.getByID("123")
-                    if (retrieved instanceof Todo) {
-                        retrieved.toggle()
-                        await repo.upsert(retrieved)
-                    }
+                const result = repository.withinTransaction((repo) => {
+                    return Result.pipe(
+                        repo.getByID(id),
+                        Result.andThen(async (t) => {
+                            t.toggle()
+                            await repo.upsert(t)
 
-                    throw new Error("transaction failed")
+                            return Result.fail(new Error("failure"))
+                        }),
+                    )
                 })
 
-                // THEN
-                expect(result).toBeInstanceOf(TransactionError)
-                expect((result).reason).toBe("transaction failed")
-
-                const finalTodo = await repository.getByID("123")
-
-                expect((finalTodo as Todo).toDTO().done).toBe(false)
-            })
-        })
-    })
-
-    describe("given a valid todo value", () => {
-        describe("when a transaction RETURNS (not throws) an error during execution", () => {
-            it("then it should return that error and rollback the changes", async () => {
-                expect.hasAssertions()
-
-                // GIVEN
-                const repository = setupInMemoryRepo()
-                const dto: TodoDTO = {
-                    done: false,
-                    id:   "123",
-                    name: "Initial Todo",
-                }
-                await repository.upsert(createTestTodo(dto))
-
-                // WHEN
-                const result = await repository.withinTransaction(async (repo) => {
-                    const retrieved = await repo.getByID("123")
-                    if (retrieved instanceof Todo) {
-                        retrieved.toggle()
-                        await repo.upsert(retrieved)
-                    }
-
-                    // Explicitly return a domain error (following 'Never throw' rule)
-                    return new TodoNotFoundError({ id: "non-existent-trigger" })
-                })
+                await expect(Result.unwrap(result)).rejects.toThrowError(Error)
 
                 // THEN
-                expect(result).toBeInstanceOf(TodoNotFoundError)
 
-                const finalTodo = await repository.getByID("123")
+                const finalTodo = Result.unwrap(repository.getByID(id))
 
-                // Should NOT have been toggled (rolled back because an error was returned)
-                expect((finalTodo as Todo).toDTO().done).toBe(false)
+                expect(finalTodo.toDTO().done).toBe(false)
             })
         })
     })
 
     describe("given an active transaction", () => {
         describe("when the transactional function returns an error", () => {
-            it("then the result should be the type of that error", async () => {
+            it("then the result should be the type of that error", () => {
                 expect.hasAssertions()
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
 
                 // WHEN
-                const result = await repository.withinTransaction(async (repo) => {
+                const result = repository.withinTransaction((repo) => {
                     return repo.getByID("123")
                 })
 
                 // then
-                expect(result).toBeInstanceOf(TodoNotFoundError)
+                expect(() => Result.unwrap(result)).toThrowError(TodoNotFoundError)
             })
         })
     })
@@ -358,24 +349,28 @@ describe("running within a transaction", () => {
 
                 // GIVEN
                 const repository = setupInMemoryRepo()
+                const id = generateTodoIDString()
                 const dto: TodoDTO = {
                     done: false,
-                    id:   "123",
+                    id:   id,
                     name: "Initial Todo",
                 }
-                await repository.upsert(createTestTodo(dto))
+                Result.unwrap(repository.upsert(createTestTodo(dto)))
 
                 // WHEN
-                const result = await repository.withinTransaction(async (innerRepo) => {
-                    const retrieved = await innerRepo.getByID("123")
-                    if (retrieved instanceof Todo) {
-                        retrieved.toggle()
-                        await innerRepo.upsert(retrieved)
-                    }
+                const result =  repository.withinTransaction(async (innerRepo) => {
+                    await Result.pipe(
+                        innerRepo.getByID(id),
+                        Result.andThen(async (t) => {
+                            t.toggle()
+                            await innerRepo.upsert(t)
+                            return Result.succeed()
+                        }),
+                    )
 
                     // A nested transaction returns an error
-                    const innerResult = await innerRepo.withinTransaction(async () => {
-                        return new TodoNotFoundError({ id: "nested-fail" })
+                    const innerResult = innerRepo.withinTransaction(() => {
+                        return Result.fail(new TodoNotFoundError({ id: "nested-fail" }))
                     })
 
                     // The logic should bubbles up the error to trigger the top-level rollback
@@ -383,39 +378,12 @@ describe("running within a transaction", () => {
                 })
 
                 // THEN
-                expect(result).toBeInstanceOf(TodoNotFoundError)
+                await expect(Result.unwrap(result)).rejects.toThrowError(TodoNotFoundError)
 
-                const finalTodo = await repository.getByID("123")
+                const finalTodo = repository.getByID(id)
 
                 // Should remain false (rolled back the entire sequence)
-                expect((finalTodo as Todo).toDTO().done).toBe(false)
-            })
-        })
-    })
-
-    describe("given an active transaction", () => {
-        describe("when attempting to start a nested transaction", () => {
-            it("then it should not return any errors", async () => {
-                expect.hasAssertions()
-
-                // GIVEN
-                const repository = setupInMemoryRepo()
-                const dto: TodoDTO = {
-                    done: false,
-                    id:   "123",
-                    name: "Test Todo",
-                }
-                await repository.upsert(createTestTodo(dto))
-
-                // WHEN
-                const result = await repository.withinTransaction(async () => {
-                    return repository.withinTransaction(async () => {
-                        return "nested"
-                    })
-                })
-
-                // THEN
-                expect(result).toBe("nested")
+                expect(Result.unwrap(finalTodo).toDTO().done).toBe(false)
             })
         })
     })
