@@ -3,7 +3,7 @@ import {
 } from "vitest"
 
 import { Todo, NameLengthError } from "./todo"
-import { expectResultFailure, expectResultSuccess } from "../test-helpers/result"
+import { expectResultFailure, expectResultSuccess } from "../test-helpers/result-assertions"
 
 describe("creating a todo", () => {
     describe("given a valid name string", () => {

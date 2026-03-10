@@ -10,8 +10,8 @@ import {
     generateTodoIDString,
 } from "./todo"
 import {
-    expectResultFailure, expectResultSuccess, expectResultFailureAsync,
-} from "../test-helpers/result"
+    expectResultFailure, expectResultSuccess, expectResultFailureAsync, expectResultFailureMaybeAsync,
+} from "../test-helpers/result-assertions"
 
 // Helper to create a domain object from a DTO for testing
 function createTestTodo(dto: TodoDTO): Todo {
@@ -317,7 +317,7 @@ describe("running within a transaction", () => {
 
     describe("given an active transaction", () => {
         describe("when the transactional function returns an error", () => {
-            it("then the result should be the type of that error", () => {
+            it("then the result should be the type of that error", async () => {
                 expect.hasAssertions()
 
                 // GIVEN
@@ -328,55 +328,56 @@ describe("running within a transaction", () => {
                     return repo.getByID("123")
                 })
 
-                // then
-                expectResultFailure(result, TodoNotFoundError)
-            })
-        })
-    })
-
-    describe("given an active transaction", () => {
-        describe("when a nested transaction returns an error", () => {
-            it("then the outer transaction should also see the error and rollback", async () => {
-                expect.hasAssertions()
-
-                // GIVEN
-                const repository = setupInMemoryRepo()
-                const id = generateTodoIDString()
-                const dto: TodoDTO = {
-                    done: false,
-                    id:   id,
-                    name: "Initial Todo",
-                }
-                expectResultSuccess(repository.upsert(createTestTodo(dto)))
-
-                // WHEN
-                const result =  repository.withinTransaction(async (innerRepo) => {
-                    await Result.pipe(
-                        innerRepo.getByID(id),
-                        Result.andThen(async (t) => {
-                            t.toggle()
-                            await innerRepo.upsert(t)
-                            return Result.succeed()
-                        }),
-                    )
-
-                    // A nested transaction returns an error
-                    const innerResult = innerRepo.withinTransaction(() => {
-                        return Result.fail(new TodoNotFoundError({ id: "nested-fail" }))
-                    })
-
-                    // The logic should bubbles up the error to trigger the top-level rollback
-                    return innerResult
-                })
-
                 // THEN
-                await expectResultFailureAsync(result, TodoNotFoundError)
-
-                const finalTodo = repository.getByID(id)
-
-                // Should remain false (rolled back the entire sequence)
-                expect(expectResultSuccess(finalTodo).toDTO().done).toBe(false)
+                await expectResultFailureMaybeAsync(result, TodoNotFoundError)
             })
         })
     })
 })
+
+describe("given an active transaction", () => {
+    describe("when a nested transaction returns an error", () => {
+        it("then the outer transaction should also see the error and rollback", async () => {
+            expect.hasAssertions()
+
+            // GIVEN
+            const repository = setupInMemoryRepo()
+            const id = generateTodoIDString()
+            const dto: TodoDTO = {
+                done: false,
+                id:   id,
+                name: "Initial Todo",
+            }
+            expectResultSuccess(repository.upsert(createTestTodo(dto)))
+
+            // WHEN
+            const result =  repository.withinTransaction(async (innerRepo) => {
+                await Result.pipe(
+                    innerRepo.getByID(id),
+                    Result.andThen(async (t) => {
+                        t.toggle()
+                        await innerRepo.upsert(t)
+                        return Result.succeed()
+                    }),
+                )
+
+                // A nested transaction returns an error
+                const innerResult = innerRepo.withinTransaction(() => {
+                    return Result.fail(new TodoNotFoundError({ id: "nested-fail" }))
+                })
+
+                // The logic should bubbles up the error to trigger the top-level rollback
+                return innerResult
+            })
+
+            // THEN
+            await expectResultFailureAsync(result, TodoNotFoundError)
+
+            const finalTodo = repository.getByID(id)
+
+            // Should remain false (rolled back the entire sequence)
+            expect(expectResultSuccess(finalTodo).toDTO().done).toBe(false)
+        })
+    })
+})
+
