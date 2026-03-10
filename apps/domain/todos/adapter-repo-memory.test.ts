@@ -1,4 +1,3 @@
-
 import { Result } from "@praha/byethrow"
 import {
     it, expect, describe,
@@ -10,6 +9,9 @@ import {
     Todo, type TodoDTO,
     generateTodoIDString,
 } from "./todo"
+import {
+    expectResultFailure, expectResultSuccess, expectResultFailureAsync,
+} from "../test-helpers/result"
 
 // Helper to create a domain object from a DTO for testing
 function createTestTodo(dto: TodoDTO): Todo {
@@ -37,12 +39,10 @@ describe("todo repository", () => {
                 const todo = createTestTodo(dto)
 
                 // WHEN
-                expect(() => {
-                    Result.unwrap(repository.upsert(todo))
-                }).not.toThrowError()
+                expectResultSuccess(repository.upsert(todo))
 
                 // THEN
-                const result = Result.unwrap(repository.getByID(id))
+                const result = expectResultSuccess(repository.getByID(id))
 
                 expect(result).toBeInstanceOf(Todo)
                 expect(result.toDTO()).toStrictEqual(dto)
@@ -63,7 +63,7 @@ describe("todo repository", () => {
                     id:   id,
                     name: "Initial Todo",
                 }
-                Result.unwrap(repository.upsert(createTestTodo(initialDto)))
+                expectResultSuccess(repository.upsert(createTestTodo(initialDto)))
 
                 const updatedDto: TodoDTO = {
                     done: true,
@@ -73,10 +73,10 @@ describe("todo repository", () => {
                 const updatedTodo = createTestTodo(updatedDto)
 
                 // WHEN
-                Result.unwrap(repository.upsert(updatedTodo))
+                expectResultSuccess(repository.upsert(updatedTodo))
 
                 // THEN
-                const result = Result.unwrap(repository.getByID(id))
+                const result = expectResultSuccess(repository.getByID(id))
 
                 expect(result).toBeInstanceOf(Todo)
                 expect(result.toDTO()).toStrictEqual({
@@ -105,12 +105,10 @@ describe("getting a todo by id", () => {
                 }
                 const todo = createTestTodo(dto)
 
-                expect(() => {
-                    Result.unwrap(repository.upsert(todo))
-                }).not.toThrowError()
+                expectResultSuccess(repository.upsert(todo))
 
                 // WHEN
-                const result = Result.unwrap(repository.getByID(id))
+                const result = expectResultSuccess(repository.getByID(id))
 
                 // THEN
                 expect(result).toBeInstanceOf(Todo)
@@ -131,7 +129,7 @@ describe("getting a todo by id", () => {
                 const result = repository.getByID("nonexistent")
 
                 // THEN
-                expect(() => Result.unwrap(result)).toThrowError(TodoNotFoundError)
+                expectResultFailure(result, TodoNotFoundError)
             })
         })
     })
@@ -147,7 +145,7 @@ describe("listing all todos", () => {
                 const repository = setupInMemoryRepo()
 
                 // WHEN
-                const result = Result.unwrap(repository.listTodos())
+                const result = expectResultSuccess(repository.listTodos())
 
                 // THEN
                 expect(result).toStrictEqual([])
@@ -174,11 +172,11 @@ describe("listing all todos", () => {
                     id:   id2,
                     name: "Todo 2",
                 }
-                Result.unwrap(repository.upsert(createTestTodo(dto1)))
-                Result.unwrap(repository.upsert(createTestTodo(dto2)))
+                expectResultSuccess(repository.upsert(createTestTodo(dto1)))
+                expectResultSuccess(repository.upsert(createTestTodo(dto2)))
 
                 // WHEN
-                const result = Result.unwrap(repository.listTodos())
+                const result = expectResultSuccess(repository.listTodos())
 
                 // THEN
                 expect(result).toHaveLength(2)
@@ -203,15 +201,15 @@ describe("deleting a todo", () => {
                     id:   id,
                     name: "Test Todo",
                 }
-                Result.unwrap(repository.upsert(createTestTodo(dto)))
+                expectResultSuccess(repository.upsert(createTestTodo(dto)))
 
                 // WHEN
-                Result.unwrap(repository.delete(id))
+                expectResultSuccess(repository.delete(id))
 
                 // THEN
                 const result = repository.getByID(id)
 
-                expect(() => Result.unwrap(result)).toThrowError(TodoNotFoundError)
+                expectResultFailure(result, TodoNotFoundError)
             })
         })
     })
@@ -228,9 +226,7 @@ describe("deleting a todo", () => {
                 const deleteResult = repository.delete("nonexistent")
 
                 // THEN
-                expect(() => {
-                    Result.unwrap(deleteResult)
-                }).not.toThrowError()
+                expectResultSuccess(deleteResult)
             })
         })
     })
@@ -252,9 +248,7 @@ describe("running within a transaction", () => {
                 }
                 const todo = createTestTodo(dto)
 
-                expect(() => {
-                    Result.unwrap(repository.upsert(todo))
-                }).not.toThrowError()
+                expectResultSuccess(repository.upsert(todo))
 
                 // WHEN
                 const result = repository.withinTransaction((repo) => {
@@ -277,7 +271,7 @@ describe("running within a transaction", () => {
 
                 const finalTodo = repository.getByID(id)
 
-                expect(Result.unwrap(finalTodo).toDTO().done).toBe(true)
+                expect(expectResultSuccess(finalTodo).toDTO().done).toBe(true)
             })
         })
 
@@ -295,9 +289,7 @@ describe("running within a transaction", () => {
                 }
                 const todo = createTestTodo(dto)
 
-                expect(() => {
-                    Result.unwrap(repository.upsert(todo))
-                }).not.toThrowError()
+                expectResultSuccess(repository.upsert(todo))
 
                 // WHEN
                 const result = repository.withinTransaction((repo) => {
@@ -312,11 +304,11 @@ describe("running within a transaction", () => {
                     )
                 })
 
-                await expect(Result.unwrap(result)).rejects.toThrowError(Error)
+                await expectResultFailureAsync(result, Error)
 
                 // THEN
 
-                const finalTodo = Result.unwrap(repository.getByID(id))
+                const finalTodo = expectResultSuccess(repository.getByID(id))
 
                 expect(finalTodo.toDTO().done).toBe(false)
             })
@@ -337,7 +329,7 @@ describe("running within a transaction", () => {
                 })
 
                 // then
-                expect(() => Result.unwrap(result)).toThrowError(TodoNotFoundError)
+                expectResultFailure(result, TodoNotFoundError)
             })
         })
     })
@@ -355,7 +347,7 @@ describe("running within a transaction", () => {
                     id:   id,
                     name: "Initial Todo",
                 }
-                Result.unwrap(repository.upsert(createTestTodo(dto)))
+                expectResultSuccess(repository.upsert(createTestTodo(dto)))
 
                 // WHEN
                 const result =  repository.withinTransaction(async (innerRepo) => {
@@ -378,12 +370,12 @@ describe("running within a transaction", () => {
                 })
 
                 // THEN
-                await expect(Result.unwrap(result)).rejects.toThrowError(TodoNotFoundError)
+                await expectResultFailureAsync(result, TodoNotFoundError)
 
                 const finalTodo = repository.getByID(id)
 
                 // Should remain false (rolled back the entire sequence)
-                expect(Result.unwrap(finalTodo).toDTO().done).toBe(false)
+                expect(expectResultSuccess(finalTodo).toDTO().done).toBe(false)
             })
         })
     })

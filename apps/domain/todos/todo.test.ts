@@ -1,9 +1,9 @@
-import { Result } from "@praha/byethrow"
 import {
     it, expect, describe,
 } from "vitest"
 
 import { Todo, NameLengthError } from "./todo"
+import { expectResultFailure, expectResultSuccess } from "../test-helpers/result"
 
 describe("creating a todo", () => {
     describe("given a valid name string", () => {
@@ -15,7 +15,7 @@ describe("creating a todo", () => {
                 const name = "hello"
 
                 // WHEN
-                const todoEntry = Result.unwrap(Todo.create(name))
+                const todoEntry = expectResultSuccess(Todo.create(name))
 
                 // THEN
                 expect(todoEntry.toDTO().name).toBe("hello")
@@ -35,7 +35,7 @@ describe("creating a todo", () => {
                 const result = Todo.create(name)
 
                 // THEN
-                expect(() => Result.unwrap(result)).toThrowError(NameLengthError)
+                expectResultFailure(result, NameLengthError)
             })
         })
     })
