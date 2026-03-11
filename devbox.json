@@ -11,7 +11,8 @@
     "shell": {
         "init_hook": [
             "bun install --frozen-lockfile",
-            "lefthook install"
+            "lefthook install",
+            "$PWD/scripts/check-env-setup.sh"
         ],
         "scripts": {}
     }
