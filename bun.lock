@@ -131,9 +131,12 @@
     "scripts": {
       "name": "scripts",
       "dependencies": {
+        "@praha/byethrow": "^0.10.0",
+        "@praha/error-factory": "^1.4.0",
         "citty": "^0.2.1",
         "consola": "^3.4.2",
         "fast-glob": "^3.3.3",
+        "zod": "^4.3.6",
         "zx": "^8.8.5",
       },
       "devDependencies": {
