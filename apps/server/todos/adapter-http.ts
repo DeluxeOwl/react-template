@@ -61,6 +61,7 @@ export class TodoHTTP {
         const os = implement(contract)
 
         const listTodo = os.todos.list.handler(async () => {
+            console.info("hi")
             const res = await Result.unwrap(this.app.queries.listTodos.handle(undefined))
             return { data: res.data }
         })

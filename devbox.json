@@ -4,8 +4,10 @@
         "bun@latest",
         "commitlint-rs@latest",
         "lefthook@latest",
-        "ast-grep@latest"
+        "ast-grep@latest",
+        "hivemind@latest"
     ],
+    "env": {},
     "shell": {
         "init_hook": [
             "bun install --frozen-lockfile",

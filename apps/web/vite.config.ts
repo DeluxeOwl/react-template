@@ -8,7 +8,8 @@ import autoImport from "unplugin-auto-import/vite"
 
 // https://vite.dev/config/
 export default defineConfig({
-    plugins: [
+    clearScreen: false,
+    plugins:     [
         // No need to manually add the resolve path.
         tsconfigPaths(),
         react({

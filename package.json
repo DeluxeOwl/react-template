@@ -22,6 +22,7 @@
         "vitest": "^4.0.18"
     },
     "scripts": {
+        "dev": "hivemind -T",
         "sync:tsconfig": "bun run scripts/cli.ts sync-tsconfig",
         "lint:oxlint": "bun run --workspaces lint:oxlint",
         "lint:eslint": "bun run --workspaces lint:eslint",
