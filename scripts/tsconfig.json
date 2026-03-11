@@ -16,6 +16,6 @@
         "../reset.d.ts",
         "subcommands/sync-tsconfig.ts",
         "subcommands/find-duplicate-functions.ts",
-        "subcommands/local-https.ts",
+        "subcommands/local-https.ts"
     ]
 }
