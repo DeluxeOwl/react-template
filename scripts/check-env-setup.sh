@@ -19,7 +19,7 @@ main() {
     fi
 
     # Define tool requirements
-    local tools=("docker" "opencode" "direnv")
+    local tools=("docker" "opencode" "direnv" "dns-sd")
     
     # Store URLs in a way bash can reference them
     declare -A urls
@@ -27,6 +27,7 @@ main() {
     urls[opencode]="https://opencode.ai/"
     # Turn down direnv verbosity: https://github.com/direnv/direnv/issues/68#issuecomment-2812015043
     urls[direnv]="https://direnv.net/docs/installation.html"
+    urls[dns-sd]="it should be already installed on mac, windows and linux need something else"
 
     local missing=0
 

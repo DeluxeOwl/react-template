@@ -1,19 +1,20 @@
 {
-    "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
-    "packages": [
-        "bun@latest",
-        "commitlint-rs@latest",
-        "lefthook@latest",
-        "ast-grep@latest",
-        "hivemind@latest"
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
+  "packages": [
+    "bun@latest",
+    "commitlint-rs@latest",
+    "lefthook@latest",
+    "ast-grep@latest",
+    "hivemind@latest",
+    "caddy@latest"
+  ],
+  "env": {},
+  "shell": {
+    "init_hook": [
+      "bun install --frozen-lockfile",
+      "lefthook install",
+      "$PWD/scripts/check-env-setup.sh"
     ],
-    "env": {},
-    "shell": {
-        "init_hook": [
-            "bun install --frozen-lockfile",
-            "lefthook install",
-            "$PWD/scripts/check-env-setup.sh"
-        ],
-        "scripts": {}
-    }
+    "scripts": {}
+  }
 }
