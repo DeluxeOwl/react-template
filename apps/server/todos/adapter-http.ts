@@ -83,6 +83,9 @@ export class TodoHTTP {
                     .with("TodoNotFoundError", () => {
                         throw errors.NOT_FOUND({ message: "Todo not found" })
                     })
+                    .with("InternalDBError", () => {
+                        throw errors.INTERNAL_SERVER_ERROR({ message: "Database error" })
+                    })
                     .exhaustive()
             }
         })

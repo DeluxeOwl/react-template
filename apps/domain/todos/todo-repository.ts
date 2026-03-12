@@ -11,14 +11,19 @@ export class TodoNotFoundError extends ErrorFactory({
     name:    "TodoNotFoundError",
 }) {}
 
+export class InternalDBError extends ErrorFactory({
+    message: `internal db error`,
+    name:    "InternalDBError",
+}) {}
+
 // This can be split into smaller interfaces if needed.
 // Repositories use Result.ResultMaybeAsync, because some of the repos (in memory)
 // are not async.
 export interface TodoRepository {
-    listTodos(): Result.ResultMaybeAsync<Todo[], never>
-    delete(id: string): Result.ResultMaybeAsync<void, never>
-    upsert(todo: Todo):  Result.ResultMaybeAsync<void, never>
-    getByID(id: string): Result.ResultMaybeAsync<Todo, TodoNotFoundError>
+    listTodos(): Result.ResultMaybeAsync<Todo[], InternalDBError>
+    delete(id: string): Result.ResultMaybeAsync<void, InternalDBError>
+    upsert(todo: Todo):  Result.ResultMaybeAsync<void, InternalDBError>
+    getByID(id: string): Result.ResultMaybeAsync<Todo, InternalDBError | TodoNotFoundError>
 
     // Executes the given function wrapped in a database transaction.
     withinTransaction<T, E>(

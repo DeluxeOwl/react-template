@@ -20,7 +20,7 @@ function memoryDataToDTO(data: TodoMemoryData): TodoDTO {
 }
 
 // This in memory adapter doesn't depend on web or server, so it's fine for it to live in apps/domain
-export class TodoRepositoryInMemory {
+export class TodoRepositoryInMemory implements TodoRepository {
     private constructor(private state: {
         isWithinTx: boolean
         store:      Map<string, TodoMemoryData>
