@@ -1,3 +1,7 @@
 [run]
 # equivalent to `bun --bun` for all `bun run` commands
 bun = true
+
+[install]
+# where `bun install --global` installs packages
+globalDir = "~/.bin/bun/install/global"
