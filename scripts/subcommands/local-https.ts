@@ -191,6 +191,7 @@ function spawnManagedProcess(params: {
         stopped = true
         child.kill("SIGTERM")
 
+        // eslint-disable-next-line no-restricted-syntax -- flow is overkill for this.
         const exitedInTime = await Promise.race([
             new Promise<boolean>((resolve) => {
                 child.on("exit", () => {
@@ -261,16 +262,13 @@ function startDnsSd(params: {
     })
 }
 
-// ---------------------------------------------------------------------------
-// Shutdown
-// ---------------------------------------------------------------------------
-
 async function shutdownAll(processes: readonly ManagedProcess[]): Promise<void> {
     const timeout = setTimeout(() => {
         console.error("Shutdown timed out")
         process.exit(1)
     }, ShutdownTimeoutMs)
 
+    // eslint-disable-next-line no-restricted-syntax -- allSettled is not necessary since tasks dont have deps between them.
     const results = await Promise.allSettled(
         processes.map((p) => p.stop()),
     )

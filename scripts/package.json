@@ -16,6 +16,7 @@
     "dependencies": {
         "@praha/byethrow": "^0.10.0",
         "@praha/error-factory": "^1.4.0",
+        "better-all": "^0.0.7",
         "citty": "^0.2.1",
         "consola": "^3.4.2",
         "fast-glob": "^3.3.3",

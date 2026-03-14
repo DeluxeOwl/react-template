@@ -279,6 +279,22 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                 "no-restricted-syntax":  [
                     "warn",
                     {
+                        message:  "Consider using `all` from 'better-all' to automatically optimize task dependencies and parallelization.",
+                        selector: "CallExpression[callee.object.name='Promise'][callee.property.name='all']",
+                    },
+                    {
+                        message:  "Consider using `allSettled` from 'better-all' to maintain dependency logic while handling task failures.",
+                        selector: "CallExpression[callee.object.name='Promise'][callee.property.name='allSettled']",
+                    },
+                    {
+                        message:  "Consider using `flow` from 'better-all'. It allows for more complex racing logic and conditional early exits using `this.$end()`.",
+                        selector: "CallExpression[callee.object.name='Promise'][callee.property.name='race']",
+                    },
+                    {
+                        message:  "Consider using `flow` from 'better-all' to explicitly control the 'winning' criteria of your async tasks.",
+                        selector: "CallExpression[callee.object.name='Promise'][callee.property.name='any']",
+                    },
+                    {
                         message:  "Public constructors are not allowed. Use private or protected instead.",
                         selector: "MethodDefinition[kind='constructor'][accessibility!='private'][accessibility!='protected']",
                     },
