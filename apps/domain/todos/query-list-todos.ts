@@ -1,5 +1,6 @@
 import { Result } from "@praha/byethrow"
 
+import type { Context } from "../ctx"
 import type { TodoRepository } from "./todo-repository"
 
 export type ListTodosQuery = undefined
@@ -21,9 +22,9 @@ export class ListTodosHandler {
         return new ListTodosHandler({ repo })
     }
 
-    handle(_: ListTodosQuery) {
+    handle(ctx: Context, _: ListTodosQuery) {
         return Result.pipe(
-            this.state.repo.listTodos(),
+            this.state.repo.listTodos(ctx),
             Result.andThen((todos) => Result.succeed({
                 data: todos.map((t) => t.toDTO()),
             } satisfies ListTodoQueryOutput)),

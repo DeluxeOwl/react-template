@@ -4,6 +4,7 @@ import type { Result } from "@praha/byethrow"
 import { ErrorFactory } from "@praha/error-factory"
 
 import type { Todo } from "./todo"
+import type { Context, CancelledError  } from "../ctx"
 
 export class TodoNotFoundError extends ErrorFactory({
     fields:  ErrorFactory.fields<{ id: string }>(),
@@ -16,17 +17,15 @@ export class InternalDBError extends ErrorFactory({
     name:    "InternalDBError",
 }) {}
 
-// This can be split into smaller interfaces if needed.
-// Repositories use Result.ResultMaybeAsync, because some of the repos (in memory)
-// are not async.
 export interface TodoRepository {
-    listTodos(): Result.ResultMaybeAsync<Todo[], InternalDBError>
-    delete(id: string): Result.ResultMaybeAsync<void, InternalDBError>
-    upsert(todo: Todo):  Result.ResultMaybeAsync<void, InternalDBError>
-    getByID(id: string): Result.ResultMaybeAsync<Todo, InternalDBError | TodoNotFoundError>
+    listTodos(Context: Context): Result.ResultAsync<Todo[], CancelledError | InternalDBError>
+    delete(Context: Context, id: string): Result.ResultAsync<void, CancelledError | InternalDBError>
+    upsert(Context: Context, todo: Todo):  Result.ResultAsync<void, CancelledError | InternalDBError>
+    getByID(Context: Context, id: string): Result.ResultAsync<Todo, CancelledError | InternalDBError | TodoNotFoundError>
 
     // Executes the given function wrapped in a database transaction.
     withinTransaction<T, E>(
-        fn: (repo: TodoRepository) => Result.ResultMaybeAsync<T, E>
-    ): Result.ResultMaybeAsync<T, E>
+        Context: Context,
+        fn: (Context: Context, repo: TodoRepository) => Result.ResultAsync<T, E>
+    ): Result.ResultAsync<T, E>
 }

@@ -123,6 +123,7 @@ async function findTsconfigsWithReferences(dir: string): Promise<string[]> {
     }
 
     const tsconfigFiles = entries.filter((e) => isTsconfigFile(e)).map((entry) => path.join(dir, entry))
+    // eslint-disable-next-line no-restricted-syntax
     const checks = await Promise.all(tsconfigFiles.map((f) => checkTsconfigHasReferences(f)))
     return tsconfigFiles.filter((_, i) => checks[i])
 }

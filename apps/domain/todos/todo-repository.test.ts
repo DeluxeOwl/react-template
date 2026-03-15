@@ -3,6 +3,7 @@ import {
     it, expect, describe, onTestFinished,
 } from "vitest"
 
+import { Context, CancelledError } from "../ctx"
 import {
     Todo,
     type TodoDTO, generateTodoIDString,
@@ -16,10 +17,14 @@ function createTestTodo(dto: TodoDTO): Todo {
     return Todo.fromDTO(dto)
 }
 
+interface RepositoryTestSetup {
+    repository: TodoRepository
+    cleanup:    () => Promise<void> | void
+}
+
 interface SetupRepositoryTests {
     name:                string
-    cleanup:             () => void
-    setupTodoRepository: () => TodoRepository
+    setupTodoRepository: () => Promise<RepositoryTestSetup> | RepositoryTestSetup
 }
 
 export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
@@ -31,9 +36,9 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expect.hasAssertions()
 
                         // GIVEN
-                        const repository = repoTests.setupTodoRepository()
-                        onTestFinished(() => {
-                            repoTests.cleanup()
+                        const { cleanup, repository } = await repoTests.setupTodoRepository()
+                        onTestFinished(async () => {
+                            await cleanup()
                         })
                         const id = generateTodoIDString()
                         const dto: TodoDTO = {
@@ -43,11 +48,13 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         }
                         const todo = createTestTodo(dto)
 
+                        const ctx = Context.create()
+
                         // WHEN
-                        expectResultSuccess(await repository.upsert(todo))
+                        expectResultSuccess(await repository.upsert(ctx, todo))
 
                         // THEN
-                        const result = expectResultSuccess(await repository.getByID(id))
+                        const result = expectResultSuccess(await repository.getByID(ctx, id))
 
                         expect(result).toBeInstanceOf(Todo)
                         expect(result.toDTO()).toStrictEqual(dto)
@@ -61,9 +68,9 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expect.hasAssertions()
 
                         // GIVEN
-                        const repository = repoTests.setupTodoRepository()
-                        onTestFinished(() => {
-                            repoTests.cleanup()
+                        const { cleanup, repository } = await repoTests.setupTodoRepository()
+                        onTestFinished(async () => {
+                            await cleanup()
                         })
                         const id = generateTodoIDString()
                         const initialDto: TodoDTO = {
@@ -71,7 +78,8 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                             id:   id,
                             name: "Initial Todo",
                         }
-                        expectResultSuccess(await repository.upsert(createTestTodo(initialDto)))
+                        const ctx = Context.create()
+                        expectResultSuccess(await repository.upsert(ctx, createTestTodo(initialDto)))
 
                         const updatedDto: TodoDTO = {
                             done: true,
@@ -81,10 +89,10 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         const updatedTodo = createTestTodo(updatedDto)
 
                         // WHEN
-                        expectResultSuccess(await repository.upsert(updatedTodo))
+                        expectResultSuccess(await repository.upsert(ctx, updatedTodo))
 
                         // THEN
-                        const result = expectResultSuccess(await repository.getByID(id))
+                        const result = expectResultSuccess(await repository.getByID(ctx, id))
 
                         expect(result).toBeInstanceOf(Todo)
                         expect(result.toDTO()).toStrictEqual({
@@ -104,9 +112,9 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expect.hasAssertions()
 
                         // GIVEN
-                        const repository = repoTests.setupTodoRepository()
-                        onTestFinished(() => {
-                            repoTests.cleanup()
+                        const { cleanup, repository } = await repoTests.setupTodoRepository()
+                        onTestFinished(async () => {
+                            await cleanup()
                         })
                         const id = generateTodoIDString()
                         const dto: TodoDTO = {
@@ -116,10 +124,12 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         }
                         const todo = createTestTodo(dto)
 
-                        expectResultSuccess(await repository.upsert(todo))
+                        const ctx = Context.create()
+
+                        expectResultSuccess(await repository.upsert(ctx, todo))
 
                         // WHEN
-                        const result = expectResultSuccess(await repository.getByID(id))
+                        const result = expectResultSuccess(await repository.getByID(ctx, id))
 
                         // THEN
                         expect(result).toBeInstanceOf(Todo)
@@ -134,13 +144,15 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expect.hasAssertions()
 
                         // GIVEN
-                        const repository = repoTests.setupTodoRepository()
-                        onTestFinished(() => {
-                            repoTests.cleanup()
+                        const { cleanup, repository } = await repoTests.setupTodoRepository()
+                        onTestFinished(async () => {
+                            await cleanup()
                         })
 
+                        const ctx = Context.create()
+
                         // WHEN
-                        const result = await repository.getByID("nonexistent")
+                        const result = await repository.getByID(ctx, "nonexistent")
 
                         // THEN
                         expectResultFailure(result, TodoNotFoundError)
@@ -156,13 +168,15 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expect.hasAssertions()
 
                         // GIVEN
-                        const repository = repoTests.setupTodoRepository()
-                        onTestFinished(() => {
-                            repoTests.cleanup()
+                        const { cleanup, repository } = await repoTests.setupTodoRepository()
+                        onTestFinished(async () => {
+                            await cleanup()
                         })
 
+                        const ctx = Context.create()
+
                         // WHEN
-                        const result = expectResultSuccess(await repository.listTodos())
+                        const result = expectResultSuccess(await repository.listTodos(ctx))
 
                         // THEN
                         expect(result).toStrictEqual([])
@@ -176,9 +190,9 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expect.hasAssertions()
 
                         // GIVEN
-                        const repository = repoTests.setupTodoRepository()
-                        onTestFinished(() => {
-                            repoTests.cleanup()
+                        const { cleanup, repository } = await repoTests.setupTodoRepository()
+                        onTestFinished(async () => {
+                            await cleanup()
                         })
                         const id1 = generateTodoIDString()
                         const id2 = generateTodoIDString()
@@ -192,11 +206,13 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                             id:   id2,
                             name: "Todo 2",
                         }
-                        expectResultSuccess(await repository.upsert(createTestTodo(dto1)))
-                        expectResultSuccess(await repository.upsert(createTestTodo(dto2)))
+                        const ctx = Context.create()
+
+                        expectResultSuccess(await repository.upsert(ctx, createTestTodo(dto1)))
+                        expectResultSuccess(await repository.upsert(ctx, createTestTodo(dto2)))
 
                         // WHEN
-                        const result = expectResultSuccess(await repository.listTodos())
+                        const result = expectResultSuccess(await repository.listTodos(ctx))
 
                         // THEN
                         expect(result).toHaveLength(2)
@@ -214,9 +230,9 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expect.hasAssertions()
 
                         // GIVEN
-                        const repository = repoTests.setupTodoRepository()
-                        onTestFinished(() => {
-                            repoTests.cleanup()
+                        const { cleanup, repository } = await repoTests.setupTodoRepository()
+                        onTestFinished(async () => {
+                            await cleanup()
                         })
                         const id = generateTodoIDString()
                         const dto: TodoDTO = {
@@ -224,13 +240,14 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                             id:   id,
                             name: "Test Todo",
                         }
-                        expectResultSuccess(await repository.upsert(createTestTodo(dto)))
+                        const ctx = Context.create()
+                        expectResultSuccess(await repository.upsert(ctx, createTestTodo(dto)))
 
                         // WHEN
-                        expectResultSuccess(await repository.delete(id))
+                        expectResultSuccess(await repository.delete(ctx, id))
 
                         // THEN
-                        const result = await repository.getByID(id)
+                        const result = await repository.getByID(ctx, id)
 
                         expectResultFailure(result, TodoNotFoundError)
                     })
@@ -243,13 +260,15 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expect.hasAssertions()
 
                         // GIVEN
-                        const repository = repoTests.setupTodoRepository()
-                        onTestFinished(() => {
-                            repoTests.cleanup()
+                        const { cleanup, repository } = await repoTests.setupTodoRepository()
+                        onTestFinished(async () => {
+                            await cleanup()
                         })
 
+                        const ctx = Context.create()
+
                         // WHEN
-                        const deleteResult = await repository.delete("nonexistent")
+                        const deleteResult = await repository.delete(ctx, "nonexistent")
 
                         // THEN
                         expectResultSuccess(deleteResult)
@@ -265,9 +284,9 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expect.hasAssertions()
 
                         // GIVEN
-                        const repository = repoTests.setupTodoRepository()
-                        onTestFinished(() => {
-                            repoTests.cleanup()
+                        const { cleanup, repository } = await repoTests.setupTodoRepository()
+                        onTestFinished(async () => {
+                            await cleanup()
                         })
                         const id = generateTodoIDString()
                         const dto: TodoDTO = {
@@ -277,15 +296,17 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         }
                         const todo = createTestTodo(dto)
 
-                        expectResultSuccess(await repository.upsert(todo))
+                        const initialCtx = Context.create()
+
+                        expectResultSuccess(await repository.upsert(initialCtx, todo))
 
                         // WHEN
-                        const result = repository.withinTransaction((repo) => {
+                        const result = repository.withinTransaction(initialCtx, (ctx, repo) => {
                             return Result.pipe(
-                                repo.getByID(id),
+                                repo.getByID(ctx, id),
                                 Result.andThen(async (t) => {
                                     t.toggle()
-                                    await repo.upsert(t)
+                                    await repo.upsert(ctx, t)
 
                                     return Result.succeed(t)
                                 }),
@@ -298,7 +319,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expect(t).toBeInstanceOf(Todo)
                         expect(t.toDTO().done).toBe(true)
 
-                        const finalTodo = await repository.getByID(id)
+                        const finalTodo = await repository.getByID(initialCtx, id)
 
                         expect(expectResultSuccess(finalTodo).toDTO().done).toBe(true)
                     })
@@ -309,9 +330,9 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expect.hasAssertions()
 
                         // GIVEN
-                        const repository = repoTests.setupTodoRepository()
-                        onTestFinished(() => {
-                            repoTests.cleanup()
+                        const { cleanup, repository } = await repoTests.setupTodoRepository()
+                        onTestFinished(async () => {
+                            await cleanup()
                         })
                         const id = generateTodoIDString()
                         const dto: TodoDTO = {
@@ -321,15 +342,17 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         }
                         const todo = createTestTodo(dto)
 
-                        expectResultSuccess(await repository.upsert(todo))
+                        const ctx = Context.create()
+
+                        expectResultSuccess(await repository.upsert(ctx, todo))
 
                         // WHEN
-                        const result = repository.withinTransaction((repo) => {
+                        const result = repository.withinTransaction(ctx, (innerCtx, repo) => {
                             return Result.pipe(
-                                repo.getByID(id),
+                                repo.getByID(innerCtx, id),
                                 Result.andThen(async (t) => {
                                     t.toggle()
-                                    await repo.upsert(t)
+                                    await repo.upsert(innerCtx, t)
 
                                     return Result.fail(new Error("failure"))
                                 }),
@@ -340,7 +363,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
 
                         // THEN
 
-                        const finalTodo = expectResultSuccess(await repository.getByID(id))
+                        const finalTodo = expectResultSuccess(await repository.getByID(ctx, id))
 
                         expect(finalTodo.toDTO().done).toBe(false)
                     })
@@ -353,14 +376,16 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expect.hasAssertions()
 
                         // GIVEN
-                        const repository = repoTests.setupTodoRepository()
-                        onTestFinished(() => {
-                            repoTests.cleanup()
+                        const { cleanup, repository } = await repoTests.setupTodoRepository()
+                        onTestFinished(async () => {
+                            await cleanup()
                         })
 
+                        const ctx = Context.create()
+
                         // WHEN
-                        const result = repository.withinTransaction((repo) => {
-                            return repo.getByID("123")
+                        const result = repository.withinTransaction(ctx, (innerCtx, repo) => {
+                            return repo.getByID(innerCtx, "123")
                         })
 
                         // THEN
@@ -376,9 +401,9 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                     expect.hasAssertions()
 
                     // GIVEN
-                    const repository = repoTests.setupTodoRepository()
-                    onTestFinished(() => {
-                        repoTests.cleanup()
+                    const { cleanup, repository } = await repoTests.setupTodoRepository()
+                    onTestFinished(async () => {
+                        await cleanup()
                     })
                     const id = generateTodoIDString()
                     const dto: TodoDTO = {
@@ -386,21 +411,24 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         id:   id,
                         name: "Initial Todo",
                     }
-                    expectResultSuccess(await repository.upsert(createTestTodo(dto)))
+                    const ctx = Context.create()
+                    expectResultSuccess(await repository.upsert(ctx, createTestTodo(dto)))
 
                     // WHEN
-                    const result =  repository.withinTransaction(async (innerRepo) => {
+                    const result =  repository.withinTransaction(ctx, async (innerCtx, innerRepo) => {
                         await Result.pipe(
-                            innerRepo.getByID(id),
+                            innerRepo.getByID(innerCtx, id),
                             Result.andThen(async (t) => {
                                 t.toggle()
-                                await innerRepo.upsert(t)
+                                await innerRepo.upsert(innerCtx, t)
                                 return Result.succeed()
                             }),
                         )
 
                         // A nested transaction returns an error
-                        const innerResult = innerRepo.withinTransaction(() => {
+                        // oxlint-disable-next-line require-await
+                        // eslint-disable-next-line @typescript-eslint/require-await
+                        const innerResult = innerRepo.withinTransaction(ctx, async (_: Context, __: TodoRepository) => {
                             return Result.fail(new TodoNotFoundError({ id: "nested-fail" }))
                         })
 
@@ -411,10 +439,78 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                     // THEN
                     await expectResultFailureAsync(result, TodoNotFoundError)
 
-                    const finalTodo = await repository.getByID(id)
+                    const finalTodo = await repository.getByID(ctx, id)
 
                     // Should remain false (rolled back the entire sequence)
                     expect(expectResultSuccess(finalTodo).toDTO().done).toBe(false)
+                })
+            })
+        })
+
+        describe("cancellation via abort signal", () => {
+            describe("given a pre-aborted signal", () => {
+                describe("when calling listTodos with the cancelled context", () => {
+                    it("then it should return a CancelledError", async () => {
+                        expect.hasAssertions()
+
+                        // GIVEN
+                        const { cleanup, repository } = await repoTests.setupTodoRepository()
+                        onTestFinished(async () => {
+                            await cleanup()
+                        })
+                        const controller = new AbortController()
+                        controller.abort("cancelled")
+                        const ctx = Context.withSignal(controller.signal)
+
+                        // WHEN
+                        const result = await repository.listTodos(ctx)
+
+                        // THEN
+                        expectResultFailure(result, CancelledError)
+                    })
+                })
+            })
+
+            describe("given a todo exists and a pre-aborted signal", () => {
+                describe("when calling upsert with the cancelled context", () => {
+                    it("then it should return a CancelledError and not persist the change", async () => {
+                        expect.hasAssertions()
+
+                        // GIVEN
+                        const { cleanup, repository } = await repoTests.setupTodoRepository()
+                        onTestFinished(async () => {
+                            await cleanup()
+                        })
+                        const id = generateTodoIDString()
+                        const dto: TodoDTO = {
+                            done: false,
+                            id:   id,
+                            name: "Original Todo",
+                        }
+                        const ctx = Context.create()
+                        expectResultSuccess(await repository.upsert(ctx, createTestTodo(dto)))
+
+                        const controller = new AbortController()
+                        controller.abort("cancelled")
+                        const cancelledCtx = Context.withSignal(controller.signal)
+
+                        const updatedTodo = createTestTodo({
+                            done: true,
+                            id:   id,
+                            name: "Updated Todo",
+                        })
+
+                        // WHEN
+                        const result = await repository.upsert(cancelledCtx, updatedTodo)
+
+                        // THEN
+                        expectResultFailure(result, CancelledError)
+
+                        const fetched = expectResultSuccess(await repository.getByID(ctx, id))
+
+                        expect(fetched.toDTO().name).toBe("Original Todo")
+                        expect(fetched.toDTO().done).toBe(false)
+                    })
                 })
             })
         })

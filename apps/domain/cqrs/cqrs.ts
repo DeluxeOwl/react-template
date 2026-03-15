@@ -1,10 +1,11 @@
+import type { Context } from "../ctx"
 
 export interface CommandHandler<C, R = void> {
-    handle(cmd: C): R
+    handle(ctx: Context, cmd: C): R
 }
 
 export interface QueryHandler<C, R> {
-    handle(query: C): R
+    handle(ctx: Context, query: C): R
 }
 
 export type CommandRecord = Record<string, CommandHandler<unknown, unknown>>

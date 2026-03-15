@@ -12,6 +12,7 @@ import { CORSPlugin } from "@orpc/server/plugins"
 import { ZodSmartCoercionPlugin } from "@orpc/zod"
 import { OpenAPIHandler } from "@orpc/openapi/fetch"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
+import { Context } from "@react-template/domain/ctx/index"
 import { contract } from "@react-template/domain/todos/adapter-http-routes"
 import {
     onError, implement, ORPCError, ValidationError,
@@ -60,13 +61,13 @@ export class TodoHTTP {
     fetchORPC() {
         const os = implement(contract)
 
-        const listTodo = os.todos.list.handler(async () => {
-            const res = await Result.unwrap(this.app.queries.listTodos.handle(undefined))
+        const listTodo = os.todos.list.handler(async ({ signal }) => {
+            const res = await Result.unwrap(this.app.queries.listTodos.handle(Context.withSignal(signal), undefined))
             return { data: res.data }
         })
 
-        const createTodo = os.todos.create.handler(async ({ input }) => {
-            const res = await this.app.commands.createTodo.handle({ name: input.name })
+        const createTodo = os.todos.create.handler(async ({ input, signal }) => {
+            const res = await this.app.commands.createTodo.handle(Context.withSignal(signal), { name: input.name })
 
             // This is handled by validation before, so no special cases here
             if (Result.isFailure(res)) {
@@ -76,12 +77,17 @@ export class TodoHTTP {
             return res.value
         })
 
-        const toggleTodo = os.todos.toggle.handler(async ({ errors, input }) => {
-            const res = await this.app.commands.toggleTodo.handle({ id: input.params.id })
+        const toggleTodo = os.todos.toggle.handler(async ({
+            errors, input, signal,
+        }) => {
+            const res = await this.app.commands.toggleTodo.handle(Context.withSignal(signal), { id: input.params.id })
             if (Result.isFailure(res)) {
                 match(res.error.name)
                     .with("TodoNotFoundError", () => {
                         throw errors.NOT_FOUND({ message: "Todo not found" })
+                    })
+                    .with("CancelledError", () => {
+                        throw errors.INTERNAL_SERVER_ERROR({ message: "Request cancelled" })
                     })
                     .with("InternalDBError", () => {
                         throw errors.INTERNAL_SERVER_ERROR({ message: "Database error" })

@@ -164,7 +164,8 @@
                 "*.test.tsx"
             ],
             "rules": {
-                "eslint/max-nested-callbacks": "off"
+                "eslint/max-nested-callbacks": "off",
+                "eslint/max-statements": "off"
             }
         }
     ]

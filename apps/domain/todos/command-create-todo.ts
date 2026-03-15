@@ -1,6 +1,7 @@
 
 import { Result } from "@praha/byethrow"
 
+import type { Context } from "../ctx"
 import type { TodoRepository } from "./todo-repository"
 
 import { Todo } from "./todo"
@@ -18,10 +19,10 @@ export class CreateTodoHandler {
         return new CreateTodoHandler({ repo })
     }
 
-    handle(cmd: CreateTodoCommand) {
+    handle(ctx: Context, cmd: CreateTodoCommand) {
         return Result.pipe(
             Todo.create(cmd.name),
-            Result.andThrough((todo) => this.state.repo.upsert(todo)),
+            Result.andThrough((todo) => this.state.repo.upsert(ctx, todo)),
             Result.andThen((todo) => Result.succeed(todo.toDTO())),
         )
     }

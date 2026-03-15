@@ -33,14 +33,14 @@ export async function expectResultSuccessAsync<T, E>(
 }
 
 export async function expectResultFailureAsync<T, E extends Error>(
-    result: Result.ResultMaybeAsync<T, E>,
+    result: Result.ResultAsync<T, E>,
     errorType: new (...args: any[]) => E,
 ): Promise<void> {
     await expect(Result.unwrap(result)).rejects.toThrowError(errorType)
 }
 
 export async function expectResultFailureMaybeAsync<T, E extends Error>(
-    result: Result.ResultMaybeAsync<T, E>,
+    result: Result.ResultAsync<T, E>,
     errorType: new (...args: any[]) => E,
 ): Promise<void> {
     const resolved = result instanceof Promise ? await result : result
@@ -48,7 +48,7 @@ export async function expectResultFailureMaybeAsync<T, E extends Error>(
 }
 
 export async function expectResultSuccessMaybeAsync<T, E>(
-    result: Result.ResultMaybeAsync<T, E>,
+    result: Result.ResultAsync<T, E>,
 ): Promise<T> {
     const resolved = result instanceof Promise ? await result : result
     return expectResultSuccess(resolved)
