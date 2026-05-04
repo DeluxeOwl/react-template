@@ -32,8 +32,8 @@ const todoCollection = createCollection(
                 },
             })
         },
-        queryClient: queryClient,
-        queryFn:     async () => {
+        queryClient,
+        queryFn: async () => {
             const res = await api.todos.list.call()
             return res.data
         },
@@ -91,7 +91,7 @@ function TodoInput(): React.ReactNode {
             await todoCollection.insert({
                 done: false,
                 id:   generateTodoIDString(),
-                name: name,
+                name,
             }).isPersisted.promise
         },
         mutationKey: api.todos.create.mutationKey(),

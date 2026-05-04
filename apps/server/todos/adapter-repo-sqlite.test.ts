@@ -19,7 +19,7 @@ runRepositoryTests({
         const client = createClient({ url: `file:${dbPath}` })
         const db = drizzle(client)
 
-        await migrate(db, { migrationsFolder: migrationsFolder })
+        await migrate(db, { migrationsFolder })
 
         return {
             cleanup: () => {

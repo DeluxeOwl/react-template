@@ -27,94 +27,94 @@ ruleTester.run("enforce-namespace-import", enforceNamespaceImportRule, {
     invalid: [
         // Named import — must use namespace
         {
-            code:    `import { contract } from "@react-template/domain/todos"`,
-            errors:  [{ messageId: "mustBeNamespace" }],
-            options: options,
+            code:   `import { contract } from "@react-template/domain/todos"`,
+            errors: [{ messageId: "mustBeNamespace" }],
+            options,
         },
         // Default import — must use namespace
         {
-            code:    `import todos from "@react-template/domain/todos"`,
-            errors:  [{ messageId: "mustBeNamespace" }],
-            options: options,
+            code:   `import todos from "@react-template/domain/todos"`,
+            errors: [{ messageId: "mustBeNamespace" }],
+            options,
         },
         // Side-effect with type import — must use namespace
         {
-            code:    `import type { Contract } from "@react-template/domain/todos"`,
-            errors:  [{ messageId: "mustBeNamespace" }],
-            options: options,
+            code:   `import type { Contract } from "@react-template/domain/todos"`,
+            errors: [{ messageId: "mustBeNamespace" }],
+            options,
         },
         // Namespace import but wrong local name (completely different name)
         {
-            code:    `import * as foo from "@react-template/domain/todos"`,
-            errors:  [{ messageId: "wrongLocalName" }],
-            options: options,
+            code:   `import * as foo from "@react-template/domain/todos"`,
+            errors: [{ messageId: "wrongLocalName" }],
+            options,
         },
         // Wrong name — uppercase acronym style
         {
-            code:    `import * as todosADAPTER from "@react-template/todos-adapter"`,
-            errors:  [{ messageId: "wrongLocalName" }],
-            options: options,
+            code:   `import * as todosADAPTER from "@react-template/todos-adapter"`,
+            errors: [{ messageId: "wrongLocalName" }],
+            options,
         },
         // Wrong name — partial name
         {
-            code:    `import * as todo from "@react-template/todos-adapters"`,
-            errors:  [{ messageId: "wrongLocalName" }],
-            options: options,
+            code:   `import * as todo from "@react-template/todos-adapters"`,
+            errors: [{ messageId: "wrongLocalName" }],
+            options,
         },
         // Wrong name — snake_case not converted to camelCase
         {
-            code:    `import * as something_else from "@react-template/todos/something_else"`,
-            errors:  [{ messageId: "wrongLocalName" }],
-            options: options,
+            code:   `import * as something_else from "@react-template/todos/something_else"`,
+            errors: [{ messageId: "wrongLocalName" }],
+            options,
         },
         // Side-effect import (no specifiers) is still a plain import — not namespace
         {
-            code:    `import "@react-template/domain/todos"`,
-            errors:  [{ messageId: "mustBeNamespace" }],
-            options: options,
+            code:   `import "@react-template/domain/todos"`,
+            errors: [{ messageId: "mustBeNamespace" }],
+            options,
         },
         // Multiple named imports
         {
-            code:    `import { a, b, c } from "@react-template/utils"`,
-            errors:  [{ messageId: "mustBeNamespace" }],
-            options: options,
+            code:   `import { a, b, c } from "@react-template/utils"`,
+            errors: [{ messageId: "mustBeNamespace" }],
+            options,
         },
     ],
     valid: [
         // Correct namespace import — simple last segment
         {
-            code:    `import * as todos from "@react-template/domain/todos"`,
-            options: options,
+            code: `import * as todos from "@react-template/domain/todos"`,
+            options,
         },
         // Correct namespace import — kebab-case converted to camelCase
         {
-            code:    `import * as todosAdapters from "@react-template/todos-adapters"`,
-            options: options,
+            code: `import * as todosAdapters from "@react-template/todos-adapters"`,
+            options,
         },
         // Correct namespace import — snake_case last segment
         {
-            code:    `import * as somethingElse from "@react-template/todos/something_else"`,
-            options: options,
+            code: `import * as somethingElse from "@react-template/todos/something_else"`,
+            options,
         },
         // Correct namespace import — single segment after scope
         {
-            code:    `import * as utils from "@react-template/utils"`,
-            options: options,
+            code: `import * as utils from "@react-template/utils"`,
+            options,
         },
         // Package not in the configured list — any import style is fine
         {
-            code:    `import { contract } from "some-other-package"`,
-            options: options,
+            code: `import { contract } from "some-other-package"`,
+            options,
         },
         // Different scoped package not in list
         {
-            code:    `import { foo } from "@other-scope/domain/todos"`,
-            options: options,
+            code: `import { foo } from "@other-scope/domain/todos"`,
+            options,
         },
         // Named import from a non-configured package
         {
-            code:    `import * as bar from "@other-scope/bar"`,
-            options: options,
+            code: `import * as bar from "@other-scope/bar"`,
+            options,
         },
         // Multiple configured packages — each must follow the rule
         {
@@ -127,8 +127,8 @@ ruleTester.run("enforce-namespace-import", enforceNamespaceImportRule, {
         },
         // Kebab with multiple words
         {
-            code:    `import * as myFeatureModule from "@react-template/my-feature-module"`,
-            options: options,
+            code: `import * as myFeatureModule from "@react-template/my-feature-module"`,
+            options,
         },
     ],
 })

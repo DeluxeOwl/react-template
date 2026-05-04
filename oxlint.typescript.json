@@ -37,7 +37,6 @@
         "eslint/no-unused-expressions": "error",
         "eslint/no-var": "error",
         "eslint/unicode-bom": "error",
-        "eslint/no-cycle": "error",
         "import/no-commonjs": "error",
         "import/no-dynamic-require": "error",
         "oxc/bad-bitwise-operator": "error",

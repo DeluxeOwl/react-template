@@ -74,7 +74,7 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
                 "@typescript-eslint": tseslint.plugin,
                 // @ts-expect-error This is an issue with @typescript-eslint/utils.
                 "custom":             customPlugin,
-                "sweepit":            sweepit,
+                sweepit,
                 "unicorn":            eslintPluginUnicorn,
                 "unused-imports":     unusedImports,
             },

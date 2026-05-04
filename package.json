@@ -9,17 +9,17 @@
     ],
     "type": "module",
     "devDependencies": {
-        "@praha/byethrow-docs": "^0.10.0",
+        "@praha/byethrow-docs": "^0.10.1",
         "@react-template/eslint": "workspace:*",
-        "@tanstack/eslint-plugin-query": "^5.91.4",
+        "@tanstack/eslint-plugin-query": "^5.100.9",
         "@total-typescript/ts-reset": "^0.6.1",
         "dprint": "^0.51.1",
-        "eslint": "^9.39.2",
-        "jscpd": "^4.0.7",
-        "knip": "^5.73.4",
-        "oxlint": "^1.51.0",
+        "eslint": "^9.39.4",
+        "jscpd": "^4.0.9",
+        "knip": "^5.88.1",
+        "oxlint": "^1.62.0",
         "scaffdog": "^4.1.0",
-        "vitest": "^4.0.18"
+        "vitest": "^4.1.5"
     },
     "scripts": {
         "dev": "hivemind -T",

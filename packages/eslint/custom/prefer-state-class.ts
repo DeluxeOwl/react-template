@@ -147,7 +147,7 @@ export const preferStateClassRule = ESLintUtils.RuleCreator(
                     context.report({
                         data:      { className },
                         messageId: "noStaticCreateMethod",
-                        node:      node,
+                        node,
                     })
                 }
             },

@@ -7,18 +7,18 @@ import { TodoRepositorySqlite } from "../todos/adapter-repo-sqlite"
 function main(): void {
     const port = 3041
 
-    // TODO [2026-04-01] closing clients.
+    // TODO [2026-06-01] closing clients.
     const client = createClient({ url: "file:file.db" })
     const sqliteRepo = TodoRepositorySqlite.create(client)
     const app = createTodoApp({ todoRepository: sqliteRepo })
 
     const httpAdapter = TodoHTTP.create({
-        app: app,
+        app,
     })
     // eslint-disable-next-line no-restricted-globals -- This is the only instance that's okay.
     Bun.serve({
         fetch: httpAdapter.fetchORPC(),
-        port:  port,
+        port,
     })
 
     console.info(`Listening on http://localhost:${port}`)

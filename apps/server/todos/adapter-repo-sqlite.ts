@@ -60,7 +60,7 @@ export class TodoRepositorySqlite implements TodoRepository {
             }),
             Result.andThen((res) => {
                 if (res.length === 0) {
-                    return Result.fail(new TodoNotFoundError({ id: id }))
+                    return Result.fail(new TodoNotFoundError({ id }))
                 }
                 return Result.succeed(Todo.fromDTO(res[0]))
             }),

@@ -58,7 +58,7 @@ export default function createReactConfig(rootDir: string): Config[] {
 
             plugins: {
                 "better-tailwindcss": betterTailwindcss,
-                "sweepit":            sweepit,
+                sweepit,
             },
 
             rules: {

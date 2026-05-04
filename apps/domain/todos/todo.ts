@@ -52,7 +52,7 @@ export class Todo {
         return Result.succeed(new Todo({
             done: false,
             id:   generateTodoID(),
-            name: name,
+            name,
         }))
     }
 

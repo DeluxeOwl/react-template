@@ -43,7 +43,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         const id = generateTodoIDString()
                         const dto: TodoDTO = {
                             done: false,
-                            id:   id,
+                            id,
                             name: "Test Todo",
                         }
                         const todo = createTestTodo(dto)
@@ -75,7 +75,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         const id = generateTodoIDString()
                         const initialDto: TodoDTO = {
                             done: false,
-                            id:   id,
+                            id,
                             name: "Initial Todo",
                         }
                         const ctx = Context.create()
@@ -83,7 +83,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
 
                         const updatedDto: TodoDTO = {
                             done: true,
-                            id:   id,
+                            id,
                             name: "Updated Todo",
                         }
                         const updatedTodo = createTestTodo(updatedDto)
@@ -97,7 +97,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expect(result).toBeInstanceOf(Todo)
                         expect(result.toDTO()).toStrictEqual({
                             done: true,
-                            id:   id,
+                            id,
                             name: "Updated Todo",
                         })
                     })
@@ -119,7 +119,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         const id = generateTodoIDString()
                         const dto: TodoDTO = {
                             done: false,
-                            id:   id,
+                            id,
                             name: "Test Todo",
                         }
                         const todo = createTestTodo(dto)
@@ -237,7 +237,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         const id = generateTodoIDString()
                         const dto: TodoDTO = {
                             done: false,
-                            id:   id,
+                            id,
                             name: "Test Todo",
                         }
                         const ctx = Context.create()
@@ -291,7 +291,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         const id = generateTodoIDString()
                         const dto: TodoDTO = {
                             done: false,
-                            id:   id,
+                            id,
                             name: "Test Todo",
                         }
                         const todo = createTestTodo(dto)
@@ -337,7 +337,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         const id = generateTodoIDString()
                         const dto: TodoDTO = {
                             done: false,
-                            id:   id,
+                            id,
                             name: "Test Todo",
                         }
                         const todo = createTestTodo(dto)
@@ -408,7 +408,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                     const id = generateTodoIDString()
                     const dto: TodoDTO = {
                         done: false,
-                        id:   id,
+                        id,
                         name: "Initial Todo",
                     }
                     const ctx = Context.create()
@@ -484,7 +484,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         const id = generateTodoIDString()
                         const dto: TodoDTO = {
                             done: false,
-                            id:   id,
+                            id,
                             name: "Original Todo",
                         }
                         const ctx = Context.create()
@@ -496,7 +496,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
 
                         const updatedTodo = createTestTodo({
                             done: true,
-                            id:   id,
+                            id,
                             name: "Updated Todo",
                         })
 
