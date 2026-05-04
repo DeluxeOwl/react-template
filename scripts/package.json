@@ -2,6 +2,7 @@
     "name": "scripts",
     "private": true,
     "devDependencies": {
+        "@types/bun": "^1.3.13",
         "vitest": "^4.0.18"
     },
     "peerDependencies": {
