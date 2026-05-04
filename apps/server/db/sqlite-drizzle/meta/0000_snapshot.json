@@ -1,49 +1,64 @@
 {
-    "version": "6",
-    "dialect": "sqlite",
-    "id": "f250cece-d7c0-49d6-992f-86f0b892e821",
-    "prevId": "00000000-0000-0000-0000-000000000000",
-    "tables": {
-        "todo": {
-            "name": "todo",
-            "columns": {
-                "done": {
-                    "name": "done",
-                    "type": "integer",
-                    "primaryKey": false,
-                    "notNull": true,
-                    "autoincrement": false
-                },
-                "id": {
-                    "name": "id",
-                    "type": "text",
-                    "primaryKey": true,
-                    "notNull": true,
-                    "autoincrement": false
-                },
-                "name": {
-                    "name": "name",
-                    "type": "text",
-                    "primaryKey": false,
-                    "notNull": true,
-                    "autoincrement": false
-                }
-            },
-            "indexes": {},
-            "foreignKeys": {},
-            "compositePrimaryKeys": {},
-            "uniqueConstraints": {},
-            "checkConstraints": {}
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "8662d150-ab2c-412a-bafc-655285884aac",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "todo": {
+      "name": "todo",
+      "columns": {
+        "done": {
+          "name": "done",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "public_id": {
+          "name": "public_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         }
-    },
-    "views": {},
-    "enums": {},
-    "_meta": {
-        "schemas": {},
-        "tables": {},
-        "columns": {}
-    },
-    "internal": {
-        "indexes": {}
+      },
+      "indexes": {
+        "todo_public_id_unique": {
+          "name": "todo_public_id_unique",
+          "columns": [
+            "public_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
 }

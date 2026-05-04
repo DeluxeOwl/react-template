@@ -67,7 +67,7 @@ export class TodoHTTP {
         })
 
         const createTodo = os.todos.create.handler(async ({ input, signal }) => {
-            const res = await this.app.commands.createTodo.handle(Context.withSignal(signal), { name: input.name })
+            const res = await this.app.commands.createTodo.handle(Context.withSignal(signal), { name: input.name, publicId: input.id })
 
             // This is handled by validation before, so no special cases here
             if (Result.isFailure(res)) {

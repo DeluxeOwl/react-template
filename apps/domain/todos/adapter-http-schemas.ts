@@ -1,33 +1,29 @@
 import * as z from "zod"
-import { TypeID } from "typeid-js"
 
 import { TodoNameMinLength } from "./todo"
 
-const typeIdSchema = z.string().refine((val) => {
-    try {
-        TypeID.fromString(val)
-        return true
-    } catch {
-        return false
-    }
-}, { message: "Invalid TypeID format" })
+const todoPublicIdSchema = z.string().regex(
+    /^todo_[\dA-Za-z]{22}$/,
+    { message: "Invalid todo public ID format (expected todo_<22 base62 chars>)" },
+)
 
 // Schema definitions, used for forms, http communication etc.
 
 // This is for http
 export const TodoOutputHTTPSchema = z.object({
     done: z.boolean(),
-    id:   typeIdSchema,
+    id:   todoPublicIdSchema,
     name: z.string().min(TodoNameMinLength),
 })
 
-export const CreateTodoInputHTTPSchema = TodoOutputHTTPSchema.omit({
-    done: true,
-    id:   true,
+export const CreateTodoInputHTTPSchema = z.object({
+    // Note: We allow client side id generation, works really well with tanstack db.
+    id:   todoPublicIdSchema.optional(),
+    name: z.string().min(TodoNameMinLength),
 })
 
 export const ToggleTodoInputHTTPSchemaParams = z.object({
-    id: typeIdSchema,
+    id: todoPublicIdSchema,
 })
 
 export const ToggleTodoInputHTTPSchema = z.object({

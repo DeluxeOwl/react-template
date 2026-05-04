@@ -7,7 +7,8 @@ import type { TodoRepository } from "./todo-repository"
 import { Todo } from "./todo"
 
 export interface CreateTodoCommand {
-    name: string
+    name:      string
+    publicId?: string
 }
 
 export class CreateTodoHandler {
@@ -21,7 +22,7 @@ export class CreateTodoHandler {
 
     handle(ctx: Context, cmd: CreateTodoCommand) {
         return Result.pipe(
-            Todo.create(cmd.name),
+            Todo.create(cmd.name, cmd.publicId),
             Result.andThrough((todo) => this.state.repo.upsert(ctx, todo)),
             Result.andThen((todo) => Result.succeed(todo.toDTO())),
         )

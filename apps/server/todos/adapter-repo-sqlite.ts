@@ -41,7 +41,7 @@ export class TodoRepositorySqlite implements TodoRepository {
         return Result.pipe(
             Result.try({
                 catch: (error) => toCancelledOrDBError(error),
-                try:   async () => await makeCancellable(this.state.db.delete(todosTable).where(eq(todosTable.id, id)), ctx.signal),
+                try:   async () => await makeCancellable(this.state.db.delete(todosTable).where(eq(todosTable.publicId, id)), ctx.signal),
             }),
             Result.andThen((_) => Result.succeed()),
         )
@@ -53,7 +53,7 @@ export class TodoRepositorySqlite implements TodoRepository {
                 catch: (error) => toCancelledOrDBError(error),
                 try:   async () => await makeCancellable(
                     this.state.db.select().from(todosTable)
-                        .where(eq(todosTable.id, id))
+                        .where(eq(todosTable.publicId, id))
                         .limit(1),
                     ctx.signal,
                 ),
@@ -62,7 +62,11 @@ export class TodoRepositorySqlite implements TodoRepository {
                 if (res.length === 0) {
                     return Result.fail(new TodoNotFoundError({ id }))
                 }
-                return Result.succeed(Todo.fromDTO(res[0]))
+                return Result.succeed(Todo.fromDTO({
+                    done: res[0].done,
+                    id:   res[0].publicId,
+                    name: res[0].name,
+                }))
             }),
         )
     }
@@ -76,7 +80,11 @@ export class TodoRepositorySqlite implements TodoRepository {
                     ctx.signal,
                 ),
             }),
-            Result.map((todos) => todos.map((todo) => Todo.fromDTO(todo))),
+            Result.map((rows) => rows.map((row) => Todo.fromDTO({
+                done: row.done,
+                id:   row.publicId,
+                name: row.name,
+            }))),
         )
     }
 
@@ -87,13 +95,13 @@ export class TodoRepositorySqlite implements TodoRepository {
                 catch: (error) => toCancelledOrDBError(error),
                 try:   async () => await makeCancellable(
                     this.state.db.insert(todosTable).values({
-                        done: dto.done,
-                        id:   dto.id,
-                        name: dto.name,
+                        done:     dto.done,
+                        name:     dto.name,
+                        publicId: dto.id,
                     })
                         .onConflictDoUpdate({
                             set:    { done: dto.done, name: dto.name },
-                            target: todosTable.id,
+                            target: todosTable.publicId,
                         }),
                     ctx.signal,
                 ),
@@ -123,4 +131,3 @@ export class TodoRepositorySqlite implements TodoRepository {
         })
     }
 }
-

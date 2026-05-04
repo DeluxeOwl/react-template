@@ -6,7 +6,7 @@ import {
 import { Context, CancelledError } from "../ctx"
 import {
     Todo,
-    type TodoDTO, generateTodoIDString,
+    type TodoDTO, generateTodoPublicId,
 } from "./todo"
 import { TodoNotFoundError, type TodoRepository } from "./todo-repository"
 import {
@@ -40,7 +40,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         onTestFinished(async () => {
                             await cleanup()
                         })
-                        const id = generateTodoIDString()
+                        const id = generateTodoPublicId()
                         const dto: TodoDTO = {
                             done: false,
                             id,
@@ -72,7 +72,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         onTestFinished(async () => {
                             await cleanup()
                         })
-                        const id = generateTodoIDString()
+                        const id = generateTodoPublicId()
                         const initialDto: TodoDTO = {
                             done: false,
                             id,
@@ -116,7 +116,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         onTestFinished(async () => {
                             await cleanup()
                         })
-                        const id = generateTodoIDString()
+                        const id = generateTodoPublicId()
                         const dto: TodoDTO = {
                             done: false,
                             id,
@@ -194,8 +194,8 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         onTestFinished(async () => {
                             await cleanup()
                         })
-                        const id1 = generateTodoIDString()
-                        const id2 = generateTodoIDString()
+                        const id1 = generateTodoPublicId()
+                        const id2 = generateTodoPublicId()
                         const dto1: TodoDTO = {
                             done: false,
                             id:   id1,
@@ -234,7 +234,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         onTestFinished(async () => {
                             await cleanup()
                         })
-                        const id = generateTodoIDString()
+                        const id = generateTodoPublicId()
                         const dto: TodoDTO = {
                             done: false,
                             id,
@@ -288,7 +288,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         onTestFinished(async () => {
                             await cleanup()
                         })
-                        const id = generateTodoIDString()
+                        const id = generateTodoPublicId()
                         const dto: TodoDTO = {
                             done: false,
                             id,
@@ -334,7 +334,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         onTestFinished(async () => {
                             await cleanup()
                         })
-                        const id = generateTodoIDString()
+                        const id = generateTodoPublicId()
                         const dto: TodoDTO = {
                             done: false,
                             id,
@@ -405,7 +405,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                     onTestFinished(async () => {
                         await cleanup()
                     })
-                    const id = generateTodoIDString()
+                    const id = generateTodoPublicId()
                     const dto: TodoDTO = {
                         done: false,
                         id,
@@ -481,7 +481,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         onTestFinished(async () => {
                             await cleanup()
                         })
-                        const id = generateTodoIDString()
+                        const id = generateTodoPublicId()
                         const dto: TodoDTO = {
                             done: false,
                             id,

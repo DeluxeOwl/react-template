@@ -25,7 +25,6 @@
         "@praha/byethrow": "^0.11.1",
         "@praha/error-factory": "^1.4.1",
         "ts-pattern": "^5.9.0",
-        "typeid-js": "^1.2.0",
         "zod": "^4.4.3"
     }
 }
