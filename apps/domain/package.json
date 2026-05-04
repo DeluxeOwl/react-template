@@ -5,10 +5,10 @@
     "type": "module",
     "private": true,
     "devDependencies": {
-        "@types/node": "^24.10.1"
+        "@types/node": "^25.6.0"
     },
     "peerDependencies": {
-        "typescript": "^6.0.0-beta"
+        "typescript": "^6.0.3"
     },
     "scripts": {
         "lint:oxlint": "oxlint --fix .",
@@ -21,11 +21,11 @@
         "./*": "./*.ts"
     },
     "dependencies": {
-        "@orpc/contract": "^1.13.5",
-        "@praha/byethrow": "^0.10.0",
-        "@praha/error-factory": "^1.4.0",
+        "@orpc/contract": "^1.14.1",
+        "@praha/byethrow": "^0.11.1",
+        "@praha/error-factory": "^1.4.1",
         "ts-pattern": "^5.9.0",
         "typeid-js": "^1.2.0",
-        "zod": "^4.3.6"
+        "zod": "^4.4.3"
     }
 }

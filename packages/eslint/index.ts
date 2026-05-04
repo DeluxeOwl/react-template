@@ -9,13 +9,13 @@ import stylistic from "@stylistic/eslint-plugin"
 import { importX } from "eslint-plugin-import-x"
 import importZod from "eslint-plugin-import-zod"
 import gitignore from "eslint-config-flat-gitignore"
-import perfectionist from "eslint-plugin-perfectionist"
 import eslintPluginUnicorn from "eslint-plugin-unicorn"
 import unusedImports from "eslint-plugin-unused-imports"
 import {
     type Config,
     defineConfig,
 } from "eslint/config"
+import { configs as perfectionistConfigs } from "eslint-plugin-perfectionist"
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
 import customPlugin from "./custom"
@@ -46,7 +46,7 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
         {
             extends: [
                 tseslint.configs.recommendedTypeChecked,
-                perfectionist.configs["recommended-natural"],
+                perfectionistConfigs["recommended-natural"],
                 stylistic.configs.customize({
                     arrowParens:  true,
                     blockSpacing: true,
@@ -479,7 +479,6 @@ export default function createConfig(rootDir: string, allowDefaultProject: strin
         {
             extends: ["import-x/flat/recommended"],
             plugins: {
-                // @ts-expect-error https://github.com/typescript-eslint/typescript-eslint/issues/11543 and https://github.com/un-ts/eslint-plugin-import-x/issues/421
                 "import-x": importX,
             },
             rules: {

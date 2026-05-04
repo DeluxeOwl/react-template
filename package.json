@@ -9,14 +9,14 @@
     ],
     "type": "module",
     "devDependencies": {
-        "@praha/byethrow-docs": "^0.10.1",
+        "@praha/byethrow-docs": "^0.11.1",
         "@react-template/eslint": "workspace:*",
         "@tanstack/eslint-plugin-query": "^5.100.9",
         "@total-typescript/ts-reset": "^0.6.1",
-        "dprint": "^0.51.1",
-        "eslint": "^9.39.4",
+        "dprint": "^0.54.0",
+        "eslint": "^10.3.0",
         "jscpd": "^4.0.9",
-        "knip": "^5.88.1",
+        "knip": "^6.11.0",
         "oxlint": "^1.62.0",
         "scaffdog": "^4.1.0",
         "vitest": "^4.1.5"
@@ -36,5 +36,9 @@
         "lint:duplicates": "bun run scripts/cli.ts find-duplicate-functions",
         "outdated": "bun outdated --filter '*'",
         "test": "bun run --workspaces --sequential test"
+    },
+    "dependencies": {
+        "react": "^19.2.5",
+        "react-dom": "^19.2.5"
     }
 }

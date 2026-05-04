@@ -5,8 +5,8 @@ import sweepit from "eslint-plugin-sweepit"
 import createConfig from "@react-template/eslint"
 import reactHooks from "eslint-plugin-react-hooks"
 import eslintReact from "@eslint-react/eslint-plugin"
-import reactRefresh from "eslint-plugin-react-refresh"
 import pluginQuery from "@tanstack/eslint-plugin-query"
+import eslintReactRefresh from "eslint-plugin-react-refresh"
 import reactRenderTypes from "eslint-plugin-react-render-types"
 import betterTailwindcss from "eslint-plugin-better-tailwindcss"
 import {
@@ -36,7 +36,7 @@ export default function createReactConfig(rootDir: string): Config[] {
         },
         {
             extends: [
-                reactRefresh.configs.recommended,
+                eslintReactRefresh.configs.recommended,
                 reactHooks.configs.flat.recommended,
                 eslintReact.configs["recommended-typescript"],
                 youMightNotNeedAnEffect.configs.recommended,
