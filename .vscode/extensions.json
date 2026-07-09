@@ -19,7 +19,8 @@
         "mkhl.direnv",
         "blazejkustra.react-compiler-marker",
         "vitest.explorer",
-        "LachyFS.kanban-markdown"
+        "LachyFS.kanban-markdown",
+        "tilt-dev.tiltfile"
     ],
     "unwantedRecommendations": [
         "esbenp.prettier-vscode"

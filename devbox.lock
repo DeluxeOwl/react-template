@@ -198,54 +198,6 @@
       "last_modified": "2025-12-11T04:04:52Z",
       "resolved": "github:NixOS/nixpkgs/5d6bdbddb4695a62f0d00a3620b37a15275a5093?lastModified=1765425892&narHash=sha256-jlQpSkg2sK6IJVzTQBDyRxQZgKADC2HKMRfGCSgNMHo%3D"
     },
-    "hivemind@latest": {
-      "last_modified": "2026-02-23T15:40:43Z",
-      "resolved": "github:NixOS/nixpkgs/80d901ec0377e19ac3f7bb8c035201e2e098cc97#hivemind",
-      "source": "devbox-search",
-      "version": "1.1.0",
-      "systems": {
-        "aarch64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/0ri659fqz2qby4gf640j7gwqxq8353yp-hivemind-1.1.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/0ri659fqz2qby4gf640j7gwqxq8353yp-hivemind-1.1.0"
-        },
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/nvrzhngb5gfzpzcnpls1cq4xhyhiyms4-hivemind-1.1.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/nvrzhngb5gfzpzcnpls1cq4xhyhiyms4-hivemind-1.1.0"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/fg06rk1as871s2cllarqqq988893wmnm-hivemind-1.1.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/fg06rk1as871s2cllarqqq988893wmnm-hivemind-1.1.0"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/9lakcq4v7m0mqwgvjg8a67dkngb9khv6-hivemind-1.1.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/9lakcq4v7m0mqwgvjg8a67dkngb9khv6-hivemind-1.1.0"
-        }
-      }
-    },
     "k3d@latest": {
       "last_modified": "2026-06-27T07:37:20Z",
       "resolved": "github:NixOS/nixpkgs/3d46470bb3030020f7e1361f33514854f5bfa86d#k3d",

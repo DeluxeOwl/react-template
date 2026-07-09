@@ -39,7 +39,7 @@
     },
     "scripts": {
         "postinstall": "bun run --filter @deluxeowl/lint build",
-        "dev": "hivemind -T",
+        "dev": "tilt up",
         "lint:oxlint": "bun run --workspaces lint:oxlint",
         "lint:eslint": "bun run --workspaces lint:eslint",
         "lint:sg": "ast-grep scan",

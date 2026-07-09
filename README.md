@@ -67,14 +67,19 @@ Bun 1.3.3 is the package manager **and** runtime. The dev environment is pinned 
 
 ```bash
 devbox shell          # enter the pinned Nix env; runs `bun install` + `lefthook install`
-bun run dev           # hivemind: web (:5173) + server (:3041) + local-https/mDNS
+bun run dev           # tilt: web (:5173) + server (:3041) + local-https/mDNS
 ```
 
 Open the app on <http://localhost:5173>, the API on <http://localhost:3041> (Scalar
 OpenAPI docs served there), and create/toggle a todo to see the optimistic-mutation +
 live-sync path end to end.
 
-> Ports (`3041`, `5173`) are currently hardcoded (server, `apps/web/api.ts`, `Procfile`).
+> `bun run dev` runs `tilt up` — no Kubernetes required (the services are plain
+> `local_resource` processes). The Tilt web UI is at <http://localhost:10350>; use
+> `tilt down` to stop. When k8s is added later, k8s resources coexist with these
+> `local_resource` ones in the same `Tiltfile`.
+>
+> Ports (`3041`, `5173`) are currently hardcoded (server, `apps/web/api.ts`, `Tiltfile`).
 
 ---
 
@@ -84,7 +89,7 @@ Run from the repo root (inside `devbox shell`).
 
 | Command                  | What it does                                           |
 | ------------------------ | ------------------------------------------------------ |
-| `bun run dev`            | Start web + server + https/mDNS (hivemind, `Procfile`) |
+| `bun run dev`            | Start web + server + https/mDNS (tilt, `Tiltfile`)     |
 | `bun run typecheck`      | `tsc --noEmit` across all workspaces                   |
 | `bun run test`           | All tests (Vitest, sequential across workspaces)       |
 | `bun run lint:oxlint`    | oxlint (fast Rust linter)                              |

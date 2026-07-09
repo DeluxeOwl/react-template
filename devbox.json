@@ -5,7 +5,6 @@
     "commitlint-rs@latest",
     "lefthook@latest",
     "ast-grep@latest",
-    "hivemind@latest",
     "caddy@latest",
     "k3d@latest",
     "tilt@latest"
