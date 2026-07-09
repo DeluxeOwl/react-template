@@ -1,3 +1,4 @@
+import { H3, serve } from "h3"
 import { createClient } from "@libsql/client"
 import { createTodoApp } from "@react-template/core/todos/app"
 
@@ -15,11 +16,16 @@ function main(): void {
     const httpAdapter = TodoHTTP.create({
         app,
     })
-    // eslint-disable-next-line no-restricted-globals -- This is the only instance that's okay.
-    Bun.serve({
-        fetch: httpAdapter.fetchORPC(),
-        port,
-    })
+
+    // Runtime-agnostic server: `serve` is powered by srvx and adopts the
+    // native server of whatever runtime we run on (Bun, Node, Deno, ...).
+    // The oRPC adapter does its own internal routing (rpc/api/spec/scalar),
+    // so we hand every request to it via a catch-all and pass the untouched
+    // web `Request` (`event.req`). Middleware/hooks/routes can be added on the
+    // H3 instance later without touching the adapter.
+    const fetchORPC = httpAdapter.fetchORPC()
+    const httpServer = new H3().all("/**", (event) => fetchORPC(event.req))
+    serve(httpServer, { port })
 
     console.info(`Listening on http://localhost:${port}`)
 }

@@ -19,6 +19,7 @@
             "@orpc/openapi": "^1.14.1",
             "@orpc/zod": "^1.14.1",
             "@orpc/tanstack-query": "^1.14.1",
+            "h3": "^2.0.1-rc.23",
             "vitest": "^4.1.5",
             "typescript": "^6.0.3",
             "@types/node": "^25.6.0",

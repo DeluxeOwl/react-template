@@ -158,7 +158,8 @@ echo 'function greet(name: string): JSX.Element {
   )
 }' | bun -e '
 import tseslint from "typescript-eslint";
-const code = await Bun.stdin.text();
+import { readFileSync } from "node:fs";
+const code = readFileSync(0, "utf8");
 const { ast } = tseslint.parser.parseForESLint(code, {
   ecmaVersion: 2020,
   sourceType: "module",
@@ -177,7 +178,8 @@ Point it at any `.ts` / `.tsx` file in the repo:
 ```bash
 bun -e '
 import tseslint from "typescript-eslint";
-const code = await Bun.file(process.argv[1]).text();
+import { readFileSync } from "node:fs";
+const code = readFileSync(process.argv[1], "utf8");
 const { ast } = tseslint.parser.parseForESLint(code, {
   ecmaVersion: 2020,
   sourceType: "module",

@@ -87,19 +87,19 @@ live-sync path end to end.
 
 Run from the repo root (inside `devbox shell`).
 
-| Command                  | What it does                                           |
-| ------------------------ | ------------------------------------------------------ |
-| `bun run dev`            | Start web + server + https/mDNS (tilt, `Tiltfile`)     |
-| `bun run typecheck`      | `tsc --noEmit` across all workspaces                   |
-| `bun run test`           | All tests (Vitest, sequential across workspaces)       |
-| `bun run lint:oxlint`    | oxlint (fast Rust linter)                              |
-| `bun run lint:eslint`    | ESLint (type-aware rules)                              |
-| `bun run lint:sg`        | ast-grep structural rules                              |
-| `bun run lint:duplicate` | jscpd copy-paste detector                              |
-| `bun run format:dprint`  | Format JSON/YAML/Markdown (TS/JS handled by ESLint)    |
-| `bun run deadcode`       | knip (unused files/exports/deps)                       |
-| `bun run lint:all`       | Full pre-push gate (lefthook)                          |
-| `bun run generate`       | Scaffold a new package (scaffdog)                      |
+| Command                  | What it does                                        |
+| ------------------------ | --------------------------------------------------- |
+| `bun run dev`            | Start web + server + https/mDNS (tilt, `Tiltfile`)  |
+| `bun run typecheck`      | `tsc --noEmit` across all workspaces                |
+| `bun run test`           | All tests (Vitest, sequential across workspaces)    |
+| `bun run lint:oxlint`    | oxlint (fast Rust linter)                           |
+| `bun run lint:eslint`    | ESLint (type-aware rules)                           |
+| `bun run lint:sg`        | ast-grep structural rules                           |
+| `bun run lint:duplicate` | jscpd copy-paste detector                           |
+| `bun run format:dprint`  | Format JSON/YAML/Markdown (TS/JS handled by ESLint) |
+| `bun run deadcode`       | knip (unused files/exports/deps)                    |
+| `bun run lint:all`       | Full pre-push gate (lefthook)                       |
+| `bun run generate`       | Scaffold a new package (scaffdog)                   |
 
 The full command reference (test filters, per-workspace runs, code-style rules) lives in
 [`AGENTS.md`](./AGENTS.md).
