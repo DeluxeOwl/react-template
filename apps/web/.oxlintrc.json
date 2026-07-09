@@ -1,5 +1,8 @@
 {
     "extends": [
         "../../node_modules/@deluxeowl/lint/oxlint/react.json"
+    ],
+    "ignorePatterns": [
+        "auto-imports.d.ts"
     ]
 }

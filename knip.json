@@ -11,7 +11,8 @@
         "@praha/byethrow-docs"
     ],
     "ignore": [
-        ".scaffdog/config.js"
+        ".scaffdog/config.js",
+        "apps/web/auto-imports.d.ts"
     ],
     "tags": [
         "-lintignore"

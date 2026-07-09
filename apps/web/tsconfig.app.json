@@ -24,6 +24,6 @@
     "include": [
         ".",
         "../../reset.d.ts",
-        "node_modules/auto-imports.d.ts"
+        "auto-imports.d.ts"
     ]
 }

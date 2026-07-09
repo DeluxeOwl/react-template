@@ -15,7 +15,7 @@ export default defineConfig({
             presets: [reactCompilerPreset()],
         }),
         autoImport({
-            dts:     "node_modules/auto-imports.d.ts",
+            dts:     "auto-imports.d.ts",
             imports: [
                 "react",
                 "react-router-dom",
