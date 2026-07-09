@@ -31,7 +31,7 @@
         "@react-template/core": "workspace:*",
         "@react-template/kernel": "workspace:*",
         "drizzle-orm": "^0.45.2",
-        "h3": "catalog:",
+        "srvx": "catalog:",
         "ts-pattern": "catalog:",
         "zod": "catalog:"
     }

@@ -21,9 +21,8 @@ const sharedErrorsMutating = {
 }
 
 const createTodoContract = oc.route({
-    inputStructure: "detailed",
-    method:         "POST",
-    path:           "/todos/create",
+    method: "POST",
+    path:   "/todos/create",
 })
     .input(CreateTodoInputHTTPSchema)
     .output(TodoOutputHTTPSchema)

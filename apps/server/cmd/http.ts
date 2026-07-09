@@ -1,4 +1,4 @@
-import { H3, serve } from "h3"
+import { serve } from "srvx"
 import { createClient } from "@libsql/client"
 import { createTodoApp } from "@react-template/core/todos/app"
 
@@ -17,15 +17,12 @@ function main(): void {
         app,
     })
 
-    // Runtime-agnostic server: `serve` is powered by srvx and adopts the
-    // native server of whatever runtime we run on (Bun, Node, Deno, ...).
-    // The oRPC adapter does its own internal routing (rpc/api/spec/scalar),
-    // so we hand every request to it via a catch-all and pass the untouched
-    // web `Request` (`event.req`). Middleware/hooks/routes can be added on the
-    // H3 instance later without touching the adapter.
+    // Runtime-agnostic server: `serve` from srvx adopts the native server of
+    // whatever runtime we run on (Bun, Node, Deno, ...). The oRPC adapter does
+    // its own internal routing (rpc/api/spec/scalar), so we hand every request
+    // to it directly via the `fetch` handler with the untouched web `Request`.
     const fetchORPC = httpAdapter.fetchORPC()
-    const httpServer = new H3().all("/**", (event) => fetchORPC(event.req))
-    serve(httpServer, { port })
+    serve({ fetch: (request) => fetchORPC(request), port })
 
     console.info(`Listening on http://localhost:${port}`)
 }
