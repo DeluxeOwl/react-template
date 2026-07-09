@@ -13,26 +13,25 @@ fi
 
 main() {
     # Check environment variables
-    if [[ "${DEVBOX_SHELL_ENABLED:-0}" != "1" && "${OPENCODE:-0}" != "1" ]]; then
+    if [[ "${DEVBOX_SHELL_ENABLED:-0}" != "1" ]]; then
         log_error "Not in a devbox shell. Please run 'devbox shell' first."
         exit 1
     fi
 
     # Skip host-tool checks in CI (GitHub Actions sets CI=true). The devbox
     # environment already provides everything the CI gate needs; docker,
-    # opencode, direnv and dns-sd are local-dev conveniences only.
+    # direnv and dns-sd are local-dev conveniences only.
     if [[ -n "${CI:-}" ]]; then
         log_info "CI detected, skipping host tool checks."
         exit 0
     fi
 
     # Define tool requirements
-    local tools=("docker" "opencode" "direnv" "dns-sd")
+    local tools=("docker" "direnv" "dns-sd")
     
     # Store URLs in a way bash can reference them
     declare -A urls
     urls[docker]="https://docs.docker.com/get-started/get-docker/"
-    urls[opencode]="https://opencode.ai/"
     # Turn down direnv verbosity: https://github.com/direnv/direnv/issues/68#issuecomment-2812015043
     urls[direnv]="https://direnv.net/docs/installation.html"
     urls[dns-sd]="it should be already installed on mac, windows and linux need something else"
