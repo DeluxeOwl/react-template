@@ -13,17 +13,20 @@ questions:
 {
     "name": "@react-template/{{ inputs.packageName | kebab }}",
     "version": "0.0.1",
-    "module": "index.ts",
     "type": "module",
     "private": true,
-    "devDependencies": {},
+    "devDependencies": {
+        "@types/node": "catalog:",
+        "vitest": "catalog:"
+    },
     "peerDependencies": {
-        "typescript": "^6.0.0-beta"
+        "typescript": "catalog:"
     },
     "scripts": {
         "lint:oxlint": "oxlint --fix .",
         "lint:eslint": "eslint --fix .",
-        "typecheck": "tsc -b --noEmit"
+        "typecheck": "tsc --noEmit",
+        "test": "vitest --run --passWithNoTests --reporter=tree"
     },
     "exports": {
         ".": "./index.ts"
@@ -36,7 +39,7 @@ questions:
 ```json
 {
     "extends": [
-        "../../oxlint.typescript.json"
+        "../../node_modules/@deluxeowl/lint/oxlint/typescript.json"
     ]
 }
 ```
@@ -44,7 +47,7 @@ questions:
 # `{{ inputs.packageName | kebab }}/eslint.config.ts`
 
 ```typescript
-import config from "@react-template/eslint"
+import config from "@deluxeowl/lint"
 import {
     defineConfig,
 } from "eslint/config"
@@ -61,14 +64,8 @@ export default defineConfig([
 ```json
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "composite": true,
-        "noEmit": false,
-        "outDir": "./dist"
-    },
     "include": [
-        "src",
-        "*.ts",
+        "**/*.ts",
         "index.ts",
         "eslint.config.ts",
         "../../reset.d.ts"
@@ -78,12 +75,6 @@ export default defineConfig([
 ```
 
 # `{{ inputs.packageName | kebab }}/index.ts`
-
-```typescript
-export * from "./src"
-```
-
-# `{{ inputs.packageName | kebab }}/src/index.ts`
 
 ```typescript
 export {}

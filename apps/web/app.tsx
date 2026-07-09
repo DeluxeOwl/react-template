@@ -2,8 +2,8 @@
 import { match } from "ts-pattern"
 import { isDefinedError } from "@orpc/client"
 import { ErrorBoundary } from "react-error-boundary"
+import { generateTodoPublicId } from "@react-template/core/todos/todo"
 import { queryCollectionOptions } from "@tanstack/query-db-collection"
-import { generateTodoPublicId } from "@react-template/domain/todos/todo"
 import { createCollection, useLiveSuspenseQuery } from "@tanstack/react-db"
 import {
     QueryClient, useMutation, QueryClientProvider, type UseMutationOptions,
@@ -131,7 +131,8 @@ function App(): React.ReactNode {
                             match(err)
                                 .with({ code: "INPUT_VALIDATION_FAILED" }, (validationErr) => <p>Bad Form {validationErr.data.formErrors[0]}</p>)
                                 .with({ code: "INTERNAL_SERVER_ERROR" }, () => <p>Internal server error</p>)
-                                .otherwise(() => <p>Generic ORPC Error</p>),
+                                .with({ code: "NOT_FOUND" }, () => <p>Not found</p>)
+                                .exhaustive(),
                         )
                         .otherwise(() => <p>foo</p>)
                 }}>

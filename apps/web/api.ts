@@ -1,4 +1,4 @@
-import type { ContractTypeClient } from "@react-template/domain/todos/adapter-http-routes"
+import type { ContractTypeClient } from "@react-template/core/todos/adapter-http-routes"
 
 import { RPCLink } from "@orpc/client/fetch"
 import { createTanstackQueryUtils } from "@orpc/tanstack-query"

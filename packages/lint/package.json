@@ -1,0 +1,83 @@
+{
+    "name": "@deluxeowl/lint",
+    "version": "0.1.0",
+    "type": "module",
+    "private": false,
+    "license": "UNLICENSED",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DeluxeOwl/react-template.git",
+        "directory": "packages/lint"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com",
+        "access": "restricted"
+    },
+    "zshy": {
+        "exports": {
+            ".": "./src/index.ts",
+            "./react": "./src/react.ts"
+        },
+        "cjs": false
+    },
+    "files": [
+        "dist",
+        "oxlint",
+        "ast-grep",
+        "dprint.jsonc"
+    ],
+    "scripts": {
+        "build": "zshy",
+        "lint:oxlint": "oxlint --fix .",
+        "lint:eslint": "eslint --fix .",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest --run --passWithNoTests --reporter=tree"
+    },
+    "dependencies": {
+        "@eslint-react/eslint-plugin": "^5.7.1",
+        "@stylistic/eslint-plugin": "^5.10.0",
+        "@tanstack/eslint-plugin-query": "^5.100.9",
+        "@typescript-eslint/utils": "^8.59.1",
+        "@vitest/eslint-plugin": "^1.6.16",
+        "change-case": "^5.4.4",
+        "eslint-config-flat-gitignore": "^2.3.0",
+        "eslint-import-resolver-typescript": "^4.4.4",
+        "eslint-plugin-better-tailwindcss": "^4.5.0",
+        "eslint-plugin-import-x": "^4.16.2",
+        "eslint-plugin-import-zod": "^1.2.1",
+        "eslint-plugin-oxlint": "^1.62.0",
+        "eslint-plugin-perfectionist": "^5.9.0",
+        "eslint-plugin-react-hooks": "^7.1.1",
+        "eslint-plugin-react-refresh": "^0.5.2",
+        "eslint-plugin-react-render-types": "^0.7.6",
+        "eslint-plugin-react-you-might-not-need-an-effect": "^0.10.0",
+        "eslint-plugin-sweepit": "^0.0.23",
+        "eslint-plugin-unicorn": "^64.0.0",
+        "eslint-plugin-unused-imports": "^4.3.0",
+        "typescript-eslint": "^8.59.1"
+    },
+    "peerDependencies": {
+        "eslint": ">=10",
+        "oxlint": ">=1",
+        "typescript": ">=5.9"
+    },
+    "devDependencies": {
+        "@types/node": "^25.6.0",
+        "@typescript-eslint/rule-tester": "^8.59.1",
+        "eslint": "^10.3.0",
+        "vitest": "^4.1.5",
+        "zshy": "^0.7.3"
+    },
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./react": {
+            "types": "./dist/react.d.ts",
+            "default": "./dist/react.js"
+        }
+    }
+}

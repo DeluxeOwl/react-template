@@ -5,7 +5,7 @@ import path from "node:path"
 import { drizzle } from "drizzle-orm/libsql"
 import { createClient } from "@libsql/client"
 import { migrate } from "drizzle-orm/libsql/migrator"
-import { runRepositoryTests } from "@react-template/domain/todos/todo-repository.test"
+import { runRepositoryTests } from "@react-template/core/todos/todo-repository.test"
 
 import { TodoRepositorySqlite } from "./adapter-repo-sqlite"
 

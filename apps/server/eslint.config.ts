@@ -1,4 +1,4 @@
-import config from "@react-template/eslint"
+import config from "@deluxeowl/lint"
 import {
     defineConfig,
 } from "eslint/config"

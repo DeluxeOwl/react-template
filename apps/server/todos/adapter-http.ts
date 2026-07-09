@@ -1,7 +1,7 @@
 
 /* eslint-disable no-restricted-syntax */
 
-import type { TodoApp } from "@react-template/domain/todos/app"
+import type { TodoApp } from "@react-template/core/todos/app"
 
 import * as z from "zod"
 import { match } from "ts-pattern"
@@ -11,9 +11,9 @@ import { OpenAPIGenerator } from "@orpc/openapi"
 import { CORSPlugin } from "@orpc/server/plugins"
 import { ZodSmartCoercionPlugin } from "@orpc/zod"
 import { OpenAPIHandler } from "@orpc/openapi/fetch"
+import { Context } from "@react-template/kernel/ctx"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
-import { Context } from "@react-template/domain/ctx/index"
-import { contract } from "@react-template/domain/todos/adapter-http-routes"
+import { contract } from "@react-template/core/todos/adapter-http-routes"
 import {
     onError, implement, ORPCError, ValidationError,
 } from "@orpc/server"

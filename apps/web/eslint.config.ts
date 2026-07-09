@@ -1,7 +1,7 @@
+import reactConfig from "@deluxeowl/lint/react"
 import {
     defineConfig,
 } from "eslint/config"
-import reactConfig from "@react-template/eslint/react"
 
 export default defineConfig([
     {

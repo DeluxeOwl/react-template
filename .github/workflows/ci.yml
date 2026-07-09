@@ -1,0 +1,61 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel superseded runs on the same ref (saves CI minutes on rapid pushes).
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Installs the devbox CLI + the Nix packages from devbox.json (bun,
+      # ast-grep, lefthook, ...). Matches the local dev environment exactly.
+      - uses: jetify-com/devbox-install-action@v0.13.0
+        with:
+          enable-cache: true
+
+      # NOTE: every `devbox run` re-executes the devbox init_hook, which runs
+      # `bun install --frozen-lockfile`, `lefthook install`, and
+      # `scripts/check-env-setup.sh`. That script skips its host-tool checks
+      # when CI=true (set automatically by GitHub Actions).
+      - name: install
+        run: devbox run -- bun install --frozen-lockfile
+
+      # TODO(T6): once packages/lint (@deluxeowl/lint) is built with zshy,
+      # build it before the lint steps that consume its config:
+      # - name: build lint package
+      #   run: devbox run -- bun run --filter @deluxeowl/lint build
+
+      - name: lint:oxlint
+        run: devbox run -- bun run lint:oxlint
+
+      - name: lint:eslint
+        run: devbox run -- bun run lint:eslint
+
+      - name: lint:sg
+        run: devbox run -- bun run lint:sg
+
+      - name: lint:duplicate
+        run: devbox run -- bun run lint:duplicate
+
+      # dprint is a writer locally (format:dprint => `dprint fmt`); in CI we
+      # only verify formatting is already applied.
+      - name: format check
+        run: devbox run -- bun run dprint check
+
+      - name: typecheck
+        run: devbox run -- bun run typecheck
+
+      - name: deadcode
+        run: devbox run -- bun run deadcode
+
+      - name: test
+        run: devbox run -- bun run test

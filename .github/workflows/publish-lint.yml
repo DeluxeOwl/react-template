@@ -1,0 +1,26 @@
+name: publish-lint
+on:
+  push:
+    tags: ["lint-v*"] # e.g. git tag lint-v0.1.0 && git push --tags
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
+        with:
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@deluxeowl"
+      - run: bun install --frozen-lockfile
+      - run: bun run --filter @deluxeowl/lint test
+      - run: bun run --filter @deluxeowl/lint build
+      - run: cd packages/lint && npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

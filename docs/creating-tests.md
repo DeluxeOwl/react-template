@@ -14,4 +14,4 @@ Rules:
 - No Shared State: Avoid beforeEach; keep setup inside the 'it' block.
 - Functional Flow: Given (Setup) -> When (Action) -> Then (Expectation).
 
-See [apps/domain/todos/todo.test.ts](../apps/domain/todos/todo.test.ts) for an example.
+See [packages/core/todos/todo.test.ts](../packages/core/todos/todo.test.ts) for an example.

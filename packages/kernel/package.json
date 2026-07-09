@@ -1,0 +1,28 @@
+{
+    "name": "@react-template/kernel",
+    "version": "0.0.1",
+    "type": "module",
+    "private": true,
+    "devDependencies": {
+        "@types/node": "catalog:",
+        "vitest": "catalog:"
+    },
+    "peerDependencies": {
+        "typescript": "catalog:"
+    },
+    "scripts": {
+        "lint:oxlint": "oxlint --fix .",
+        "lint:eslint": "eslint --fix .",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest --run --passWithNoTests --reporter=tree"
+    },
+    "exports": {
+        "./ctx": "./ctx/index.ts",
+        "./cqrs": "./cqrs/index.ts",
+        "./test-helpers/*": "./test-helpers/*.ts"
+    },
+    "dependencies": {
+        "@praha/byethrow": "catalog:",
+        "@praha/error-factory": "catalog:"
+    }
+}

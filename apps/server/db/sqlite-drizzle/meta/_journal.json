@@ -1,13 +1,13 @@
 {
-  "version": "7",
-  "dialect": "sqlite",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "6",
-      "when": 1777912993416,
-      "tag": "0000_lowly_lionheart",
-      "breakpoints": true
-    }
-  ]
+    "version": "7",
+    "dialect": "sqlite",
+    "entries": [
+        {
+            "idx": 0,
+            "version": "6",
+            "when": 1777912993416,
+            "tag": "0000_lowly_lionheart",
+            "breakpoints": true
+        }
+    ]
 }

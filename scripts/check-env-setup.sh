@@ -18,6 +18,14 @@ main() {
         exit 1
     fi
 
+    # Skip host-tool checks in CI (GitHub Actions sets CI=true). The devbox
+    # environment already provides everything the CI gate needs; docker,
+    # opencode, direnv and dns-sd are local-dev conveniences only.
+    if [[ -n "${CI:-}" ]]; then
+        log_info "CI detected, skipping host tool checks."
+        exit 0
+    fi
+
     # Define tool requirements
     local tools=("docker" "opencode" "direnv" "dns-sd")
     

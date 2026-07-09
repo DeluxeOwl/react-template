@@ -26,3 +26,6 @@ dist-ssr
 .bin/
 .artifacts/
 *.db
+
+agentfiles/
+packages/lint/dist

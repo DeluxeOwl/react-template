@@ -10,8 +10,6 @@ pre-push:
       run: bash -c scripts/check-if-in-devbox.sh
   parallel: true
   jobs:
-    - name: sync/tsconfig
-      run: bun run sync:tsconfig
     - name: lint/oxlint
       run: bun run lint:oxlint
     - name: lint/eslint
@@ -24,6 +22,5 @@ pre-push:
       run: bun run lint:duplicate
     - name: typecheck
       run: bun run typecheck
-    # TODO: this once I finish with the repo.
-    # - name: deadcode
-    #   run: bun run deadcode
+    - name: deadcode
+      run: bun run deadcode

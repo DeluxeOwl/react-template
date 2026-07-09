@@ -1,5 +1,5 @@
 import { createClient } from "@libsql/client"
-import { createTodoApp } from "@react-template/domain/todos/app"
+import { createTodoApp } from "@react-template/core/todos/app"
 
 import { TodoHTTP } from "../todos/adapter-http"
 import { TodoRepositorySqlite } from "../todos/adapter-repo-sqlite"
@@ -7,7 +7,7 @@ import { TodoRepositorySqlite } from "../todos/adapter-repo-sqlite"
 function main(): void {
     const port = 3041
 
-    // TODO [2026-06-01] closing clients.
+    // TODO [2026-12-01] closing clients.
     const client = createClient({ url: "file:file.db" })
     const sqliteRepo = TodoRepositorySqlite.create(client)
     const app = createTodoApp({ todoRepository: sqliteRepo })

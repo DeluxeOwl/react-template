@@ -1,0 +1,29 @@
+{
+    "name": "@react-template/core",
+    "version": "0.0.1",
+    "type": "module",
+    "private": true,
+    "devDependencies": {
+        "@types/node": "catalog:",
+        "vitest": "catalog:"
+    },
+    "peerDependencies": {
+        "typescript": "catalog:"
+    },
+    "scripts": {
+        "lint:oxlint": "oxlint --fix .",
+        "lint:eslint": "eslint --fix .",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest --run --passWithNoTests --reporter=tree"
+    },
+    "exports": {
+        "./todos/*": "./todos/*.ts"
+    },
+    "dependencies": {
+        "@orpc/contract": "catalog:",
+        "@react-template/kernel": "workspace:*",
+        "@praha/byethrow": "catalog:",
+        "@praha/error-factory": "catalog:",
+        "zod": "catalog:"
+    }
+}

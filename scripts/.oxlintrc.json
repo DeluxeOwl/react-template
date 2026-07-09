@@ -1,5 +1,5 @@
 {
     "extends": [
-        "../oxlint.typescript.json"
+        "../node_modules/@deluxeowl/lint/oxlint/typescript.json"
     ]
 }

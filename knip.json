@@ -1,14 +1,46 @@
 {
-    "$schema": "https://unpkg.com/knip@5/schema.json",
-    "ignoreExportsUsedInFile": {
-        "interface": true,
-        "type": true
-    },
+    "$schema": "https://unpkg.com/knip@6/schema.json",
+    "ignoreExportsUsedInFile": true,
+    "ignoreBinaries": [
+        "hivemind",
+        "ast-grep",
+        "lefthook",
+        "tsc"
+    ],
+    "ignoreDependencies": [
+        "@praha/byethrow-docs"
+    ],
     "ignore": [
-        "components/ui/**",
-        "scripts/**"
+        ".scaffdog/config.js"
     ],
     "tags": [
         "-lintignore"
-    ]
+    ],
+    "workspaces": {
+        "apps/server": {
+            "entry": [
+                "cmd/http.ts",
+                "db/sqlite-drizzle.config.ts"
+            ]
+        },
+        "apps/web": {
+            "ignoreDependencies": [
+                "class-variance-authority",
+                "lucide-react",
+                "shadcn"
+            ]
+        },
+        "packages/core": {
+            "entry": [
+                "todos/*.ts"
+            ]
+        },
+        "packages/kernel": {
+            "entry": [
+                "cqrs/*.ts",
+                "ctx/*.ts",
+                "test-helpers/*.ts"
+            ]
+        }
+    }
 }

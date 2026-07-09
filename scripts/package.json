@@ -2,26 +2,23 @@
     "name": "scripts",
     "private": true,
     "devDependencies": {
-        "@types/bun": "^1.3.13",
-        "vitest": "^4.0.18"
+        "@types/bun": "catalog:",
+        "vitest": "catalog:"
     },
     "peerDependencies": {
-        "typescript": "^6.0.3"
+        "typescript": "catalog:"
     },
     "scripts": {
         "lint:oxlint": "oxlint --fix .",
         "lint:eslint": "eslint --fix .",
-        "typecheck": "tsc -b --noEmit",
+        "typecheck": "tsc --noEmit",
         "test": "vitest --run --passWithNoTests --reporter=tree"
     },
     "dependencies": {
-        "@praha/byethrow": "^0.11.1",
-        "@praha/error-factory": "^1.4.1",
-        "better-all": "^0.0.7",
+        "@praha/byethrow": "catalog:",
+        "@praha/error-factory": "catalog:",
         "citty": "^0.2.2",
-        "consola": "^3.4.2",
-        "fast-glob": "^3.3.3",
-        "zod": "^4.4.3",
+        "zod": "catalog:",
         "zx": "^8.8.5"
     }
 }

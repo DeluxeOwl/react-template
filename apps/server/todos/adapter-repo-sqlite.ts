@@ -5,13 +5,13 @@ import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core"
 import { eq } from "drizzle-orm"
 import { Result } from "@praha/byethrow"
 import { drizzle } from "drizzle-orm/libsql"
-import { Todo } from "@react-template/domain/todos/todo"
+import { Todo } from "@react-template/core/todos/todo"
 import {
     type Context, CancelledError, makeCancellable,
-} from "@react-template/domain/ctx/index"
+} from "@react-template/kernel/ctx"
 import {
     InternalDBError, TodoNotFoundError, type TodoRepository,
-} from "@react-template/domain/todos/todo-repository"
+} from "@react-template/core/todos/todo-repository"
 
 import { todosTable } from "../db/sqlite-schema"
 

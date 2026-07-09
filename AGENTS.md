@@ -1,6 +1,6 @@
 # AGENTS.md — Coding Agent Reference
 
-This is a Bun monorepo with three workspaces (`apps/domain`, `apps/server`, `apps/web`) and a shared ESLint package (`packages/eslint`).
+This is a Bun monorepo with workspaces `packages/core`, `packages/kernel`, `apps/server`, `apps/web`, `scripts`, and a published shareable lint package `packages/lint` (`@deluxeowl/lint`).
 The stack is React 19 + Vite 7 + TanStack Query v5 + oRPC on the frontend, and a pure Bun HTTP server on the backend.
 
 ---
@@ -15,26 +15,25 @@ All commands are run from the repo root unless noted.
 bun run --filter @react-template/web dev        # start Vite dev server
 bun run --filter @react-template/server dev     # start Bun HTTP server (port 3041)
 bun run typecheck                               # tsc --noEmit across all workspaces
-bun run sync:tsconfig                           # sync tsconfig project references
 ```
 
 ### Testing
 
 ```sh
 bun run test                                    # run all tests (sequential, all workspaces)
-bun run --elide-lines=0 --filter @react-template/domain test    # run tests for one workspace
+bun run --elide-lines=0 --filter @react-template/core test    # run tests for one workspace
 ```
 
 **Run a single test file:**
 
 ```sh
-bun run --filter @react-template/domain vitest run apps/domain/todos/todo.test.ts
+bun run --filter @react-template/core vitest run packages/core/todos/todo.test.ts
 ```
 
 **Run a single test by name:**
 
 ```sh
-bun run --filter @react-template/domain vitest run --reporter=verbose -t "then it should return a Todo instance"
+bun run --filter @react-template/core vitest run --reporter=verbose -t "then it should return a Todo instance"
 ```
 
 ### Linting & Formatting
@@ -102,17 +101,26 @@ export class NameLengthError extends ErrorFactory({
 
 // Return result
 export class Todo {
-    static create(name: string): Result.Result<Todo, NameLengthError> {
+    static create(
+        name: string,
+        publicId?: string,
+    ): Result.Result<Todo, InvalidPublicIdError | NameLengthError> {
         if (name.length < TodoNameMinLength) {
             return Result.fail(new NameLengthError({
                 length: name.length,
             }))
         }
 
+        const id = publicId ?? generateTodoPublicId()
+
+        if (!isValidTodoPublicId(id)) {
+            return Result.fail(new InvalidPublicIdError({ id }))
+        }
+
         return Result.succeed(new Todo({
             done: false,
-            id:   generateTodoID(),
-            name: name,
+            id,
+            name,
         }))
     }
 }
@@ -135,7 +143,10 @@ export class Todo {
         },
     ) {}
 
-    static create(name: string): NameLengthError | Todo { ... }
+    static create(
+        name: string,
+        publicId?: string,
+    ): Result.Result<Todo, InvalidPublicIdError | NameLengthError> { ... }
     static fromDTO(data: TodoDTO): Todo { ... }
 
     toDTO(): TodoDTO { return this.state }
@@ -149,7 +160,7 @@ export class Todo {
 
 ### React Components (View-Only Pattern)
 
-Components must be "view-only" — enforced by ast-grep rules in `ast-grep-rules/rules/view-only-rules.yml`:
+Components must be "view-only" — enforced by ast-grep rules in `node_modules/@deluxeowl/lint/ast-grep/rules/view-only-rules.yml` (shipped by `@deluxeowl/lint`, wired via `sgconfig.yml`):
 
 - **Maximum 1 custom hook** per component.
 - No array methods (`map`, `filter`, `reduce`) inside JSX directly — derive data in the hook.
@@ -223,14 +234,15 @@ Rules:
 
 ## Architecture
 
-| Layer         | Package           | Notes                                                                     |
-| ------------- | ----------------- | ------------------------------------------------------------------------- |
-| Domain        | `apps/domain`     | Pure logic, no framework. CQRS: CommandHandler / QueryHandler interfaces. |
-| Server        | `apps/server`     | Bun HTTP server. Serves oRPC + OpenAPI (Scalar).                          |
-| Web           | `apps/web`        | React 19 SPA. Vite 7, Tailwind v4, TanStack Query v5.                     |
-| Shared ESLint | `packages/eslint` | `createConfig()` / `createReactConfig()` factories.                       |
+| Layer       | Package           | Notes                                                                                                                                                                     |
+| ----------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Domain      | `packages/core`   | Pure logic, no framework. Entities, CQRS handlers, ports, oRPC contract.                                                                                                  |
+| Kernel      | `packages/kernel` | `@react-template/kernel` — framework-agnostic primitives: CQRS interfaces (`CommandHandler` / `QueryHandler`), execution `Context` + cancellation, `Result` test helpers. |
+| Server      | `apps/server`     | Bun HTTP server. Serves oRPC + OpenAPI (Scalar).                                                                                                                          |
+| Web         | `apps/web`        | React 19 SPA. Vite 7, Tailwind v4, TanStack Query v5.                                                                                                                     |
+| Shared lint | `packages/lint`   | `@deluxeowl/lint` — the one built (Model B) package; `createConfig()` / `createReactConfig()` factories, oxlint/ast-grep/dprint configs. Published to GitHub Packages.    |
 
-- API contract is defined in `apps/domain` via oRPC route definitions, shared with the web client.
+- API contract is defined in `packages/core` via oRPC route definitions, shared with the web client.
 - `apps/web/api.ts` provides the typed oRPC client + TanStack Query utilities.
 - TanStack React DB (`createCollection`) is used for optimistic mutation and live sync.
 
@@ -245,3 +257,5 @@ Rules:
 - **Scaffolding**: `bun run generate` (scaffdog) to scaffold a new package from the template.
 - **Dead code**: `bun run deadcode` (knip) to detect unused exports.
 - **Duplicate code**: `bun run lint:duplicate` or `bun run lint:duplicates` (jscpd / custom script).
+- **Lint package is published**: `packages/lint` (`@deluxeowl/lint`) is the only built (Model B) package — it's built with zshy and published to GitHub Packages. Consumed in-repo via `workspace:*` (the root `postinstall` builds it). Changes to shared lint config require a version bump in `packages/lint/package.json` + a matching `lint-vX.Y.Z` git tag push (triggers the publish workflow).
+- **CI**: `.github/workflows/ci.yml` runs the full lint/typecheck/test gate on push + PR (guardrails are enforced server-side, not just via lefthook).
