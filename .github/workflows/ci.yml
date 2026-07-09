@@ -29,10 +29,14 @@ jobs:
       - name: install
         run: devbox run -- bun install --frozen-lockfile
 
-      # TODO(T6): once packages/lint (@deluxeowl/lint) is built with zshy,
-      # build it before the lint steps that consume its config:
-      # - name: build lint package
-      #   run: devbox run -- bun run --filter @deluxeowl/lint build
+      # packages/lint (@deluxeowl/lint) is a built (Model B) package whose
+      # dist/ is gitignored. The root postinstall builds it, but with a warm
+      # cache `bun install --frozen-lockfile` reports "no changes" and skips
+      # postinstall, leaving dist/ absent. The lint configs in every other
+      # workspace import @deluxeowl/lint (-> ./dist/index.js), so build it
+      # explicitly before any step that consumes its config.
+      - name: build lint package
+        run: devbox run -- bun run --filter @deluxeowl/lint build
 
       - name: lint:oxlint
         run: devbox run -- bun run lint:oxlint
