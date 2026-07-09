@@ -27,11 +27,13 @@ main() {
     fi
 
     # Define tool requirements
-    local tools=("docker" "direnv" "dns-sd")
+    local tools=("docker" "direnv" "dns-sd" "tilt" "k3d")
     
     # Store URLs in a way bash can reference them
     declare -A urls
     urls[docker]="https://docs.docker.com/get-started/get-docker/"
+    urls[tilt]="https://tilt.dev/"
+    urls[k3d]="https://k3d.io/stable/#installation"
     # Turn down direnv verbosity: https://github.com/direnv/direnv/issues/68#issuecomment-2812015043
     urls[direnv]="https://direnv.net/docs/installation.html"
     urls[dns-sd]="it should be already installed on mac, windows and linux need something else"
