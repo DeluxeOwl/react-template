@@ -37,9 +37,8 @@
         "editor.detectIndentation": false
     },
     // This tells vscode to prefer ~/ paths.
-    "typescript.preferences.importModuleSpecifier": "non-relative",
-    "javascript.preferences.importModuleSpecifier": "non-relative",
-    "typescript.experimental.useTsgo": true,
+    "js/ts.preferences.importModuleSpecifier": "non-relative",
+    "js/ts.experimental.useTsgo": true,
     "eslint.format.enable": true,
     "[javascript]": {
         "editor.defaultFormatter": "dbaeumer.vscode-eslint",
@@ -75,7 +74,7 @@
             "(?:'|\"|`)([^']*)(?:'|\"|`)"
         ]
     ],
-    "typescript.preferences.autoImportSpecifierExcludeRegexes": [
+    "js/ts.preferences.autoImportSpecifierExcludeRegexes": [
         "@radix-ui",
         "^lucide-react/dist/lucide-react.suffixed$"
     ],
