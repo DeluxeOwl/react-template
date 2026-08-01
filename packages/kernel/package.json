@@ -18,6 +18,7 @@
     },
     "exports": {
         "./ctx": "./ctx/index.ts",
+        "./id-utils": "./id-utils/index.ts",
         "./cqrs": "./cqrs/index.ts",
         "./test-helpers/*": "./test-helpers/*.ts"
     },

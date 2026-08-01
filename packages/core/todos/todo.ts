@@ -1,41 +1,38 @@
 
 import { Result } from "@praha/byethrow"
 import { ErrorFactory } from "@praha/error-factory"
+import {
+    type PublicId, Base62UUIDLength, createPublicIdCodec,
+} from "@react-template/kernel/id-utils"
 
 export const TodoNameMinLength = 1
 export const TodoPublicIdPrefix = "todo" as const
-const Base62Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-const Base62UUIDLength = 22
-const TodoPublicIDRegex = new RegExp(`^${TodoPublicIdPrefix}_[0-9A-Za-z]{${Base62UUIDLength}}$`)
 
-function bigintToBase62(num: bigint): string {
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    if (num === 0n) {
-        return "0"
-    }
-    let result = ""
-    const base = 62n
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    while (num > 0n) {
-        result = Base62Chars[Number(num % base)] + result
-        num /= base
-    }
-    return result
+const TodoPublicIdCodec = createPublicIdCodec(TodoPublicIdPrefix)
+
+// Just the shape `todo_${string}`, no nominal brand.
+//
+// We tried branding this (a `Brand<T, N>` built on a unique symbol) so that an
+// arbitrary string could not be used where an id is expected. Verdict: imo not
+// worth it in practice here, and not a huge deal either way. It only pays off when
+// functions take the id as a *parameter*, so callers get caught passing the
+// wrong thing. Here the id is a private field on the entity, and the repository
+// port and commands take plain strings, so the brand guarded nothing while
+// adding casts at every boundary that widened back to string (fromDTO, the DTO,
+// the sqlite adapter, the zod schemas).
+//
+// Worth revisiting if ids start getting passed between aggregates, or if a
+// second id type appears that could be confused with this one. The brand only
+// earns its keep once TodoPublicId reaches the port and the commands, so
+// validation happens once at the edge and the type carries the proof inward.
+export type TodoPublicId = PublicId<typeof TodoPublicIdPrefix>
+
+export function generateTodoPublicId(): TodoPublicId {
+    return TodoPublicIdCodec.generate()
 }
 
-function uuidToBase62(uuid: string): string {
-    const hex = uuid.replaceAll("-", "")
-    const num = BigInt(`0x${hex}`)
-    return bigintToBase62(num).padStart(Base62UUIDLength, "0")
-}
-
-export function generateTodoPublicId(): string {
-    const uuid = crypto.randomUUID()
-    return `${TodoPublicIdPrefix}_${uuidToBase62(uuid)}`
-}
-
-export function isValidTodoPublicId(id: string): boolean {
-    return TodoPublicIDRegex.test(id)
+export function isValidTodoPublicId(id: string): id is TodoPublicId {
+    return TodoPublicIdCodec.isValid(id)
 }
 
 // These are all domain errors.
@@ -48,7 +45,7 @@ export class NameLengthError extends ErrorFactory({
 
 export class InvalidPublicIdError extends ErrorFactory({
     fields:  ErrorFactory.fields<{ id: string }>(),
-    message: "invalid public id format, expected todo_<22 base62 chars>",
+    message: `invalid public id format, expected ${TodoPublicIdPrefix}_<${Base62UUIDLength} base62 chars>`,
     name:    "InvalidPublicIdError",
 }) {}
 
@@ -90,6 +87,8 @@ export class Todo {
         }))
     }
 
+    // Rehydration from a trusted store: the id was validated by `create` before
+    // it was ever persisted, so it is not re-checked here.
     static fromDTO(data: TodoDTO): Todo {
         return new Todo({
             done: data.done,
