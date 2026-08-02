@@ -1,8 +1,8 @@
 
 import { preferStateClassRule } from "./prefer-state-class"
 import { noMarginOnRootJSXRule } from "./no-margin-on-root-jsx"
-import { requireJSXReturnTypeRule } from "./require-jsx-return-type"
 import { preferDiscriminatedUnionRule } from "./discriminated-union"
+import { requireJSXReturnTypeRule } from "./require-jsx-return-type"
 import { enforceNamespaceImportRule } from "./enforce-namespace-import"
 
 export default {

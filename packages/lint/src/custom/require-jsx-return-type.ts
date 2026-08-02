@@ -23,17 +23,17 @@ import { TSESTree, ESLintUtils } from "@typescript-eslint/utils"
   * ----------------------------------------------------------------------------
   */
 
-type FunctionNode =
-    | TSESTree.FunctionExpression
-    | TSESTree.FunctionDeclaration
-    | TSESTree.ArrowFunctionExpression
+type FunctionNode
+    = | TSESTree.ArrowFunctionExpression
+        | TSESTree.FunctionDeclaration
+        | TSESTree.FunctionExpression
 
 interface RuleOptions {
-    checkAllFunctions?: boolean
     typeName?:          string
+    checkAllFunctions?: boolean
 }
 
-const PascalCasePattern = /^[A-Z][A-Za-z\d]*$/
+const PascalCasePattern = /^[A-Z][\dA-Za-z]*$/
 
 function isPascalCase(name: string): boolean {
     return PascalCasePattern.test(name)
@@ -110,6 +110,7 @@ function isComponentLike(node: FunctionNode): boolean {
     if (node.type === TSESTree.AST_NODE_TYPES.FunctionDeclaration) {
         return node.id
             ? isPascalCase(node.id.name)
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             : node.parent.type === TSESTree.AST_NODE_TYPES.ExportDefaultDeclaration
     }
     return isComponentExpression(node)
@@ -191,6 +192,7 @@ export const requireJSXReturnTypeRule = ESLintUtils.RuleCreator(
             "ArrowFunctionExpression": collect,
             "FunctionDeclaration":     collect,
             "FunctionExpression":      collect,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             "Program:exit":            () => {
                 for (const node of candidates) {
                     if (jsxReturning.has(node)) {
