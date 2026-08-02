@@ -276,6 +276,7 @@ export default function createConfig(
                 "custom/no-margin-on-root-jsx":                              "error",
                 "custom/prefer-discriminated-union":                         "warn",
                 "custom/prefer-state-class":                                 "error",
+                "custom/require-jsx-return-type":                            "error",
                 // 0 and 1 are common enough during ifs, arrays etc.
                 "no-magic-numbers":                                          ["off"],
                 "no-restricted-globals":                                     [

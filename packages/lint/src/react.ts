@@ -66,7 +66,7 @@ export default function createReactConfig(rootDir: string): Config[] {
                 "@eslint-react/no-leaked-conditional-rendering": ["error"],
                 "react-hooks/todo":                              "error",
                 "sweepit/jsx-bem-compound-naming":               "error",
-                "sweepit/jsx-compound-part-export-naming":       "error",
+                "sweepit/jsx-compound-part-export-naming":       "off",
                 "sweepit/jsx-flat-owner-tree":                   "error",
                 "sweepit/jsx-on-handler-verb-suffix":            "error",
                 "sweepit/jsx-server-action-prop-suffix":         "error",
