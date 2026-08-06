@@ -274,6 +274,7 @@ export default function createConfig(
                 // Interesting but it's a bit of a pain.
                 "custom/enforce-namespace-import":                           ["off", { packages: ["@react-template/core", "@react-template/core/cqrs", "~/cqrs"] }],
                 "custom/no-margin-on-root-jsx":                              "error",
+                "custom/no-provider-with-static-children":                   "error",
                 "custom/prefer-discriminated-union":                         "warn",
                 "custom/prefer-state-class":                                 "error",
                 "custom/require-jsx-return-type":                            "error",
