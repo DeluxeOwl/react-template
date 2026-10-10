@@ -148,7 +148,7 @@ export const typescriptConfig = {
         "promise/catch-or-return":                            "error",
         "typescript/consistent-indexed-object-style":         "off",
         // Important, handled by eslint
-        "typescript/consistent-type-imports":                 "off",
+        "typescript/consistent-type-imports":                 ["error", { fixStyle: "inline-type-imports" }],
         // New in oxlint 1.86 (D-004), `style`. ESLint deliberately disables `@typescript-eslint/method-signature-style`
         // ("Classes use method, react uses signature").
         "typescript/method-signature-style":                  "off",

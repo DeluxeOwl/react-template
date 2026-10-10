@@ -1,3 +1,5 @@
+import type { Config } from "eslint/config"
+
 // ESLint rules that oxlint already runs, so the ESLint presets switch them off.
 //
 // Frozen from the output of eslint-plugin-oxlint@1.62.0 `buildFromOxlintConfigFile` for the 0.4.0
@@ -187,3 +189,25 @@ export const reactRulesHandledByOxlint: string[] = [
     "react/no-will-update-set-state",
     "react/void-dom-elements-no-children",
 ]
+
+// Rules moved from ESLint to oxlint by the migration, each one with parity proven by the harness
+// (scratch/oxlint-migration.md §8): same diagnostics and byte-identical --fix output. Kept apart
+// from the frozen bridge output above. Plugins whose rules all moved leave the ESLint presets
+// instead (@stylistic).
+export const migratedRulesHandledByOxlint: string[] = [
+    "@typescript-eslint/consistent-type-imports",
+    "@typescript-eslint/no-unnecessary-type-assertion",
+]
+
+/**
+ * Switches the migrated rules off. Must be the last config object of a preset: unlike the frozen
+ * list (which sits in `extends`, so the preset's own `rules` win), it overrides every earlier
+ * setting, wherever the rule was turned on.
+ */
+export function migratedToOxlint(): Config {
+    return {
+        files: ["**/*.{mjs,js,jsx,ts,tsx}"],
+        name:  "deluxeowl/migrated-to-oxlint",
+        rules: Object.fromEntries(migratedRulesHandledByOxlint.map((ruleId) => [ruleId, "off"])),
+    }
+}

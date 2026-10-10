@@ -14,7 +14,9 @@ import {
 import youMightNotNeedAnEffect from "eslint-plugin-react-you-might-not-need-an-effect"
 
 import createConfig, { type ConfigOptions } from "./index"
-import { baseRulesHandledByOxlint, reactRulesHandledByOxlint } from "./handled-by-oxlint.ts"
+import {
+    migratedToOxlint, baseRulesHandledByOxlint, reactRulesHandledByOxlint,
+} from "./handled-by-oxlint.ts"
 
 export interface TailwindRestriction {
     fix?:     string
@@ -235,5 +237,6 @@ export default function createReactConfig(rootDir: string, options?: ReactConfig
         },
         // Relax only the selected third-party files. Type-safety and return-type rules stay enabled.
         ...options?.vendoredFiles?.length ? [createVendoredConfig(options.vendoredFiles)] : [],
+        migratedToOxlint(),
     ])
 }

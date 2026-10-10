@@ -17,7 +17,7 @@ import { configs as perfectionistConfigs } from "eslint-plugin-perfectionist"
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
 import customPlugin from "./custom"
-import { baseRulesHandledByOxlint } from "./handled-by-oxlint.ts"
+import { migratedToOxlint, baseRulesHandledByOxlint } from "./handled-by-oxlint.ts"
 
 // bun run eslint --inspect-config
 
@@ -88,7 +88,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
                 "@typescript-eslint/consistent-indexed-object-style": "error",
                 "@typescript-eslint/consistent-type-definitions":     ["error", "interface"],
                 "@typescript-eslint/consistent-type-exports":         "error",
-                "@typescript-eslint/consistent-type-imports":         ["error", { fixStyle: "inline-type-imports" }],
                 "@typescript-eslint/explicit-function-return-type":   [
                     "error", {
                         allowExpressions: true,
@@ -451,5 +450,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
                 "@typescript-eslint/explicit-function-return-type": "off",
             },
         },
+        migratedToOxlint(),
     ])
 }
