@@ -196,7 +196,14 @@ export const reactRulesHandledByOxlint: string[] = [
 // instead (@stylistic, perfectionist).
 export const migratedRulesHandledByOxlint: string[] = [
     "@typescript-eslint/consistent-type-imports",
+    "@typescript-eslint/no-for-in-array",
     "@typescript-eslint/no-unnecessary-type-assertion",
+    "@typescript-eslint/no-unsafe-enum-comparison",
+    "@typescript-eslint/no-unsafe-function-type",
+    "@typescript-eslint/no-unsafe-unary-minus",
+    "@typescript-eslint/unified-signatures",
+    "prefer-rest-params",
+    "prefer-spread",
     "sweepit/complexity",
     "sweepit/jsx-bem-compound-naming",
     "sweepit/jsx-flat-owner-tree",
