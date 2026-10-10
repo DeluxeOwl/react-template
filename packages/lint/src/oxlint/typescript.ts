@@ -106,7 +106,7 @@ export const typescriptConfig = {
         "eslint/no-undefined":          "off",
         "eslint/no-unused-expressions": "error",
         // oxlint 1.86 stopped ignoring a bare `_` parameter by default (D-004). Restore the previous
-        // behavior with the same options the ESLint preset uses for `unused-imports/no-unused-vars`.
+        // behavior with the same options as `unused-imports/no-unused-vars` (unused-imports.ts).
         "eslint/no-unused-vars":        [
             "error",
             {

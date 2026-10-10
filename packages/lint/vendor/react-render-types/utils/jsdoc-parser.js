@@ -1,0 +1,143 @@
+/**
+ * Regex to match @renders annotation with optional union types
+ * Groups:
+ * 1. modifier (? or * or undefined)
+ * 2. full type expression (component names with optional union syntax)
+ *
+ * Pattern explanation:
+ * - (?:^|[^a-zA-Z@]) - start of string or non-letter/non-@ (prevents matching pre@renders)
+ * - @renders - literal @renders
+ * - (\?|\*)? - optional modifier (? or *)
+ * - \s* - optional whitespace
+ * - \{ - opening brace
+ * - \s* - optional whitespace
+ * - ([^}]+) - capture everything inside braces (component names, pipes, whitespace)
+ * - \s* - optional whitespace
+ * - \} - closing brace
+ */
+const RENDERS_REGEX = /(?:^|[^a-zA-Z@])@renders(\?|\*)?(!)?\s*\{\s*([^}]+)\s*\}/;
+/**
+ * Regex to validate a single component name (PascalCase, optionally namespaced)
+ */
+const COMPONENT_NAME_REGEX = /^[A-Z][a-zA-Z0-9]*(?:\.[A-Z][a-zA-Z0-9]*)*$/;
+/**
+ * Parse union type expression into component names.
+ * Examples:
+ * - "Header" -> ["Header"]
+ * - "Header | Footer" -> ["Header", "Footer"]
+ * - "Header | Menu.Item | Footer" -> ["Header", "Menu.Item", "Footer"]
+ *
+ * Returns null if any component name is invalid.
+ */
+function parseUnionType(typeExpression) {
+    const parts = typeExpression.split("|").map((part) => part.trim());
+    // Validate all parts are valid component names
+    for (const part of parts) {
+        if (!COMPONENT_NAME_REGEX.test(part)) {
+            return null;
+        }
+    }
+    return parts;
+}
+/**
+ * Parse @renders annotation from JSDoc comment text
+ * Handles:
+ * - @renders {Component}
+ * - @renders? {Component}
+ * - @renders* {Component}
+ * - @renders {Header | Footer} (union types)
+ */
+/**
+ * Regex to match @transparent annotation with optional prop list.
+ * Groups:
+ * 1. Prop list content inside braces (optional)
+ *
+ * Matches:
+ * - @transparent                  -> defaults to ["children"]
+ * - @transparent {children}       -> ["children"]
+ * - @transparent {off, children}  -> ["off", "children"]
+ */
+const TRANSPARENT_REGEX = /(?:^|[^a-zA-Z@])@transparent(?:\s*\{\s*([^}]*)\s*\}|\b)/;
+const PROP_NAME_REGEX = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/;
+/**
+ * Parse the @transparent annotation from a comment.
+ * Returns a TransparentAnnotation with the prop names to extract from,
+ * or null if the annotation is not present.
+ * Bare @transparent defaults to { propNames: ["children"] }.
+ */
+export function parseTransparentAnnotation(comment) {
+    if (!comment) {
+        return null;
+    }
+    const match = comment.match(TRANSPARENT_REGEX);
+    if (!match) {
+        return null;
+    }
+    const [, propsContent] = match;
+    if (propsContent === undefined) {
+        // Bare @transparent -> defaults to children
+        return { propNames: ["children"] };
+    }
+    const trimmed = propsContent.trim();
+    if (trimmed.length === 0) {
+        // @transparent {} -> defaults to children
+        return { propNames: ["children"] };
+    }
+    // Parse comma-separated prop names
+    const propNames = trimmed
+        .split(",")
+        .map((p) => p.trim())
+        .filter((p) => p.length > 0);
+    if (propNames.length === 0) {
+        return { propNames: ["children"] };
+    }
+    // Validate prop names are valid identifiers
+    for (const name of propNames) {
+        if (!PROP_NAME_REGEX.test(name)) {
+            return null;
+        }
+    }
+    return { propNames };
+}
+export function parseRendersAnnotation(comment) {
+    if (!comment) {
+        return null;
+    }
+    const match = comment.match(RENDERS_REGEX);
+    if (!match) {
+        return null;
+    }
+    const [, modifierChar, uncheckedChar, typeExpression] = match;
+    // Parse the type expression (may be a union)
+    const componentNames = parseUnionType(typeExpression);
+    if (!componentNames || componentNames.length === 0) {
+        return null;
+    }
+    let modifier;
+    switch (modifierChar) {
+        case "?":
+            modifier = "optional";
+            break;
+        case "*":
+            modifier = "many";
+            break;
+        default:
+            modifier = "required";
+    }
+    // Format the raw annotation string
+    const formattedType = componentNames.length === 1
+        ? componentNames[0]
+        : componentNames.join(" | ");
+    const raw = `@renders${modifierChar ?? ""}${uncheckedChar ?? ""} {${formattedType}}`;
+    const result = {
+        componentName: componentNames[0], // First component for backwards compatibility
+        componentNames,
+        modifier,
+        raw,
+    };
+    if (uncheckedChar === "!") {
+        result.unchecked = true;
+    }
+    return result;
+}
+//# sourceMappingURL=jsdoc-parser.js.map

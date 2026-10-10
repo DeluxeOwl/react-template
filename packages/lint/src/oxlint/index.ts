@@ -7,13 +7,16 @@ import { unicornConfig } from "./unicorn.ts"
 import { importXConfig } from "./import-x.ts"
 import { vendoredRules } from "./vendored.ts"
 import { stylisticConfig } from "./stylistic.ts"
+import { importZodConfig } from "./import-zod.ts"
 import { typeAwareConfig } from "./type-aware.ts"
 import { typescriptConfig } from "./typescript.ts"
 import { eslintCoreConfig } from "./eslint-core.ts"
 import { reactRefreshConfig } from "./react-refresh.ts"
 import { perfectionistConfig } from "./perfectionist.ts"
 import { tanstackQueryConfig } from "./tanstack-query.ts"
+import { unusedImportsConfig } from "./unused-imports.ts"
 import { typescriptEslintConfig } from "./typescript-eslint.ts"
+import { reactRenderTypesConfig } from "./react-render-types.ts"
 import { sweepitConfig, sweepitReactConfig } from "./sweepit.ts"
 import { youMightNotNeedAnEffectConfig } from "./you-might-not-need-an-effect.ts"
 
@@ -24,13 +27,16 @@ export { vitestConfig } from "./vitest.ts"
 export { unicornConfig } from "./unicorn.ts"
 export { importXConfig } from "./import-x.ts"
 export { stylisticConfig } from "./stylistic.ts"
+export { importZodConfig } from "./import-zod.ts"
 export { typeAwareConfig } from "./type-aware.ts"
 export { typescriptConfig } from "./typescript.ts"
 export { eslintCoreConfig } from "./eslint-core.ts"
 export { reactRefreshConfig } from "./react-refresh.ts"
 export { perfectionistConfig } from "./perfectionist.ts"
 export { tanstackQueryConfig } from "./tanstack-query.ts"
+export { unusedImportsConfig } from "./unused-imports.ts"
 export { typescriptEslintConfig } from "./typescript-eslint.ts"
+export { reactRenderTypesConfig } from "./react-render-types.ts"
 export { sweepitConfig, sweepitReactConfig } from "./sweepit.ts"
 export { defaultVendoredFiles, vendoredRules } from "./vendored.ts"
 export { youMightNotNeedAnEffectConfig } from "./you-might-not-need-an-effect.ts"
@@ -88,6 +94,8 @@ export function createOxlintConfig(options?: OxlintConfigOptions): OxlintConfig 
         typescriptEslintConfig,
         eslintCoreConfig,
         importXConfig,
+        importZodConfig,
+        unusedImportsConfig,
         customConfig,
         stylisticConfig,
         perfectionistConfig,
@@ -108,6 +116,8 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
         typescriptEslintConfig,
         eslintCoreConfig,
         importXConfig,
+        importZodConfig,
+        unusedImportsConfig,
         customConfig,
         reactConfig,
         stylisticConfig,
@@ -120,6 +130,7 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
         tanstackQueryConfig,
         youMightNotNeedAnEffectConfig,
         reactRefreshConfig,
+        reactRenderTypesConfig,
         { ignorePatterns: options?.ignorePatterns ?? [], overrides: vendored },
     )
 }

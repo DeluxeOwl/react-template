@@ -3,9 +3,7 @@
 
 import tseslint from "typescript-eslint"
 import vitest from "@vitest/eslint-plugin"
-import importZod from "eslint-plugin-import-zod"
 import gitignore from "eslint-config-flat-gitignore"
-import unusedImports from "eslint-plugin-unused-imports"
 import {
     type Config,
     defineConfig,
@@ -47,7 +45,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
         {
             extends: [
                 tseslint.configs.recommendedTypeChecked,
-                importZod.configs.recommended,
                 // NOTE: Needs to be last
                 {
                     name:  "deluxeowl/handled-by-oxlint",
@@ -68,7 +65,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
 
             plugins: {
                 "@typescript-eslint": tseslint.plugin,
-                "unused-imports":     unusedImports,
             },
 
             rules: {
@@ -104,16 +100,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
                 // 0 and 1 are common enough during ifs, arrays etc.
                 "no-magic-numbers":                                          ["off"],
                 "no-restricted-imports":                                     "off",
-                "unused-imports/no-unused-imports":                          "error",
-                "unused-imports/no-unused-vars":                             [
-                    "warn",
-                    {
-                        args:              "after-used",
-                        argsIgnorePattern: "^_",
-                        vars:              "all",
-                        varsIgnorePattern: "^_",
-                    },
-                ],
             },
         },
         {
