@@ -7,6 +7,11 @@
 // detected"). Such a file keeps that text here too: later rounds' fixes to it are undone. Changes
 // are detected through `git ls-files` (tracked and untracked, not ignored) under the current
 // directory; outside a git work tree all rounds run.
+//
+// oxlint can need more rounds than ESLint needs passes to reach the same text: it holds back the
+// fixes of type-aware rules in a round where other fixes change the file, and resolves overlapping
+// fixes of native and JS-plugin rules in a different order. So the cap is twice ESLint's; it is
+// only a safety stop, since a file with circular fixes leaves the loop early anyway.
 import path from "node:path"
 import { createHash } from "node:crypto"
 import { createRequire } from "node:module"
@@ -15,8 +20,8 @@ import {
 } from "node:fs"
 import { spawnSync, type SpawnSyncReturns } from "node:child_process"
 
-// ESLint's MAX_AUTOFIX_PASSES
-const maxRounds = 10
+// Twice ESLint's MAX_AUTOFIX_PASSES (see above)
+const maxRounds = 20
 // Files oxlint lints (JS/TS, and the script blocks of Vue/Svelte/Astro files)
 const lintable = /\.(?:[cm]?[jt]sx?|vue|svelte|astro)$/u
 
@@ -119,8 +124,8 @@ function finalReport(last: SpawnSyncReturns<string>, run: FixRun): number {
 }
 
 /**
- * Run `oxlint --fix <args>` up to 10 times, until a round changes no file, then print that
- * round's report and return its exit status. If the 10th round still changed files, or a file had
+ * Run `oxlint --fix <args>` up to 20 times, until a round changes no file, then print that
+ * round's report and return its exit status. If the 20th round still changed files, or a file had
  * circular fixes, lint once more without fixing (as ESLint does) and report that.
  */
 export function runOxlintFix(args: string[], options?: { cwd?: string }): number {
