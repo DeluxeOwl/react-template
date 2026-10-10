@@ -36,7 +36,8 @@
         "eslint": "^10.3.0",
         "jscpd": "^4.0.9",
         "knip": "^6.11.0",
-        "oxlint": "^1.62.0",
+        "oxlint": "1.86.0",
+        "oxlint-tsgolint": "7.0.2003",
         "scaffdog": "^4.1.0"
     },
     "trustedDependencies": [

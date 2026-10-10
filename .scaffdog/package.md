@@ -34,14 +34,12 @@ questions:
 }
 ```
 
-# `{{ inputs.packageName | kebab }}/.oxlintrc.json`
+# `{{ inputs.packageName | kebab }}/oxlint.config.ts`
 
-```json
-{
-    "extends": [
-        "../../node_modules/@deluxeowl/lint/oxlint/typescript.json"
-    ]
-}
+```typescript
+import { createOxlintConfig } from "@deluxeowl/lint/oxlint"
+
+export default createOxlintConfig()
 ```
 
 # `{{ inputs.packageName | kebab }}/eslint.config.ts`

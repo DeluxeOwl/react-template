@@ -1,9 +1,7 @@
 
 // @ts-check
 
-import path from "node:path"
 import tseslint from "typescript-eslint"
-import oxlint from "eslint-plugin-oxlint"
 import vitest from "@vitest/eslint-plugin"
 import sweepit from "eslint-plugin-sweepit"
 import stylistic from "@stylistic/eslint-plugin"
@@ -20,18 +18,20 @@ import { configs as perfectionistConfigs } from "eslint-plugin-perfectionist"
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
 import customPlugin from "./custom"
+import { baseRulesHandledByOxlint } from "./handled-by-oxlint.ts"
 
 // bun run eslint --inspect-config
 
 export interface ConfigOptions {
-    oxlintConfigPath?:    string
-    allowDefaultProject?: string[]
+    allowDefaultProject?:  string[]
+    // ESLint rules switched off because oxlint runs them. Defaults to the base preset's list.
+    rulesHandledByOxlint?: string[]
 }
 
 // oxlint-disable-next-line max-lines-per-function -- This factory declares the complete shared ESLint preset.
 export default function createConfig(rootDir: string, options?: ConfigOptions): Config[] {
     const allowDefaultProject = options?.allowDefaultProject ?? []
-    const oxlintConfigPath = options?.oxlintConfigPath ?? path.join(rootDir, ".oxlintrc.json")
+    const rulesHandledByOxlint = options?.rulesHandledByOxlint ?? baseRulesHandledByOxlint
 
     return defineConfig([
         gitignore(),
@@ -64,7 +64,10 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
                 }),
                 importZod.configs.recommended,
                 // NOTE: Needs to be last
-                ...oxlint.buildFromOxlintConfigFile(oxlintConfigPath),
+                {
+                    name:  "deluxeowl/handled-by-oxlint",
+                    rules: Object.fromEntries(rulesHandledByOxlint.map((ruleId) => [ruleId, "off"])),
+                },
             ],
             files: ["**/*.{mjs,js,jsx,ts,tsx}"],
 

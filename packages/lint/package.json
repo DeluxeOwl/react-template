@@ -17,13 +17,13 @@
         "exports": {
             ".": "./src/index.ts",
             "./react": "./src/react.ts",
+            "./oxlint": "./src/oxlint/index.ts",
             "./ast-grep": "./src/ast-grep.ts"
         },
         "cjs": false
     },
     "files": [
         "dist",
-        "oxlint",
         "ast-grep",
         "dprint.jsonc"
     ],
@@ -46,7 +46,6 @@
         "eslint-plugin-better-tailwindcss": "^4.5.0",
         "eslint-plugin-import-x": "^4.16.2",
         "eslint-plugin-import-zod": "^1.2.1",
-        "eslint-plugin-oxlint": "^1.62.0",
         "eslint-plugin-perfectionist": "^5.9.0",
         "eslint-plugin-react-hooks": "^7.1.1",
         "eslint-plugin-react-refresh": "^0.5.2",
@@ -59,7 +58,7 @@
     },
     "peerDependencies": {
         "eslint": ">=10",
-        "oxlint": ">=1",
+        "oxlint": "~1.86.0",
         "typescript": ">=5.9"
     },
     "devDependencies": {
@@ -79,6 +78,10 @@
         "./react": {
             "types": "./dist/react.d.ts",
             "default": "./dist/react.js"
+        },
+        "./oxlint": {
+            "types": "./dist/oxlint/index.d.ts",
+            "default": "./dist/oxlint/index.js"
         },
         "./ast-grep": {
             "types": "./dist/ast-grep.d.ts",

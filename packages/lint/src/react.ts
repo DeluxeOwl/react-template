@@ -14,6 +14,7 @@ import {
 import youMightNotNeedAnEffect from "eslint-plugin-react-you-might-not-need-an-effect"
 
 import createConfig, { type ConfigOptions } from "./index"
+import { baseRulesHandledByOxlint, reactRulesHandledByOxlint } from "./handled-by-oxlint.ts"
 
 export interface TailwindRestriction {
     fix?:     string
@@ -96,7 +97,10 @@ export default function createReactConfig(rootDir: string, options?: ReactConfig
                 pluginQuery.configs["flat/recommended"],
                 // @ts-expect-error Weird types.
                 reactRenderTypes.configs.recommended,
-                createConfig(rootDir, options),
+                createConfig(rootDir, {
+                    ...options,
+                    rulesHandledByOxlint: options?.rulesHandledByOxlint ?? [...baseRulesHandledByOxlint, ...reactRulesHandledByOxlint],
+                }),
             ],
             files: ["**/*.{mjs,js,jsx,ts,tsx}"],
 

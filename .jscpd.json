@@ -26,5 +26,6 @@
         "tsx",
         "jsx"
     ],
-    "absolute": true
+    "absolute": true,
+    "gitignore": true
 }

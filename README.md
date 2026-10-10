@@ -135,7 +135,7 @@ package appears under `packages/`.
 
 ## Using `@deluxeowl/lint` in another project
 
-The lint config (ESLint factories + custom rules, oxlint JSONs, ast-grep rules, dprint
+The lint config (ESLint factories + custom rules, oxlint presets, ast-grep rules, dprint
 config) is published to **GitHub Packages** so pet projects share the exact same rules.
 
 ```jsonc
@@ -154,14 +154,15 @@ import createConfig from "@deluxeowl/lint"
 export default createConfig(import.meta.dirname)
 ```
 
-```jsonc
-// .oxlintrc.json  (path is relative to this config file)
-{ "extends": ["./node_modules/@deluxeowl/lint/oxlint/typescript.json"] }
+```ts
+// oxlint.config.ts  (oxlint >= 1.86 loads it with Node >= 22.18)
+import { createOxlintConfig } from "@deluxeowl/lint/oxlint"
+export default createOxlintConfig()
 ```
 
 ### React projects and vendored UI
 
-The React factory accepts the base factory options, such as `allowDefaultProject` and `oxlintConfigPath`.
+The React factory accepts the base factory options, such as `allowDefaultProject`.
 It also accepts explicit paths for vendored components:
 
 ```ts
@@ -174,13 +175,15 @@ export default createReactConfig(import.meta.dirname, {
 
 The vendor override relaxes structural rules only for those files.
 Type-safety rules, explicit return types, and magic-number rules remain enabled.
-The corresponding opt-in oxlint preset covers standard shadcn/ReUI directories:
+The oxlint React preset takes the same opt-in. `defaultVendoredFiles` covers the standard shadcn/ReUI directories:
 
-```jsonc
-{ "extends": ["./node_modules/@deluxeowl/lint/oxlint/react-vendored.json"] }
+```ts
+// oxlint.config.ts
+import { defaultVendoredFiles, createOxlintReactConfig } from "@deluxeowl/lint/oxlint"
+export default createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })
 ```
 
-Projects without vendored UI continue to use `oxlint/react.json`.
+Projects without vendored UI call `createOxlintReactConfig()` without options.
 Both React presets allow Node imports in scripts, configuration files, and tests, but not browser source.
 They reject the `@phosphor-icons/react` barrel. Direct icon imports remain valid.
 

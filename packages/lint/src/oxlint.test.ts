@@ -9,15 +9,19 @@ import {
 } from "node:fs"
 
 const scanBinary = path.resolve(import.meta.dirname, "../../../node_modules/.bin/oxlint")
-const presetsDir = path.resolve(import.meta.dirname, "../oxlint")
+const presetsModule = path.resolve(import.meta.dirname, "oxlint/index.ts")
 
-function fixture(preset: string): string {
+// `configExpression` is evaluated inside the fixture's `oxlint.config.ts`, e.g. `createOxlintReactConfig()`.
+function fixture(configExpression: string): string {
     const dir = mkdtempSync(path.join(tmpdir(), "lint-oxlint-"))
 
     onTestFinished(() => {
         rmSync(dir, { force: true, recursive: true })
     })
-    writeFileSync(path.join(dir, ".oxlintrc.json"), JSON.stringify({ extends: [path.join(presetsDir, preset)] }))
+    writeFileSync(
+        path.join(dir, "oxlint.config.ts"),
+        `import { defaultVendoredFiles, createOxlintReactConfig } from ${JSON.stringify(presetsModule)}\n\nexport default ${configExpression}\n`,
+    )
 
     return dir
 }
@@ -42,9 +46,9 @@ describe("shared oxlint React presets", () => {
                 expect.hasAssertions()
 
                 // GIVEN
-                const dir = fixture("react.json")
-                const vendorDir = fixture("react-vendored.json")
-                const nodeImport = "import { readFileSync } from \"node:fs\"\nexport const content = readFileSync(\"data.json\", \"utf8\")"
+                const dir = fixture("createOxlintReactConfig()")
+                const vendorDir = fixture("createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })")
+                const nodeImport = "import { readFileSync } from \"node:fs\"\n\nexport const content = readFileSync(\"data.json\", \"utf8\")"
 
                 // WHEN
                 const tooling = lint(dir, {
@@ -70,7 +74,7 @@ describe("shared oxlint React presets", () => {
                 expect.hasAssertions()
 
                 // GIVEN
-                const dir = fixture("react-vendored.json")
+                const dir = fixture("createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })")
                 const component = "export function Card() { return <div dangerouslySetInnerHTML={{ __html: \"trusted\" }} /> }"
 
                 // WHEN
@@ -91,11 +95,11 @@ describe("shared oxlint React presets", () => {
                 expect.hasAssertions()
 
                 // GIVEN
-                const dir = fixture("react.json")
+                const dir = fixture("createOxlintReactConfig()")
 
                 // WHEN
-                const barrel = lint(dir, { "src/icon.ts": "import { CaretDown } from \"@phosphor-icons/react\"\nexport const Icon = CaretDown" })
-                const direct = lint(dir, { "src/icon.ts": "import { CaretDown } from \"@phosphor-icons/react/CaretDown\"\nexport const Icon = CaretDown" })
+                const barrel = lint(dir, { "src/icon.ts": "import { CaretDown } from \"@phosphor-icons/react\"\n\nexport const icons = [CaretDown]" })
+                const direct = lint(dir, { "src/icon.ts": "import { CaretDown } from \"@phosphor-icons/react/CaretDown\"\n\nexport const icons = [CaretDown]" })
 
                 // THEN
                 expect(barrel.status).toBe(1)
