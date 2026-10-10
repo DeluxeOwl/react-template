@@ -53,7 +53,6 @@ function createVendoredConfig(files: string[]): Config {
             "better-tailwindcss/no-unknown-classes":          "off",
             "custom/no-margin-on-root-jsx":                   "off",
             "custom/prefer-discriminated-union":              "off",
-            "no-restricted-syntax":                           "off",
             "react-hooks/set-state-in-effect":                "off",
             "react-hooks/todo":                               "off",
             "sweepit/jsx-on-handler-verb-suffix":             "off",

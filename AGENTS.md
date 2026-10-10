@@ -87,7 +87,7 @@ bun run lint:all         # run the full pre-push gate (lefthook)
 
 ### Error Handling
 
-- **Never `throw`** — `ThrowStatement` and `Promise.reject()` are banned by ESLint rule.
+- **Never `throw`** — `ThrowStatement` and `Promise.reject()` are banned by a lint rule (`no-restricted-syntax`, run by oxlint as `eslint-js/no-restricted-syntax`).
 - Return errors as values in the cqrs, domain and repositories using the `byethrow` library:
 
 ```ts

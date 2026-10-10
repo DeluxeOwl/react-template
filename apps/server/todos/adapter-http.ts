@@ -1,5 +1,5 @@
 
-/* eslint-disable no-restricted-syntax */
+/* oxlint-disable eslint-js/no-restricted-syntax */
 
 import type { TodoApp } from "@react-template/core/todos/app"
 

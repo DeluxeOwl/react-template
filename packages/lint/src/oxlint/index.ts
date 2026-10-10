@@ -7,6 +7,7 @@ import { vendoredRules } from "./vendored.ts"
 import { stylisticConfig } from "./stylistic.ts"
 import { typeAwareConfig } from "./type-aware.ts"
 import { typescriptConfig } from "./typescript.ts"
+import { eslintCoreConfig } from "./eslint-core.ts"
 import { reactRefreshConfig } from "./react-refresh.ts"
 import { perfectionistConfig } from "./perfectionist.ts"
 import { tanstackQueryConfig } from "./tanstack-query.ts"
@@ -21,6 +22,7 @@ export { unicornConfig } from "./unicorn.ts"
 export { stylisticConfig } from "./stylistic.ts"
 export { typeAwareConfig } from "./type-aware.ts"
 export { typescriptConfig } from "./typescript.ts"
+export { eslintCoreConfig } from "./eslint-core.ts"
 export { reactRefreshConfig } from "./react-refresh.ts"
 export { perfectionistConfig } from "./perfectionist.ts"
 export { tanstackQueryConfig } from "./tanstack-query.ts"
@@ -80,6 +82,7 @@ export function createOxlintConfig(options?: OxlintConfigOptions): OxlintConfig 
     return mergeOxlintConfigs(
         typescriptConfig,
         typescriptEslintConfig,
+        eslintCoreConfig,
         stylisticConfig,
         perfectionistConfig,
         typeAwareConfig,
@@ -97,6 +100,7 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
     return mergeOxlintConfigs(
         typescriptConfig,
         typescriptEslintConfig,
+        eslintCoreConfig,
         reactConfig,
         stylisticConfig,
         perfectionistConfig,

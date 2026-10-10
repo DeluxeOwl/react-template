@@ -34,7 +34,7 @@ export function makeCancellable<T>(promise: Promise<T>, signal?: AbortSignal): P
     })
 
     if (signal.aborted) {
-        // eslint-disable-next-line no-restricted-syntax
+        // oxlint-disable-next-line eslint-js/no-restricted-syntax
         return Promise.reject(getCancelledError())
     }
 

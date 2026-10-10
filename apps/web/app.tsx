@@ -48,7 +48,7 @@ function TodoList(): React.ReactNode {
     // Note: tanstack db is weird, this checks only the
     // query error, e.g. if I have an insert error, it wont be tracked here.
     if (todoCollection.utils.isError) {
-        // eslint-disable-next-line no-restricted-syntax
+        // oxlint-disable-next-line eslint-js/no-restricted-syntax
         throw todoCollection.utils.lastError
     }
 

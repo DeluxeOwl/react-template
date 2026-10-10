@@ -107,6 +107,27 @@ describe("shared oxlint React presets", () => {
         })
     })
 
+    describe("given a throw statement in a feature and in generated UI code", () => {
+        describe("when opting into the vendored preset", () => {
+            it("then it bans throw in the feature only", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const dir = fixture("createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })")
+                const source = "export function fail(): never {\n    throw new Error(\"no\")\n}\n"
+
+                // WHEN
+                const { output } = lint(dir, { "src/components/ui/fail.ts": source, "src/features/fail.ts": source })
+
+                // THEN
+                const { diagnostics } = JSON.parse(output) as { diagnostics: { code: string, filename: string }[] }
+                const banned = diagnostics.filter((diagnostic) => diagnostic.code === "eslint-js(no-restricted-syntax)")
+
+                expect(banned.map((diagnostic) => diagnostic.filename)).toStrictEqual(["src/features/fail.ts"])
+            })
+        })
+    })
+
     describe("given a test without assertions, in test and source files", () => {
         describe("when applying the base and React presets", () => {
             it("then the vitest rules warn in .test.ts and .test.tsx files only", () => {

@@ -116,7 +116,6 @@ export const typescriptConfig = {
                 varsIgnorePattern: "^_",
             },
         ],
-        "eslint/no-var":                                      "error",
         "eslint/no-warning-comments":                         "off",
         // New in oxlint 1.86 (D-004), `style`: would merge consecutive `const` declarations (245 hits).
         "eslint/one-var":                                     "off",
