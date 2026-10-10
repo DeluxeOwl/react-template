@@ -2,7 +2,7 @@ import path from "node:path"
 import { tmpdir } from "node:os"
 import { spawnSync } from "node:child_process"
 import {
-    it, expect, describe, onTestFinished,
+    it, vi, expect, describe, onTestFinished,
 } from "vitest"
 import {
     rmSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync,
@@ -12,6 +12,8 @@ import { runOxlintFix } from "./oxlint/index.ts"
 
 const scanBinary = path.resolve(import.meta.dirname, "../../../node_modules/.bin/oxlint")
 const presetsModule = path.resolve(import.meta.dirname, "oxlint/index.ts")
+// runOxlintFix runs oxlint several times (one round of fixes each); slow on a busy machine
+const fixLoopTimeout = 60 * 1000
 
 // `configExpression` is evaluated inside the fixture's `oxlint.config.ts`, e.g. `createOxlintReactConfig()`.
 function fixture(configExpression: string): string {
@@ -151,7 +153,7 @@ describe("shared oxlint React presets", () => {
 
     describe("given formatting that takes two rounds of fixes", () => {
         describe("when fixing with oxlint --fix once, and with runOxlintFix", () => {
-            it("then only runOxlintFix reaches the formatted result, like eslint --fix", () => {
+            it("then only runOxlintFix reaches the formatted result, like eslint --fix", { timeout: fixLoopTimeout }, () => {
                 expect.hasAssertions()
 
                 // GIVEN
@@ -178,6 +180,39 @@ describe("shared oxlint React presets", () => {
                 expect(afterSingleFix.stdout).toContain("@stylistic(indent)")
                 expect(status).toBe(0)
                 expect(readFileSync(path.join(looped, "object.ts"), "utf8")).toBe(formatted)
+            })
+        })
+    })
+
+    describe("given two rules that undo each other's fixes", () => {
+        describe("when fixing with runOxlintFix", () => {
+            it("then it stops where eslint --fix stops, and warns", { timeout: fixLoopTimeout }, () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                // Round 1 moves queryFn first (@tanstack/query/infinite-query-property-order) and
+                // removes the double space (@stylistic/no-multi-spaces); round 2 sorts the keys back
+                // (perfectionist/sort-objects); round 3 repeats round 1. ESLint stops there ("Circular
+                // fixes detected"); the 10th round would end on the sorted keys.
+                const source = "import { useInfiniteQuery } from \"@tanstack/react-query\"\n\nexport const  value = 1\n\nexport function useProjects(): unknown {\n    return useInfiniteQuery({\n        getNextPageParam: (page: number) => page,\n        queryFn:          () => 1,\n        queryKey:         [\"projects\"],\n    })\n}\n"
+                const expected = "import { useInfiniteQuery } from \"@tanstack/react-query\"\n\nexport const value = 1\n\nexport function useProjects(): unknown {\n    return useInfiniteQuery({\n        queryFn:          () => 1,\n        getNextPageParam: (page: number) => page,\n        queryKey:         [\"projects\"],\n    })\n}\n"
+                const dir = fixture("createOxlintReactConfig()")
+                const stderr = vi.spyOn(process.stderr, "write").mockReturnValue(true)
+
+                onTestFinished(() => {
+                    stderr.mockRestore()
+                })
+                spawnSync("git", ["init", "--quiet"], { cwd: dir })
+                mkdirSync(path.join(dir, "src"))
+                writeFileSync(path.join(dir, "src/use-projects.ts"), source)
+
+                // WHEN
+                const status = runOxlintFix(["src/use-projects.ts"], { cwd: dir })
+
+                // THEN
+                expect(status).toBe(1)
+                expect(readFileSync(path.join(dir, "src/use-projects.ts"), "utf8")).toBe(expected)
+                expect(stderr).toHaveBeenCalledWith(expect.stringContaining("Circular fixes detected"))
             })
         })
     })
