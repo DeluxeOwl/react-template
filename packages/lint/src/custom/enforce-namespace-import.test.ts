@@ -1,4 +1,4 @@
-/* eslint-disable vitest/require-hook */
+/* oxlint-disable vitest-js/require-hook */
 import tseslint from "typescript-eslint"
 import {
     it, afterAll, describe,

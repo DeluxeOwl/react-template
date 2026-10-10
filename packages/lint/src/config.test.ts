@@ -117,9 +117,10 @@ describe("shared lint configuration", () => {
                 // THEN
                 expect(severity(ts, "vitest/max-expects")).toBe(0)
                 expect(severity(tsx, "vitest/max-expects")).toBe(0)
-                expect(severity(ts, "vitest/expect-expect")).toBe(1)
-                expect(severity(tsx, "vitest/expect-expect")).toBe(1)
-                expect(severity(source, "vitest/expect-expect")).toBeUndefined()
+                // most vitest rules run in oxlint (oxlint.test.ts); valid-title stays (type checker)
+                expect(severity(ts, "vitest/valid-title")).toBe(1)
+                expect(severity(tsx, "vitest/valid-title")).toBe(1)
+                expect(severity(source, "vitest/valid-title")).toBeUndefined()
             })
         })
     })

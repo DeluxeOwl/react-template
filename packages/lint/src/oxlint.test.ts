@@ -107,6 +107,29 @@ describe("shared oxlint React presets", () => {
         })
     })
 
+    describe("given a test without assertions, in test and source files", () => {
+        describe("when applying the base and React presets", () => {
+            it("then the vitest rules warn in .test.ts and .test.tsx files only", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const base = fixture("createOxlintConfig()")
+                const react = fixture("createOxlintReactConfig()")
+                const test = "import { it } from \"vitest\"\n\nit(\"works\", () => {})\n"
+
+                // WHEN
+                const baseTest = lint(base, { "src/contract.test.ts": test })
+                const reactTest = lint(react, { "src/view.test.tsx": test })
+                const source = lint(base, { "src/contract.ts": test })
+
+                // THEN
+                expect(baseTest.output).toContain("vitest-js(expect-expect)")
+                expect(reactTest.output).toContain("vitest-js(expect-expect)")
+                expect(source.output).not.toContain("vitest-js")
+            })
+        })
+    })
+
     describe("given prefix- and suffix-named CQRS handlers", () => {
         describe("when applying the base preset", () => {
             it("then it infers handler errors without relaxing other exported functions", () => {

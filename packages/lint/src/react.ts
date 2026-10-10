@@ -4,7 +4,6 @@ import sweepit from "eslint-plugin-sweepit"
 import reactHooks from "eslint-plugin-react-hooks"
 import eslintReact from "@eslint-react/eslint-plugin"
 import pluginQuery from "@tanstack/eslint-plugin-query"
-import eslintReactRefresh from "eslint-plugin-react-refresh"
 import reactRenderTypes from "eslint-plugin-react-render-types"
 import betterTailwindcss from "eslint-plugin-better-tailwindcss"
 import {
@@ -84,7 +83,6 @@ export default function createReactConfig(rootDir: string, options?: ReactConfig
         },
         {
             extends: [
-                eslintReactRefresh.configs.recommended,
                 reactHooks.configs.flat.recommended,
                 eslintReact.configs["recommended-typescript"],
                 pluginQuery.configs["flat/recommended"],

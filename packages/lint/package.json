@@ -52,7 +52,6 @@
         "eslint-plugin-import-x": "^4.16.2",
         "eslint-plugin-import-zod": "^1.2.1",
         "eslint-plugin-react-hooks": "^7.1.1",
-        "eslint-plugin-react-refresh": "^0.5.2",
         "eslint-plugin-react-render-types": "^0.7.6",
         "eslint-plugin-sweepit": "^0.0.23",
         "eslint-plugin-unused-imports": "^4.3.0",

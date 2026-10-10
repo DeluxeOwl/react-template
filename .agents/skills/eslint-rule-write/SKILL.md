@@ -35,7 +35,7 @@ Writing the test file:
 Example:
 
 ```ts
-/* eslint-disable vitest/require-hook */
+/* oxlint-disable vitest-js/require-hook */
 import { RuleTester } from "@typescript-eslint/rule-tester"
 import { afterAll, describe, it } from "vitest"
 import tseslint from "typescript-eslint"

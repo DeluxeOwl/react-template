@@ -1,4 +1,4 @@
-/* eslint-disable vitest/require-hook */
+/* oxlint-disable vitest-js/require-hook */
 import fs from "node:fs"
 import os from "node:os"
 import path from "node:path"

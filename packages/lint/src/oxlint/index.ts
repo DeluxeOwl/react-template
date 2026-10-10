@@ -1,11 +1,13 @@
 import type { OxlintConfig, OxlintOverride } from "oxlint"
 
 import { reactConfig } from "./react.ts"
+import { vitestConfig } from "./vitest.ts"
 import { unicornConfig } from "./unicorn.ts"
 import { vendoredRules } from "./vendored.ts"
 import { stylisticConfig } from "./stylistic.ts"
 import { typeAwareConfig } from "./type-aware.ts"
 import { typescriptConfig } from "./typescript.ts"
+import { reactRefreshConfig } from "./react-refresh.ts"
 import { perfectionistConfig } from "./perfectionist.ts"
 import { tanstackQueryConfig } from "./tanstack-query.ts"
 import { typescriptEslintConfig } from "./typescript-eslint.ts"
@@ -14,10 +16,12 @@ import { youMightNotNeedAnEffectConfig } from "./you-might-not-need-an-effect.ts
 
 export { runOxlintFix } from "./fix.ts"
 export { reactConfig } from "./react.ts"
+export { vitestConfig } from "./vitest.ts"
 export { unicornConfig } from "./unicorn.ts"
 export { stylisticConfig } from "./stylistic.ts"
 export { typeAwareConfig } from "./type-aware.ts"
 export { typescriptConfig } from "./typescript.ts"
+export { reactRefreshConfig } from "./react-refresh.ts"
 export { perfectionistConfig } from "./perfectionist.ts"
 export { tanstackQueryConfig } from "./tanstack-query.ts"
 export { typescriptEslintConfig } from "./typescript-eslint.ts"
@@ -81,6 +85,7 @@ export function createOxlintConfig(options?: OxlintConfigOptions): OxlintConfig 
         typeAwareConfig,
         sweepitConfig,
         unicornConfig,
+        vitestConfig,
         { ignorePatterns: options?.ignorePatterns ?? [] },
     )
 }
@@ -99,8 +104,10 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
         sweepitConfig,
         sweepitReactConfig,
         unicornConfig,
+        vitestConfig,
         tanstackQueryConfig,
         youMightNotNeedAnEffectConfig,
+        reactRefreshConfig,
         { ignorePatterns: options?.ignorePatterns ?? [], overrides: vendored },
     )
 }
