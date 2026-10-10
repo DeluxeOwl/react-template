@@ -2,18 +2,20 @@
 // Also gives the file's tokens typescript-estree's types before the first rule runs (tokens.js).
 //
 // ESLint sorts a file's problems by (line, column) — ties in report order, which is the order of
-// the rules in the config — then applies fixes sorted by range with a stable sort, skipping any fix
-// that overlaps one already applied. So of several fixes with the same range, only the first in
-// (line, column, rule order) can be applied in a pass. oxlint sorts fixes by range with an unstable
-// sort (oxc_linter fixer/mod.rs `sort_unstable_by_key`), so which of them wins is arbitrary.
-// Example: for `}   ,` @stylistic/no-multi-spaces (column 13) wants " " and
-// @stylistic/comma-spacing (column 16) wants "" on the same three spaces; ESLint applies " ".
+// the rules in the config — then applies fixes sorted by range (start, then end) with a stable sort,
+// skipping any fix that starts at or before the end of the last applied one (source-code-fixer.js).
+// So of several overlapping fixes, which one is applied in a pass depends on that order. oxlint sorts
+// fixes with an unstable sort (oxc_linter fixer/mod.rs `sort_unstable_by_key`), so which of them
+// wins is arbitrary. Examples: for `}   ,` @stylistic/no-multi-spaces (column 13) wants " " and
+// @stylistic/comma-spacing (column 16) wants "" on the same three spaces; ESLint applies " ". When
+// perfectionist/sort-objects and @tanstack/query/infinite-query-property-order both reorder the same
+// object, ESLint applies the fix that ends first.
 //
 // deferReports() wraps rules so their reports are queued and emitted at the end of the file sorted
-// like ESLint's problems, and drops the fix from any report whose fix range was already taken by an
-// earlier report with a different fix — the fix ESLint could never apply in this pass. The
-// diagnostic is still reported. Identical fixes on the same range are kept: whichever oxlint
-// applies, the result is the same.
+// like ESLint's problems, and runs ESLint's fix selection on them: a report whose fix ESLint would
+// skip in this pass loses its fix (the diagnostic is still reported, and the fix comes back in the
+// next pass if it still applies). oxlint then only gets fixes that don't overlap, and applies all
+// of them. Fixes of oxlint's native rules are not seen here.
 //
 // Disable directives are applied here too, with ESLint's semantics (apply-disable-directives.js),
 // and suppressed reports are dropped before oxlint sees them: ESLint resolves fix conflicts after
@@ -194,24 +196,30 @@ function isSuppressed(points, ruleId, line, column) {
     })
 }
 
+// ESLint: source-code-fixer.js applyFixes — the fixes ESLint would skip in this pass.
+function skippedFixes(items) {
+    const fixed = items.filter((item) => item.descriptor.fix !== undefined)
+    const ordered = fixed.map((item) => ({ item, range: item.descriptor.fix().range })).sort((a, b) => a.range[0] - b.range[0] || a.range[1] - b.range[1])
+    const skipped = new Set()
+    let lastPos = Number.NEGATIVE_INFINITY
+    for (const { item, range: [start, end] } of ordered) {
+        if (lastPos >= start || start > end) {
+            skipped.add(item)
+        } else {
+            lastPos = end
+        }
+    }
+
+    return skipped
+}
+
 function flush() {
     const pending = queue.sort((a, b) => a.line - b.line || a.column - b.column || a.sequence - b.sequence)
     const points = directivePoints(pending.length === 0 ? [] : pending[0].context.sourceCode.getDisableDirectives?.().directives ?? [])
-    const taken = new Map()
-    for (const item of pending) {
-        if (isSuppressed(points, item.context.id, item.line, item.column)) {
-            continue
-        }
-        const fix = item.descriptor.fix?.()
-        if (fix !== undefined) {
-            const span = `${fix.range[0]}:${fix.range[1]}`
-            if (!taken.has(span)) {
-                taken.set(span, fix.text)
-            } else if (taken.get(span) !== fix.text) {
-                item.descriptor = { ...item.descriptor, fix: undefined }
-            }
-        }
-        item.context.report(item.descriptor)
+    const active = pending.filter((item) => !isSuppressed(points, item.context.id, item.line, item.column))
+    const skipped = skippedFixes(active)
+    for (const item of active) {
+        item.context.report(skipped.has(item) ? { ...item.descriptor, fix: undefined } : item.descriptor)
     }
     reset()
 }
