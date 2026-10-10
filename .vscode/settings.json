@@ -17,7 +17,10 @@
         // Note: this being "never" doesn't clash with dangling comma, let perfectionist eslint handle imports
         "source.organizeImports": "never",
         "source.fixAll.ast-grep": "never",
-        "source.fixAll.eslint": "explicit"
+        "source.fixAll.eslint": "explicit",
+        // TS/JS formatting: the @stylistic rules run in oxlint (vendored, packages/lint/vendor/stylistic).
+        // One save applies one round of fixes; save again if a fix exposed another (oxlint-fix loops).
+        "source.fixAll.oxc": "explicit"
     },
     // Use the same workspace-local ast-grep version as the lint scripts.
     "astGrep.serverPath": "node_modules/.bin/ast-grep",

@@ -1,6 +1,7 @@
 {
     "extends": "./node_modules/@deluxeowl/lint/dprint.jsonc",
     "excludes": [
-        "**/*-lock.json"
+        "**/*-lock.json",
+        "packages/lint/vendor/**"
     ]
 }

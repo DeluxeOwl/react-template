@@ -24,20 +24,23 @@
     },
     "files": [
         "dist",
+        "bin",
+        "vendor",
         "ast-grep",
         "dprint.jsonc"
     ],
     "scripts": {
         "build": "zshy",
-        "lint:oxlint": "oxlint --fix .",
+        "lint:oxlint": "oxlint-fix .",
         "lint:eslint": "eslint --fix .",
         "typecheck": "tsc --noEmit",
         "test": "vitest --run --passWithNoTests --reporter=tree"
     },
     "dependencies": {
+        "@eslint-community/eslint-utils": "^4.9.1",
         "@eslint-react/eslint-plugin": "^5.7.1",
-        "@stylistic/eslint-plugin": "^5.10.0",
         "@tanstack/eslint-plugin-query": "^5.100.9",
+        "@typescript-eslint/types": "^8.59.1",
         "@typescript-eslint/utils": "^8.59.1",
         "@vitest/eslint-plugin": "^1.6.16",
         "change-case": "^5.4.4",
@@ -54,6 +57,9 @@
         "eslint-plugin-sweepit": "^0.0.23",
         "eslint-plugin-unicorn": "^64.0.0",
         "eslint-plugin-unused-imports": "^4.3.0",
+        "eslint-visitor-keys": "^4.2.1",
+        "espree": "^10.4.0",
+        "estraverse": "^5.3.0",
         "typescript-eslint": "^8.59.1"
     },
     "peerDependencies": {
@@ -87,5 +93,8 @@
             "types": "./dist/ast-grep.d.ts",
             "default": "./dist/ast-grep.js"
         }
+    },
+    "bin": {
+        "oxlint-fix": "./bin/oxlint-fix.js"
     }
 }

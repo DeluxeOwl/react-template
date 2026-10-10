@@ -8,6 +8,7 @@
     "ignore": [
         "**/.devbox/**",
         "**/node_modules/**",
+        "**/packages/lint/vendor/**",
         "**/dist/**",
         "**/build/**",
         "**/coverage/**",

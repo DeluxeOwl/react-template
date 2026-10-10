@@ -11,6 +11,7 @@
     ],
     "ignore": [
         ".scaffdog/config.js",
+        "packages/lint/vendor/**",
         "apps/web/auto-imports.d.ts"
     ],
     "tags": [
@@ -40,6 +41,11 @@
                 "cqrs/*.ts",
                 "ctx/*.ts",
                 "test-helpers/*.ts"
+            ]
+        },
+        "packages/lint": {
+            "ignoreDependencies": [
+                "@eslint-community/eslint-utils"
             ]
         }
     }

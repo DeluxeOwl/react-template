@@ -6,6 +6,10 @@ import createConfig from "./src/index"
 
 export default defineConfig([
     {
-        extends: [createConfig(import.meta.dirname, { allowDefaultProject: ["eslint.config.ts", "oxlint.config.ts"] })],
+        // Vendored third-party rule code (generated, see vendor/*/README.md).
+        ignores: ["vendor/**"],
+    },
+    {
+        extends: [createConfig(import.meta.dirname, { allowDefaultProject: ["eslint.config.ts", "oxlint.config.ts", "bin/*.js"] })],
     },
 ])

@@ -23,7 +23,7 @@ questions:
         "typescript": "catalog:"
     },
     "scripts": {
-        "lint:oxlint": "oxlint --fix .",
+        "lint:oxlint": "oxlint-fix .",
         "lint:eslint": "eslint --fix .",
         "typecheck": "tsc --noEmit",
         "test": "vitest --run --passWithNoTests --reporter=tree"

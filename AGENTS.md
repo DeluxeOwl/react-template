@@ -39,14 +39,14 @@ bun run --filter @react-template/core vitest run --reporter=verbose -t "then it 
 ### Linting & Formatting
 
 ```sh
-bun run lint:oxlint      # fast Rust linter (oxlint) across all workspaces
+bun run lint:oxlint      # oxlint across all workspaces; also formats TS/JS (fixes until stable)
 bun run lint:eslint      # ESLint (type-aware rules) across all workspaces
 bun run lint:sg          # ast-grep structural rules
 bun run format:dprint    # format JSON, YAML, Markdown, Dockerfile (dprint)
 bun run lint:all         # run the full pre-push gate (lefthook)
 ```
 
-> Formatting for `.ts`/`.tsx`/`.js` is handled by `@stylistic/eslint-plugin` via ESLint, not dprint.
+> Formatting for `.ts`/`.tsx`/`.js` is done by oxlint's `@stylistic/*` rules (vendored in `packages/lint/vendor/stylistic`, generated — never hand-edit), not dprint. `oxlint-fix` repeats `oxlint --fix` until the files stop changing; a single `oxlint --fix` can leave formatting half-done.
 
 ---
 
@@ -61,7 +61,7 @@ bun run lint:all         # run the full pre-push gate (lefthook)
 - **No `enum`** — use `as const` objects or discriminated unions instead.
 - Always declare explicit return types on exported functions and React components.
 
-### Formatting (enforced by `@stylistic/eslint-plugin`)
+### Formatting (enforced by the `@stylistic/*` rules in oxlint)
 
 - **4-space indentation** (not tabs).
 - **Double quotes** for strings.

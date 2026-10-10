@@ -2,9 +2,12 @@ import type { OxlintConfig, OxlintOverride } from "oxlint"
 
 import { reactConfig } from "./react.ts"
 import { vendoredRules } from "./vendored.ts"
+import { stylisticConfig } from "./stylistic.ts"
 import { typescriptConfig } from "./typescript.ts"
 
+export { runOxlintFix } from "./fix.ts"
 export { reactConfig } from "./react.ts"
+export { stylisticConfig } from "./stylistic.ts"
 export { typescriptConfig } from "./typescript.ts"
 export { defaultVendoredFiles, vendoredRules } from "./vendored.ts"
 
@@ -56,7 +59,7 @@ export function mergeOxlintConfigs(...configs: OxlintConfig[]): OxlintConfig {
 }
 
 export function createOxlintConfig(options?: OxlintConfigOptions): OxlintConfig {
-    return mergeOxlintConfigs(typescriptConfig, { ignorePatterns: options?.ignorePatterns ?? [] })
+    return mergeOxlintConfigs(typescriptConfig, stylisticConfig, { ignorePatterns: options?.ignorePatterns ?? [] })
 }
 
 export function createOxlintReactConfig(options?: OxlintReactConfigOptions): OxlintConfig {
@@ -66,6 +69,7 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
     return mergeOxlintConfigs(
         typescriptConfig,
         reactConfig,
+        stylisticConfig,
         { ignorePatterns: options?.ignorePatterns ?? [], overrides: vendored },
     )
 }

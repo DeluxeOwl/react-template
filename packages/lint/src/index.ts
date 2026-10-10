@@ -4,7 +4,6 @@
 import tseslint from "typescript-eslint"
 import vitest from "@vitest/eslint-plugin"
 import sweepit from "eslint-plugin-sweepit"
-import stylistic from "@stylistic/eslint-plugin"
 import { importX } from "eslint-plugin-import-x"
 import importZod from "eslint-plugin-import-zod"
 import gitignore from "eslint-config-flat-gitignore"
@@ -55,13 +54,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
             extends: [
                 tseslint.configs.recommendedTypeChecked,
                 perfectionistConfigs["recommended-natural"],
-                stylistic.configs.customize({
-                    arrowParens:  true,
-                    blockSpacing: true,
-                    braceStyle:   "1tbs",
-                    indent:       4,
-                    quotes:       "double",
-                }),
                 importZod.configs.recommended,
                 // NOTE: Needs to be last
                 {
@@ -91,86 +83,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
             },
 
             rules: {
-                "@stylistic/array-bracket-newline": [
-                    "error",
-                    {
-                        multiline: true,
-                    },
-                ],
-                "@stylistic/array-element-newline": [
-                    "error",
-                    {
-                        ArrayExpression: "consistent",
-                        ArrayPattern:    {
-                            minItems: 3,
-                        },
-                    },
-                ],
-                "@stylistic/curly-newline": [
-                    "error", {
-                        minElements: 1,
-                    },
-                ],
-                "@stylistic/function-call-argument-newline": ["error", "consistent"],
-                "@stylistic/jsx-closing-bracket-location":   [
-                    "error",
-                    {
-                        nonEmpty:    "after-props",
-                        selfClosing: "after-props",
-                    },
-                ],
-                "@stylistic/jsx-max-props-per-line": [
-                    "error",
-                    {
-                        maximum: 1,
-                        when:    "multiline",
-                    },
-                ],
-                "@stylistic/jsx-one-expression-per-line": "off",
-                "@stylistic/key-spacing":                 [
-                    "error",
-                    {
-                        align: {
-                            afterColon:  true,
-                            beforeColon: false,
-                            on:          "value",
-                        },
-                        mode: "strict",
-                    },
-                ],
-                // "@stylistic/max-len":           ["error", { code: 120 }],
-                "@stylistic/multiline-ternary": [
-                    "error", "always-multiline", {
-                        ignoreJSX: true,
-                    },
-                ],
-                "@stylistic/newline-per-chained-call": ["error", { ignoreChainWithDepth: 2 }],
-                "@stylistic/no-multi-spaces":          [
-                    "error",
-                    {
-                        exceptions: {
-                            ImportDeclaration:  true,
-                            TSTypeAnnotation:   true,
-                            VariableDeclarator: true,
-                        },
-                    },
-                ],
-                "@stylistic/no-multiple-empty-lines": [
-                    "error",
-                    {
-                        max: 1,
-                    },
-                ],
-                "@stylistic/object-curly-newline": [
-                    "error",
-                    {
-                        consistent:    true,
-                        minProperties: 3,
-                        multiline:     true,
-                    },
-                ],
-                "@stylistic/object-property-newline":                 ["error", { allowAllPropertiesOnSameLine: true }],
-                "@stylistic/operator-linebreak":                      ["error"],
                 "@typescript-eslint/array-type":                      "error",
                 "@typescript-eslint/consistent-generic-constructors": "error",
                 "@typescript-eslint/consistent-indexed-object-style": "error",

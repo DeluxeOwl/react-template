@@ -5,8 +5,10 @@ import {
     it, expect, describe, onTestFinished,
 } from "vitest"
 import {
-    rmSync, mkdirSync, mkdtempSync, writeFileSync,
+    rmSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync,
 } from "node:fs"
+
+import { runOxlintFix } from "./oxlint/index.ts"
 
 const scanBinary = path.resolve(import.meta.dirname, "../../../node_modules/.bin/oxlint")
 const presetsModule = path.resolve(import.meta.dirname, "oxlint/index.ts")
@@ -20,7 +22,7 @@ function fixture(configExpression: string): string {
     })
     writeFileSync(
         path.join(dir, "oxlint.config.ts"),
-        `import { defaultVendoredFiles, createOxlintReactConfig } from ${JSON.stringify(presetsModule)}\n\nexport default ${configExpression}\n`,
+        `import { createOxlintConfig, defaultVendoredFiles, createOxlintReactConfig } from ${JSON.stringify(presetsModule)}\n\nexport default ${configExpression}\n`,
     )
 
     return dir
@@ -48,7 +50,7 @@ describe("shared oxlint React presets", () => {
                 // GIVEN
                 const dir = fixture("createOxlintReactConfig()")
                 const vendorDir = fixture("createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })")
-                const nodeImport = "import { readFileSync } from \"node:fs\"\n\nexport const content = readFileSync(\"data.json\", \"utf8\")"
+                const nodeImport = "import { readFileSync } from \"node:fs\"\n\nexport const content = readFileSync(\"data.json\", \"utf8\")\n"
 
                 // WHEN
                 const tooling = lint(dir, {
@@ -75,7 +77,7 @@ describe("shared oxlint React presets", () => {
 
                 // GIVEN
                 const dir = fixture("createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })")
-                const component = "export function Card() { return <div dangerouslySetInnerHTML={{ __html: \"trusted\" }} /> }"
+                const component = "export function Card() {\n    return <div dangerouslySetInnerHTML={{ __html: \"trusted\" }} />\n}\n"
 
                 // WHEN
                 const vendored = lint(dir, { "src/components/ui/card.tsx": component })
@@ -98,13 +100,46 @@ describe("shared oxlint React presets", () => {
                 const dir = fixture("createOxlintReactConfig()")
 
                 // WHEN
-                const barrel = lint(dir, { "src/icon.ts": "import { CaretDown } from \"@phosphor-icons/react\"\n\nexport const icons = [CaretDown]" })
-                const direct = lint(dir, { "src/icon.ts": "import { CaretDown } from \"@phosphor-icons/react/CaretDown\"\n\nexport const icons = [CaretDown]" })
+                const barrel = lint(dir, { "src/icon.ts": "import { CaretDown } from \"@phosphor-icons/react\"\n\nexport const icons = [CaretDown]\n" })
+                const direct = lint(dir, { "src/icon.ts": "import { CaretDown } from \"@phosphor-icons/react/CaretDown\"\n\nexport const icons = [CaretDown]\n" })
 
                 // THEN
                 expect(barrel.status).toBe(1)
                 expect(barrel.output).toContain("no-restricted-imports")
                 expect(direct.status).toBe(0)
+            })
+        })
+    })
+
+    describe("given formatting that takes two rounds of fixes", () => {
+        describe("when fixing with oxlint --fix once, and with runOxlintFix", () => {
+            it("then only runOxlintFix reaches the formatted result, like eslint --fix", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                // Round 1 aligns the values (key-spacing) and moves `ccc` to a new, unindented line
+                // (object-property-newline); round 2 indents it (indent).
+                const source = "export const x = {\n    a: 1,\n    bb: 2, ccc: 3,\n}\n"
+                const formatted = "export const x = {\n    a:   1,\n    bb:  2,\n    ccc: 3,\n}\n"
+                const once = fixture("createOxlintConfig()")
+                const looped = fixture("createOxlintConfig()")
+
+                spawnSync("git", ["init", "--quiet"], { cwd: looped })
+                writeFileSync(path.join(once, "object.ts"), source)
+                writeFileSync(path.join(looped, "object.ts"), source)
+
+                // WHEN
+                // `oxlint --fix` reports only what it could not fix in this run, so it exits 0 here.
+                const singleFix = spawnSync(scanBinary, ["--fix", "object.ts"], { cwd: once, encoding: "utf8" })
+                const afterSingleFix = spawnSync(scanBinary, ["object.ts"], { cwd: once, encoding: "utf8" })
+                const status = runOxlintFix(["object.ts"], { cwd: looped })
+
+                // THEN
+                expect(singleFix.status).toBe(0)
+                expect(afterSingleFix.status).toBe(1)
+                expect(afterSingleFix.stdout).toContain("@stylistic(indent)")
+                expect(status).toBe(0)
+                expect(readFileSync(path.join(looped, "object.ts"), "utf8")).toBe(formatted)
             })
         })
     })
