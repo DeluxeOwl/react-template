@@ -18,6 +18,7 @@
             ".": "./src/index.ts",
             "./react": "./src/react.ts",
             "./oxlint": "./src/oxlint/index.ts",
+            "./oxlint/custom-plugin": "./src/custom/oxlint-plugin.ts",
             "./ast-grep": "./src/ast-grep.ts"
         },
         "cjs": false
@@ -41,17 +42,19 @@
         "@eslint-community/eslint-utils": "^4.9.1",
         "@eslint-react/eslint-plugin": "^5.7.1",
         "@tanstack/eslint-plugin-query": "^5.100.9",
+        "@typescript-eslint/parser": "^8.59.1",
         "@typescript-eslint/scope-manager": "^8.59.1",
         "@typescript-eslint/types": "^8.59.1",
         "@typescript-eslint/utils": "^8.59.1",
         "@vitest/eslint-plugin": "^1.6.16",
         "change-case": "^5.4.4",
         "clean-regexp": "^1.0.0",
+        "debug": "^4.4.3",
         "escape-string-regexp": "^4.0.0",
         "eslint-config-flat-gitignore": "^2.3.0",
+        "eslint-import-context": "^0.1.9",
         "eslint-import-resolver-typescript": "^4.4.4",
         "eslint-plugin-better-tailwindcss": "^4.5.0",
-        "eslint-plugin-import-x": "^4.16.2",
         "eslint-plugin-import-zod": "^1.2.1",
         "eslint-plugin-react-hooks": "^7.1.1",
         "eslint-plugin-react-render-types": "^0.7.6",
@@ -61,10 +64,15 @@
         "espree": "^10.4.0",
         "estraverse": "^5.3.0",
         "esutils": "^2.0.3",
+        "is-glob": "^4.0.3",
         "jsesc": "^3.1.0",
+        "minimatch": "^10.2.4",
         "natural-orderby": "^5.0.0",
         "regexp-tree": "^0.1.27",
-        "typescript-eslint": "^8.59.1"
+        "semver": "^7.7.4",
+        "stable-hash-x": "^0.2.0",
+        "typescript-eslint": "^8.59.1",
+        "unrs-resolver": "^1.11.1"
     },
     "peerDependencies": {
         "eslint": ">=10",
@@ -93,6 +101,10 @@
         "./oxlint": {
             "types": "./dist/oxlint/index.d.ts",
             "default": "./dist/oxlint/index.js"
+        },
+        "./oxlint/custom-plugin": {
+            "types": "./dist/custom/oxlint-plugin.d.ts",
+            "default": "./dist/custom/oxlint-plugin.js"
         },
         "./ast-grep": {
             "types": "./dist/ast-grep.d.ts",

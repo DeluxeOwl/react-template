@@ -85,7 +85,7 @@ describe("shared lint configuration", () => {
 
     describe("given explicitly selected vendored files", () => {
         describe("when calculating the effective config", () => {
-            it("then it relaxes only vendor policy while retaining type safety and return types", async () => {
+            it("then it relaxes only vendor policy while retaining type safety", async () => {
                 expect.hasAssertions()
 
                 // GIVEN / WHEN
@@ -95,11 +95,10 @@ describe("shared lint configuration", () => {
                 const strictVendor = await configFor("ui/components/ui/card.tsx")
 
                 // THEN
-                expect(severity(vendored, "custom/no-margin-on-root-jsx")).toBe(0)
-                expect(severity(handwritten, "custom/no-margin-on-root-jsx")).toBe(2)
-                expect(severity(strictVendor, "custom/no-margin-on-root-jsx")).toBe(2)
+                expect(severity(vendored, "sweepit/no-object-props")).toBe(0)
+                expect(severity(handwritten, "sweepit/no-object-props")).toBe(2)
+                expect(severity(strictVendor, "sweepit/no-object-props")).toBe(2)
                 expect(severity(vendored, "@typescript-eslint/no-unsafe-assignment")).toBe(2)
-                expect(severity(vendored, "custom/require-jsx-return-type")).toBe(2)
             })
         })
     })

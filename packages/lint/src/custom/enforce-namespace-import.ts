@@ -1,5 +1,6 @@
 import { camelCase } from "change-case"
-import { TSESTree, ESLintUtils } from "@typescript-eslint/utils"
+import { TSESTree } from "@typescript-eslint/types"
+import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
 
 /*
  * ----------------------------------------------------------------------------
@@ -47,7 +48,7 @@ function isMatchedPackage(source: string, packages: string[]): boolean {
     return packages.some((pkg) => source.startsWith(`${pkg}/`) || source === pkg)
 }
 
-export const enforceNamespaceImportRule = ESLintUtils.RuleCreator(
+export const enforceNamespaceImportRule = RuleCreator(
     (name) => `https://github.com/react-template/eslint-rules#${name}`,
 )<Options, "mustBeNamespace" | "wrongLocalName">({
     create(context) {

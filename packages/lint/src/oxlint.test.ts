@@ -103,6 +103,28 @@ describe("shared oxlint React presets", () => {
                 // THEN
                 expect(vendored.status).toBe(1)
                 expect(vendored.output).toContain("explicit-function-return-type")
+                expect(vendored.output).toContain("custom(require-jsx-return-type)")
+            })
+        })
+    })
+
+    describe("given margin on the root element of a feature and of generated UI code", () => {
+        describe("when opting into the vendored preset", () => {
+            it("then it reports the margin in the feature only", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const dir = fixture("createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })")
+                const source = "export function Card(): React.ReactNode {\n    return <div className=\"m-4\" />\n}\n"
+
+                // WHEN
+                const { output } = lint(dir, { "src/components/ui/card.tsx": source, "src/features/card.tsx": source })
+
+                // THEN
+                const { diagnostics } = JSON.parse(output) as { diagnostics: { code: string, filename: string }[] }
+                const margins = diagnostics.filter((diagnostic) => diagnostic.code === "custom(no-margin-on-root-jsx)")
+
+                expect(margins.map((diagnostic) => diagnostic.filename)).toStrictEqual(["src/features/card.tsx"])
             })
         })
     })
@@ -190,7 +212,9 @@ describe("shared oxlint React presets", () => {
                 // THEN
                 expect(barrel.status).toBe(1)
                 expect(barrel.output).toContain("no-restricted-imports")
-                expect(direct.status).toBe(0)
+                // The fixture has no node_modules: import-x/no-unresolved reports both imports, so check
+                // only the restriction.
+                expect(direct.output).not.toContain("no-restricted-imports")
             })
         })
     })

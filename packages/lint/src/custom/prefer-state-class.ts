@@ -1,5 +1,6 @@
 // oxlint-disable max-statements, sweepit/complexity
-import { TSESTree, ESLintUtils } from "@typescript-eslint/utils"
+import { TSESTree } from "@typescript-eslint/types"
+import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
 
 /*
  * ----------------------------------------------------------------------------
@@ -42,7 +43,7 @@ import { TSESTree, ESLintUtils } from "@typescript-eslint/utils"
  * ----------------------------------------------------------------------------
  */
 
-export const preferStateClassRule = ESLintUtils.RuleCreator(
+export const preferStateClassRule = RuleCreator(
     (name) => `https://github.com/react-template/eslint-rules#${name}`,
 )<[], "multipleParameters" | "noPrivateConstructor" | "noStateParameter" | "noStaticCreateMethod" | "wrongStateParameterName">({
     create(context) {

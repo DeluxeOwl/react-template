@@ -12,6 +12,8 @@ export const defaultVendoredFiles = [
 
 // Rules relaxed for vendored code. Type-safety and return-type rules stay enabled.
 export const vendoredRules = {
+    "custom/no-margin-on-root-jsx":                              "off",
+    "custom/prefer-discriminated-union":                         "off",
     "eslint-js/no-restricted-syntax":                            "off",
     "jsx-a11y/anchor-has-content":                               "off",
     "jsx-a11y/click-events-have-key-events":                     "off",

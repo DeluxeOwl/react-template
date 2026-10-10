@@ -1,7 +1,8 @@
 
 import type { SourceCode, ReportFixFunction } from "@typescript-eslint/utils/ts-eslint"
 
-import { TSESTree, ESLintUtils } from "@typescript-eslint/utils"
+import { TSESTree } from "@typescript-eslint/types"
+import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
 
 /*
   * ----------------------------------------------------------------------------
@@ -120,7 +121,8 @@ function isComponentLike(node: FunctionNode): boolean {
 function hasContextualType(node: FunctionNode): boolean {
     const parent = node.parent
     return parent.type === TSESTree.AST_NODE_TYPES.VariableDeclarator
-        && parent.id.typeAnnotation !== undefined
+        // No annotation is `undefined` in typescript-estree and `null` in oxlint.
+        && Boolean(parent.id.typeAnnotation)
 }
 
 function isCandidate(node: FunctionNode, checkAllFunctions: boolean): boolean {
@@ -155,7 +157,7 @@ function getReportNode(node: FunctionNode): TSESTree.Node {
     return node
 }
 
-export const requireJSXReturnTypeRule = ESLintUtils.RuleCreator(
+export const requireJSXReturnTypeRule = RuleCreator(
     (name) => `https://github.com/react-template/eslint-rules#${name}`,
 )<[RuleOptions], "missingJSXReturnType">({
     create(context, [options]) {

@@ -1,4 +1,5 @@
-import { TSESTree, ESLintUtils } from "@typescript-eslint/utils"
+import { TSESTree } from "@typescript-eslint/types"
+import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
 
 /*
  * ----------------------------------------------------------------------------
@@ -39,7 +40,7 @@ function isOptionalProperty(node: TSESTree.TypeElement): boolean {
     return node.type === TSESTree.AST_NODE_TYPES.TSPropertySignature && node.optional
 }
 
-export const preferDiscriminatedUnionRule = ESLintUtils.RuleCreator(
+export const preferDiscriminatedUnionRule = RuleCreator(
     (name) => `https://github.com/react-template/eslint-rules#${name}`,
 )({
     create(context) {

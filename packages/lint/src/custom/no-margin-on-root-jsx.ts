@@ -1,7 +1,10 @@
 
 import type { RuleContext } from "@typescript-eslint/utils/ts-eslint"
 
-import { TSESTree, ESLintUtils } from "@typescript-eslint/utils"
+import { TSESTree } from "@typescript-eslint/types"
+import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
+
+import { jsxStringValue } from "../../vendor/_compat/jsx-entities.js"
 
 /*
   * ----------------------------------------------------------------------------
@@ -112,11 +115,8 @@ function extractStringsFromExpression(node: TSESTree.Expression | TSESTree.JSXEm
 
 function hasMarginClass(node: TSESTree.JSXAttribute): boolean {
     if (node.value?.type === TSESTree.AST_NODE_TYPES.Literal) {
-        const value = node.value.value
-        if (typeof value !== "string") {
-            return false
-        }
-        return MarginClassPattern.test(value)
+        // Decoded from `raw`: oxlint leaves HTML entities such as `&#109;` encoded in `value`.
+        return MarginClassPattern.test(jsxStringValue(node.value))
     }
     if (node.value?.type === TSESTree.AST_NODE_TYPES.JSXExpressionContainer) {
         const strings = extractStringsFromExpression(node.value.expression)
@@ -242,7 +242,7 @@ function analyzeJSX(node: TSESTree.JSXElement | TSESTree.JSXFragment, context: R
     }
 }
 
-export const noMarginOnRootJSXRule = ESLintUtils.RuleCreator(
+export const noMarginOnRootJSXRule = RuleCreator(
     (name) => `https://github.com/react-template/eslint-rules#${name}`,
 )({
     create(context) {

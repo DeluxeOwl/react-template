@@ -135,7 +135,6 @@ export const typescriptConfig = {
         "import/no-anonymous-default-export":                 "allow",
         "import/no-commonjs":                                 "error",
         "import/no-cycle":                                    "deny",
-        "import/no-dynamic-require":                          "error",
         "import/no-named-export":                             "off",
         "import/no-namespace":                                "allow",
         "import/no-nodejs-modules":                           "off",

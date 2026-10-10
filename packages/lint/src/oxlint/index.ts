@@ -1,8 +1,10 @@
 import type { OxlintConfig, OxlintOverride } from "oxlint"
 
 import { reactConfig } from "./react.ts"
+import { customConfig } from "./custom.ts"
 import { vitestConfig } from "./vitest.ts"
 import { unicornConfig } from "./unicorn.ts"
+import { importXConfig } from "./import-x.ts"
 import { vendoredRules } from "./vendored.ts"
 import { stylisticConfig } from "./stylistic.ts"
 import { typeAwareConfig } from "./type-aware.ts"
@@ -17,8 +19,10 @@ import { youMightNotNeedAnEffectConfig } from "./you-might-not-need-an-effect.ts
 
 export { runOxlintFix } from "./fix.ts"
 export { reactConfig } from "./react.ts"
+export { customConfig } from "./custom.ts"
 export { vitestConfig } from "./vitest.ts"
 export { unicornConfig } from "./unicorn.ts"
+export { importXConfig } from "./import-x.ts"
 export { stylisticConfig } from "./stylistic.ts"
 export { typeAwareConfig } from "./type-aware.ts"
 export { typescriptConfig } from "./typescript.ts"
@@ -83,6 +87,8 @@ export function createOxlintConfig(options?: OxlintConfigOptions): OxlintConfig 
         typescriptConfig,
         typescriptEslintConfig,
         eslintCoreConfig,
+        importXConfig,
+        customConfig,
         stylisticConfig,
         perfectionistConfig,
         typeAwareConfig,
@@ -101,6 +107,8 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
         typescriptConfig,
         typescriptEslintConfig,
         eslintCoreConfig,
+        importXConfig,
+        customConfig,
         reactConfig,
         stylisticConfig,
         perfectionistConfig,

@@ -1,8 +1,9 @@
 import type { Scope } from "@typescript-eslint/utils/ts-eslint"
 
-import {
-    ASTUtils, TSESLint, TSESTree, ESLintUtils,
-} from "@typescript-eslint/utils"
+import { TSESTree } from "@typescript-eslint/types"
+import { DefinitionType } from "@typescript-eslint/scope-manager"
+import { findVariable } from "@typescript-eslint/utils/ast-utils"
+import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
 
 /*
  * ----------------------------------------------------------------------------
@@ -165,11 +166,11 @@ function isChildrenFromProps(node: TSESTree.Node, scope: Scope.Scope): boolean {
     if (!root) {
         return false
     }
-    const variable = ASTUtils.findVariable(scope, root.name)
-    return variable?.defs.some((def) => def.type === TSESLint.Scope.DefinitionType.Parameter) ?? false
+    const variable = findVariable(scope, root.name)
+    return variable?.defs.some((def) => def.type === DefinitionType.Parameter) ?? false
 }
 
-export const noProviderWithStaticChildrenRule = ESLintUtils.RuleCreator(
+export const noProviderWithStaticChildrenRule = RuleCreator(
     (name) => `https://github.com/react-template/eslint-rules#${name}`,
 )<Options, MessageIds>({
     create(context, [options]) {

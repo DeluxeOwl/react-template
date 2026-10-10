@@ -8,7 +8,7 @@ export class CancelledError extends ErrorFactory({
 export class Context {
     signal?: AbortSignal
 
-    // eslint-disable-next-line custom/prefer-state-class
+    // oxlint-disable-next-line custom/prefer-state-class
     private constructor(params?: {
         signal?: AbortSignal
     }) {

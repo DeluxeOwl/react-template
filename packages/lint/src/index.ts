@@ -3,7 +3,6 @@
 
 import tseslint from "typescript-eslint"
 import vitest from "@vitest/eslint-plugin"
-import { importX } from "eslint-plugin-import-x"
 import importZod from "eslint-plugin-import-zod"
 import gitignore from "eslint-config-flat-gitignore"
 import unusedImports from "eslint-plugin-unused-imports"
@@ -11,9 +10,7 @@ import {
     type Config,
     defineConfig,
 } from "eslint/config"
-import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
-import customPlugin from "./custom"
 import { migratedToOxlint, baseRulesHandledByOxlint } from "./handled-by-oxlint.ts"
 
 // bun run eslint --inspect-config
@@ -71,8 +68,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
 
             plugins: {
                 "@typescript-eslint": tseslint.plugin,
-                // @ts-expect-error This is an issue with @typescript-eslint/utils.
-                "custom":             customPlugin,
                 "unused-imports":     unusedImports,
             },
 
@@ -106,13 +101,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
                 "@typescript-eslint/prefer-readonly-parameter-types":        "off",
                 "@typescript-eslint/prefer-string-starts-ends-with":         "error",
                 "@typescript-eslint/unified-signatures":                     "error",
-                // Interesting but it's a bit of a pain.
-                "custom/enforce-namespace-import":                           ["off", { packages: ["@react-template/core", "@react-template/core/cqrs", "~/cqrs"] }],
-                "custom/no-margin-on-root-jsx":                              "error",
-                "custom/no-provider-with-static-children":                   "error",
-                "custom/prefer-discriminated-union":                         "warn",
-                "custom/prefer-state-class":                                 "error",
-                "custom/require-jsx-return-type":                            "error",
                 // 0 and 1 are common enough during ifs, arrays etc.
                 "no-magic-numbers":                                          ["off"],
                 "no-restricted-imports":                                     "off",
@@ -125,24 +113,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
                         vars:              "all",
                         varsIgnorePattern: "^_",
                     },
-                ],
-            },
-        },
-        {
-            extends: ["import-x/flat/recommended"],
-            plugins: {
-                "import-x": importX,
-            },
-            rules: {
-                "import-x/no-dynamic-require": "warn",
-            },
-            settings: {
-                "import-x/resolver-next": [
-                    createTypeScriptImportResolver({
-                        alwaysTryTypes: true,
-                        bun:            true,
-                        project:        [rootDir],
-                    }),
                 ],
             },
         },
