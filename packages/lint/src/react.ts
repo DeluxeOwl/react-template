@@ -2,7 +2,6 @@
 // @ts-check
 import globals from "globals"
 import sweepit from "eslint-plugin-sweepit"
-import reactHooks from "eslint-plugin-react-hooks"
 import eslintReact from "@eslint-react/eslint-plugin"
 import pluginQuery from "@tanstack/eslint-plugin-query"
 import reactRenderTypes from "eslint-plugin-react-render-types"
@@ -52,8 +51,6 @@ function createVendoredConfig(files: string[]): Config {
             "@eslint-react/set-state-in-effect":              "off",
             "@eslint-react/use-state":                        "off",
             "better-tailwindcss/no-unknown-classes":          "off",
-            "react-hooks/set-state-in-effect":                "off",
-            "react-hooks/todo":                               "off",
             "sweepit/jsx-on-handler-verb-suffix":             "off",
             "sweepit/no-array-props":                         "off",
             "sweepit/no-object-props":                        "off",
@@ -81,7 +78,6 @@ export default function createReactConfig(rootDir: string, options?: ReactConfig
         },
         {
             extends: [
-                reactHooks.configs.flat.recommended,
                 eslintReact.configs["recommended-typescript"],
                 pluginQuery.configs["flat/recommended"],
                 // @ts-expect-error Weird types.
@@ -112,7 +108,6 @@ export default function createReactConfig(rootDir: string, options?: ReactConfig
 
             rules: {
                 "@eslint-react/no-leaked-conditional-rendering": ["error"],
-                "react-hooks/todo":                              "error",
                 "sweepit/jsx-compound-part-export-naming":       "off",
                 // Accept verb-first callbacks such as `onCreateAppointment`.
                 "sweepit/jsx-on-handler-verb-suffix":            "off",

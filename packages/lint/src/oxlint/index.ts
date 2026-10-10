@@ -11,6 +11,7 @@ import { importZodConfig } from "./import-zod.ts"
 import { typeAwareConfig } from "./type-aware.ts"
 import { typescriptConfig } from "./typescript.ts"
 import { eslintCoreConfig } from "./eslint-core.ts"
+import { reactHooksConfig } from "./react-hooks.ts"
 import { reactRefreshConfig } from "./react-refresh.ts"
 import { perfectionistConfig } from "./perfectionist.ts"
 import { tanstackQueryConfig } from "./tanstack-query.ts"
@@ -31,6 +32,7 @@ export { importZodConfig } from "./import-zod.ts"
 export { typeAwareConfig } from "./type-aware.ts"
 export { typescriptConfig } from "./typescript.ts"
 export { eslintCoreConfig } from "./eslint-core.ts"
+export { reactHooksConfig } from "./react-hooks.ts"
 export { reactRefreshConfig } from "./react-refresh.ts"
 export { perfectionistConfig } from "./perfectionist.ts"
 export { tanstackQueryConfig } from "./tanstack-query.ts"
@@ -131,6 +133,7 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
         youMightNotNeedAnEffectConfig,
         reactRefreshConfig,
         reactRenderTypesConfig,
+        reactHooksConfig,
         { ignorePatterns: options?.ignorePatterns ?? [], overrides: vendored },
     )
 }

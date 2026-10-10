@@ -23,6 +23,8 @@ export const vendoredRules = {
     "no-nested-ternary":                                         "off",
     "no-underscore-dangle":                                      "off",
     "no-unused-expressions":                                     "off",
+    "react-hooks-js/set-state-in-effect":                        "off",
+    "react-hooks-js/todo":                                       "off",
     "react-you-might-not-need-an-effect/no-event-handler":       "off",
     "react-you-might-not-need-an-effect/no-initialize-state":    "off",
     "react-you-might-not-need-an-effect/no-pass-data-to-parent": "off",

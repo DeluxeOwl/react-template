@@ -194,7 +194,7 @@ export const reactRulesHandledByOxlint: string[] = [
 // (scratch/oxlint-migration.md §8): same diagnostics and byte-identical --fix output. Kept apart
 // from the frozen bridge output above. Plugins whose rules all moved leave the ESLint presets
 // instead (@stylistic, perfectionist, unicorn, react-you-might-not-need-an-effect, react-refresh,
-// import-x, unused-imports, import-zod, and our own custom rules).
+// import-x, unused-imports, import-zod, react-hooks, and our own custom rules).
 export const migratedRulesHandledByOxlint: string[] = [
     "@tanstack/query/exhaustive-deps",
     "@tanstack/query/infinite-query-property-order",
