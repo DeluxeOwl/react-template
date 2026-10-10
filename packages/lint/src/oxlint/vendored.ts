@@ -12,6 +12,12 @@ export const defaultVendoredFiles = [
 
 // Rules relaxed for vendored code. Type-safety and return-type rules stay enabled.
 export const vendoredRules = {
+    "@eslint-react/dom-no-dangerously-set-innerhtml":            "off",
+    "@eslint-react/no-array-index-key":                          "off",
+    "@eslint-react/no-context-provider":                         "off",
+    "@eslint-react/no-nested-component-definitions":             "off",
+    "@eslint-react/set-state-in-effect":                         "off",
+    "@eslint-react/use-state":                                   "off",
     "custom/no-margin-on-root-jsx":                              "off",
     "custom/prefer-discriminated-union":                         "off",
     "eslint-js/no-restricted-syntax":                            "off",

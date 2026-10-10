@@ -42,11 +42,6 @@
                 "ctx/*.ts",
                 "test-helpers/*.ts"
             ]
-        },
-        "packages/lint": {
-            "ignoreDependencies": [
-                "@eslint-community/eslint-utils"
-            ]
         }
     }
 }

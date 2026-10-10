@@ -44,16 +44,10 @@ function createVendoredConfig(files: string[]): Config {
     return {
         files,
         rules: {
-            "@eslint-react/dom-no-dangerously-set-innerhtml": "off",
-            "@eslint-react/no-array-index-key":               "off",
-            "@eslint-react/no-context-provider":              "off",
-            "@eslint-react/no-nested-component-definitions":  "off",
-            "@eslint-react/set-state-in-effect":              "off",
-            "@eslint-react/use-state":                        "off",
-            "better-tailwindcss/no-unknown-classes":          "off",
-            "sweepit/jsx-on-handler-verb-suffix":             "off",
-            "sweepit/no-array-props":                         "off",
-            "sweepit/no-object-props":                        "off",
+            "better-tailwindcss/no-unknown-classes": "off",
+            "sweepit/jsx-on-handler-verb-suffix":    "off",
+            "sweepit/no-array-props":                "off",
+            "sweepit/no-object-props":               "off",
         },
     }
 }
