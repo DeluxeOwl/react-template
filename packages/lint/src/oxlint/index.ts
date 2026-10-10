@@ -7,8 +7,10 @@ import { stylisticConfig } from "./stylistic.ts"
 import { typeAwareConfig } from "./type-aware.ts"
 import { typescriptConfig } from "./typescript.ts"
 import { perfectionistConfig } from "./perfectionist.ts"
+import { tanstackQueryConfig } from "./tanstack-query.ts"
 import { typescriptEslintConfig } from "./typescript-eslint.ts"
 import { sweepitConfig, sweepitReactConfig } from "./sweepit.ts"
+import { youMightNotNeedAnEffectConfig } from "./you-might-not-need-an-effect.ts"
 
 export { runOxlintFix } from "./fix.ts"
 export { reactConfig } from "./react.ts"
@@ -17,9 +19,11 @@ export { stylisticConfig } from "./stylistic.ts"
 export { typeAwareConfig } from "./type-aware.ts"
 export { typescriptConfig } from "./typescript.ts"
 export { perfectionistConfig } from "./perfectionist.ts"
+export { tanstackQueryConfig } from "./tanstack-query.ts"
 export { typescriptEslintConfig } from "./typescript-eslint.ts"
 export { sweepitConfig, sweepitReactConfig } from "./sweepit.ts"
 export { defaultVendoredFiles, vendoredRules } from "./vendored.ts"
+export { youMightNotNeedAnEffectConfig } from "./you-might-not-need-an-effect.ts"
 
 export interface OxlintConfigOptions {
     // Gitignore-style patterns appended to the preset's `ignorePatterns` (relative to the config file).
@@ -95,6 +99,8 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
         sweepitConfig,
         sweepitReactConfig,
         unicornConfig,
+        tanstackQueryConfig,
+        youMightNotNeedAnEffectConfig,
         { ignorePatterns: options?.ignorePatterns ?? [], overrides: vendored },
     )
 }

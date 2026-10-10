@@ -193,8 +193,14 @@ export const reactRulesHandledByOxlint: string[] = [
 // Rules moved from ESLint to oxlint by the migration, each one with parity proven by the harness
 // (scratch/oxlint-migration.md §8): same diagnostics and byte-identical --fix output. Kept apart
 // from the frozen bridge output above. Plugins whose rules all moved leave the ESLint presets
-// instead (@stylistic, perfectionist).
+// instead (@stylistic, perfectionist, unicorn, react-you-might-not-need-an-effect).
 export const migratedRulesHandledByOxlint: string[] = [
+    "@tanstack/query/exhaustive-deps",
+    "@tanstack/query/infinite-query-property-order",
+    "@tanstack/query/mutation-property-order",
+    "@tanstack/query/no-rest-destructuring",
+    "@tanstack/query/no-unstable-deps",
+    "@tanstack/query/stable-query-client",
     "@typescript-eslint/array-type",
     "@typescript-eslint/ban-ts-comment",
     "@typescript-eslint/consistent-generic-constructors",

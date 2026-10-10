@@ -11,7 +11,6 @@ import {
     type Config,
     defineConfig,
 } from "eslint/config"
-import youMightNotNeedAnEffect from "eslint-plugin-react-you-might-not-need-an-effect"
 
 import createConfig, { type ConfigOptions } from "./index"
 import {
@@ -46,24 +45,21 @@ function createVendoredConfig(files: string[]): Config {
     return {
         files,
         rules: {
-            "@eslint-react/dom-no-dangerously-set-innerhtml":            "off",
-            "@eslint-react/no-array-index-key":                          "off",
-            "@eslint-react/no-context-provider":                         "off",
-            "@eslint-react/no-nested-component-definitions":             "off",
-            "@eslint-react/set-state-in-effect":                         "off",
-            "@eslint-react/use-state":                                   "off",
-            "better-tailwindcss/no-unknown-classes":                     "off",
-            "custom/no-margin-on-root-jsx":                              "off",
-            "custom/prefer-discriminated-union":                         "off",
-            "no-restricted-syntax":                                      "off",
-            "react-hooks/set-state-in-effect":                           "off",
-            "react-hooks/todo":                                          "off",
-            "react-you-might-not-need-an-effect/no-event-handler":       "off",
-            "react-you-might-not-need-an-effect/no-initialize-state":    "off",
-            "react-you-might-not-need-an-effect/no-pass-data-to-parent": "off",
-            "sweepit/jsx-on-handler-verb-suffix":                        "off",
-            "sweepit/no-array-props":                                    "off",
-            "sweepit/no-object-props":                                   "off",
+            "@eslint-react/dom-no-dangerously-set-innerhtml": "off",
+            "@eslint-react/no-array-index-key":               "off",
+            "@eslint-react/no-context-provider":              "off",
+            "@eslint-react/no-nested-component-definitions":  "off",
+            "@eslint-react/set-state-in-effect":              "off",
+            "@eslint-react/use-state":                        "off",
+            "better-tailwindcss/no-unknown-classes":          "off",
+            "custom/no-margin-on-root-jsx":                   "off",
+            "custom/prefer-discriminated-union":              "off",
+            "no-restricted-syntax":                           "off",
+            "react-hooks/set-state-in-effect":                "off",
+            "react-hooks/todo":                               "off",
+            "sweepit/jsx-on-handler-verb-suffix":             "off",
+            "sweepit/no-array-props":                         "off",
+            "sweepit/no-object-props":                        "off",
         },
     }
 }
@@ -91,7 +87,6 @@ export default function createReactConfig(rootDir: string, options?: ReactConfig
                 eslintReactRefresh.configs.recommended,
                 reactHooks.configs.flat.recommended,
                 eslintReact.configs["recommended-typescript"],
-                youMightNotNeedAnEffect.configs.recommended,
                 pluginQuery.configs["flat/recommended"],
                 // @ts-expect-error Weird types.
                 reactRenderTypes.configs.recommended,
