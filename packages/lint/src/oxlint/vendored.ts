@@ -25,6 +25,10 @@ export const vendoredRules = {
     "react/jsx-props-no-spreading":            "off",
     "react/no-array-index-key":                "off",
     "react/no-danger":                         "off",
+    "sweepit/complexity":                      "off",
+    "sweepit/jsx-bem-compound-naming":         "off",
+    "sweepit/no-boolean-capability-props":     "off",
+    "sweepit/no-prop-drilling":                "off",
     "unicorn/explicit-length-check":           "off",
     "unicorn/no-document-cookie":              "off",
 } satisfies DummyRuleMap

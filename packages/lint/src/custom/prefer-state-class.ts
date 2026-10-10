@@ -1,5 +1,4 @@
-// oxlint-disable max-statements
-/* eslint-disable sweepit/complexity */
+// oxlint-disable max-statements, sweepit/complexity
 import { TSESTree, ESLintUtils } from "@typescript-eslint/utils"
 
 /*

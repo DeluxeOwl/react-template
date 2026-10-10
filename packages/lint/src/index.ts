@@ -3,7 +3,6 @@
 
 import tseslint from "typescript-eslint"
 import vitest from "@vitest/eslint-plugin"
-import sweepit from "eslint-plugin-sweepit"
 import { importX } from "eslint-plugin-import-x"
 import importZod from "eslint-plugin-import-zod"
 import gitignore from "eslint-config-flat-gitignore"
@@ -77,7 +76,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
                 "@typescript-eslint": tseslint.plugin,
                 // @ts-expect-error This is an issue with @typescript-eslint/utils.
                 "custom":             customPlugin,
-                sweepit,
                 "unicorn":            eslintPluginUnicorn,
                 "unused-imports":     unusedImports,
             },
@@ -366,18 +364,11 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
                         type: "line-length",
                     },
                 ],
-                "sweepit/complexity": [
-                    "error", {
-                        max:     10,
-                        variant: "modified",
-                    },
-                ],
-                "sweepit/no-return-object-repetition": "error",
-                "unicorn/better-regex":                "error",
-                "unicorn/consistent-destructuring":    "error",
-                "unicorn/expiring-todo-comments":      "off",
+                "unicorn/better-regex":             "error",
+                "unicorn/consistent-destructuring": "error",
+                "unicorn/expiring-todo-comments":   "off",
                 // This rule isn't supported in oxlint.
-                "unicorn/import-style":                [
+                "unicorn/import-style":             [
                     "error",
                     {
                         styles: {

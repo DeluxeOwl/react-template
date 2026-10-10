@@ -197,6 +197,26 @@ export const reactRulesHandledByOxlint: string[] = [
 export const migratedRulesHandledByOxlint: string[] = [
     "@typescript-eslint/consistent-type-imports",
     "@typescript-eslint/no-unnecessary-type-assertion",
+    "sweepit/complexity",
+    "sweepit/jsx-bem-compound-naming",
+    "sweepit/jsx-flat-owner-tree",
+    "sweepit/jsx-server-action-prop-suffix",
+    "sweepit/max-custom-props",
+    "sweepit/no-boolean-capability-props",
+    "sweepit/no-componenttype-props",
+    "sweepit/no-custom-kebab-case-props",
+    "sweepit/no-element-props",
+    "sweepit/no-exported-context-hooks",
+    "sweepit/no-handle-prefix-utils",
+    "sweepit/no-handler-return-type",
+    "sweepit/no-hook-jsx",
+    "sweepit/no-optional-props-without-defaults",
+    "sweepit/no-prefixed-prop-bundles",
+    "sweepit/no-prop-drilling",
+    "sweepit/no-render-helper-functions",
+    "sweepit/no-return-object-repetition",
+    "sweepit/no-set-prefix-utils",
+    "sweepit/no-title-case-props",
 ]
 
 /**

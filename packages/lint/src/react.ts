@@ -61,13 +61,9 @@ function createVendoredConfig(files: string[]): Config {
             "react-you-might-not-need-an-effect/no-event-handler":       "off",
             "react-you-might-not-need-an-effect/no-initialize-state":    "off",
             "react-you-might-not-need-an-effect/no-pass-data-to-parent": "off",
-            "sweepit/complexity":                                        "off",
-            "sweepit/jsx-bem-compound-naming":                           "off",
             "sweepit/jsx-on-handler-verb-suffix":                        "off",
             "sweepit/no-array-props":                                    "off",
-            "sweepit/no-boolean-capability-props":                       "off",
             "sweepit/no-object-props":                                   "off",
-            "sweepit/no-prop-drilling":                                  "off",
         },
     }
 }
@@ -114,51 +110,18 @@ export default function createReactConfig(rootDir: string, options?: ReactConfig
             rules: {
                 "@eslint-react/no-leaked-conditional-rendering": ["error"],
                 "react-hooks/todo":                              "error",
-                "sweepit/jsx-bem-compound-naming":               "error",
                 "sweepit/jsx-compound-part-export-naming":       "off",
-                "sweepit/jsx-flat-owner-tree":                   "error",
                 // Accept verb-first callbacks such as `onCreateAppointment`.
                 "sweepit/jsx-on-handler-verb-suffix":            "off",
-                "sweepit/jsx-server-action-prop-suffix":         "error",
-                "sweepit/max-custom-props":                      "error",
+                // The other enabled sweepit rules run in oxlint (./oxlint/sweepit.ts). These two stay
+                // here: they use the type checker, which oxlint JS plugins don't get.
                 "sweepit/no-array-props":                        "error",
-                "sweepit/no-boolean-capability-props":           [
-                    "error",
-                    {
-                        ignore:                   ["asChild"],
-                        ignoreNativeBooleanProps: true,
-                    },
-                ],
-                "sweepit/no-componenttype-props":     "error",
-                "sweepit/no-custom-kebab-case-props": "error",
-                "sweepit/no-element-props":           "error",
-                "sweepit/no-exported-context-hooks":  "error",
-                "sweepit/no-handle-prefix-utils":     "error",
-                "sweepit/no-handler-return-type":     "error",
-                "sweepit/no-hook-jsx":                "error",
-                "sweepit/no-object-props":            [
+                "sweepit/no-object-props":                       [
                     "error",
                     {
                         ignore: ["ref"],
                     },
                 ],
-                "sweepit/no-optional-props-without-defaults": [
-                    "error",
-                    {
-                        ignore: ["on*", "ref", "render"],
-                    },
-                ],
-                "sweepit/no-prefixed-prop-bundles": "error",
-                "sweepit/no-prop-drilling":         [
-                    "error",
-                    {
-                        allowedDepth:      1,
-                        ignorePropsSpread: true,
-                    },
-                ],
-                "sweepit/no-render-helper-functions":                  "error",
-                "sweepit/no-set-prefix-utils":                         "error",
-                "sweepit/no-title-case-props":                         "error",
                 // View-model hooks can wrap pure logic or call React 19 `use`.
                 "sweepit/no-useless-hook":                             "off",
                 ...betterTailwindcss.configs["stylistic-warn"].rules,
