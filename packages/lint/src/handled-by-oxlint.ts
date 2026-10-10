@@ -193,7 +193,7 @@ export const reactRulesHandledByOxlint: string[] = [
 // Rules moved from ESLint to oxlint by the migration, each one with parity proven by the harness
 // (scratch/oxlint-migration.md §8): same diagnostics and byte-identical --fix output. Kept apart
 // from the frozen bridge output above. Plugins whose rules all moved leave the ESLint presets
-// instead (@stylistic).
+// instead (@stylistic, perfectionist).
 export const migratedRulesHandledByOxlint: string[] = [
     "@typescript-eslint/consistent-type-imports",
     "@typescript-eslint/no-unnecessary-type-assertion",

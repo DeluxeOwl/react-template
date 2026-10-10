@@ -12,7 +12,6 @@ import {
     type Config,
     defineConfig,
 } from "eslint/config"
-import { configs as perfectionistConfigs } from "eslint-plugin-perfectionist"
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
 import customPlugin from "./custom"
@@ -52,7 +51,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
         {
             extends: [
                 tseslint.configs.recommendedTypeChecked,
-                perfectionistConfigs["recommended-natural"],
                 importZod.configs.recommended,
                 // NOTE: Needs to be last
                 {
@@ -259,111 +257,8 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
                         selector: "BinaryExpression[operator='instanceof'][right.name='Error']",
                     },
                 ],
-                "no-throw-literal":                  "error",
-                "no-var":                            "error",
-                "perfectionist/sort-array-includes": [
-                    "error",
-                    {
-                        fallbackSort: {
-                            order: "asc",
-                            type:  "alphabetical",
-                        },
-                        type: "line-length",
-                    },
-                ],
-                "perfectionist/sort-classes": [
-                    "error",
-                    {
-                        groups: [
-                            "property", // Variable declarations first
-                            "constructor", // Followed by constructor
-                            "static-method", // Followed by static methods
-                            "unknown", // Everything else (no specific order enforced relative to predefined groups)
-                        ],
-                        order: "asc",
-                        type:  "alphabetical",
-                    },
-                ],
-                "perfectionist/sort-exports": [
-                    "error",
-                    {
-                        fallbackSort: {
-                            order: "asc",
-                            type:  "alphabetical",
-                        },
-                        type: "line-length",
-                    },
-                ],
-                "perfectionist/sort-heritage-clauses": [
-                    "error",
-                    {
-                        fallbackSort: {
-                            order: "asc",
-                            type:  "alphabetical",
-                        },
-                        type: "line-length",
-                    },
-                ],
-                "perfectionist/sort-imports": [
-                    "error",
-                    {
-                        fallbackSort: {
-                            order: "asc",
-                            type:  "alphabetical",
-                        },
-                        type: "line-length",
-                    },
-                ],
-                "perfectionist/sort-interfaces": [
-                    "error",
-                    {
-                        fallbackSort: {
-                            order: "asc",
-                            type:  "alphabetical",
-                        },
-                        type: "line-length",
-                    },
-                ],
-                "perfectionist/sort-maps": [
-                    "error",
-                    {
-                        fallbackSort: {
-                            order: "asc",
-                            type:  "alphabetical",
-                        },
-                        type: "line-length",
-                    },
-                ],
-                "perfectionist/sort-modules": [
-                    "off",
-                    {
-                        fallbackSort: {
-                            order: "asc",
-                            type:  "alphabetical",
-                        },
-                        type: "line-length",
-                    },
-                ],
-                "perfectionist/sort-named-imports": [
-                    "error",
-                    {
-                        fallbackSort: {
-                            order: "asc",
-                            type:  "alphabetical",
-                        },
-                        type: "line-length",
-                    },
-                ],
-                "perfectionist/sort-sets": [
-                    "error",
-                    {
-                        fallbackSort: {
-                            order: "asc",
-                            type:  "alphabetical",
-                        },
-                        type: "line-length",
-                    },
-                ],
+                "no-throw-literal":                 "error",
+                "no-var":                           "error",
                 "unicorn/better-regex":             "error",
                 "unicorn/consistent-destructuring": "error",
                 "unicorn/expiring-todo-comments":   "off",

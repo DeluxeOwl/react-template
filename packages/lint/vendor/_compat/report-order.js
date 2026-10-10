@@ -1,4 +1,5 @@
 // Makes oxlint pick the same fix as ESLint when two reports want to fix the same range.
+// Also gives the file's tokens typescript-estree's types before the first rule runs (tokens.js).
 //
 // ESLint sorts a file's problems by (line, column) — ties in report order, which is the order of
 // the rules in the config — then applies fixes sorted by range with a stable sort, skipping any fix
@@ -10,7 +11,16 @@
 //
 // deferReports() wraps rules so their reports are queued and emitted at the end of the file sorted
 // like ESLint's problems, and drops the fix from any report whose fix range was already taken by an
-// earlier report — the fix ESLint could never apply in this pass. The diagnostic is still reported.
+// earlier report with a different fix — the fix ESLint could never apply in this pass. The
+// diagnostic is still reported. Identical fixes on the same range are kept: whichever oxlint
+// applies, the result is the same.
+//
+// Disable directives are applied here too, with ESLint's semantics (apply-disable-directives.js),
+// and suppressed reports are dropped before oxlint sees them: ESLint resolves fix conflicts after
+// suppression (a perfectionist group fix is carried by every report of the group, and the first one
+// may sit in a disabled region), and oxlint 1.86 does not suppress a report that starts at the end
+// of a line with eslint-disable-(next-)line (F-030). oxlint still applies its own directive pass
+// afterwards, so where it suppresses more than ESLint (F-028) the difference remains.
 // Fixes are computed when the rule reports (against the same source text, as ESLint does) and merged
 // into one fix the way ESLint merges a fix array (file-report.js mergeFixes).
 //
@@ -21,6 +31,8 @@
 // flushed by the last wrapped rule's Program:exit for the file. If a rule throws, oxlint abandons
 // the file and the remaining Program:exit handlers never run; the next file is detected when a rule
 // is created a second time, and the abandoned state is dropped.
+
+import { retypeTokens } from "./tokens.js"
 
 let queue = []
 let created = new Set()
@@ -129,17 +141,75 @@ function enqueue(context, descriptor) {
     })
 }
 
+function ruleList(directive) {
+    return directive.value.split(",").map((id) => id.trim()).filter((id) => id !== "")
+}
+
+function byLocation(a, b) {
+    return a.line - b.line || a.column - b.column
+}
+
+// ESLint's directive points (linter.js createDisableDirectives + apply-disable-directives.js):
+// block comments disable/enable from (line, column + 1); disable-line covers the comment's line,
+// disable-next-line the line after the comment ends. Line comments are only directives in their
+// -line/-next-line forms. Columns are 1-based like ESLint problems.
+function directivePoints(directives) {
+    const block = []
+    const lines = []
+    for (const directive of directives) {
+        const loc = directive.node.loc
+        const ids = ruleList(directive)
+        for (const id of ids.length === 0 ? [null] : ids) {
+            if (directive.type === "disable" || directive.type === "enable") {
+                if (directive.node.type !== "Line") {
+                    block.push({ column: loc.start.column + 1, id, line: loc.start.line, type: directive.type })
+                }
+            } else if (directive.type === "disable-next-line" || loc.start.line === loc.end.line) {
+                const line = directive.type === "disable-line" ? loc.start.line : loc.end.line + 1
+                lines.push({ column: 1, id, line, type: "disable" }, { column: 0, id, line: line + 1, type: "enable" })
+            }
+        }
+    }
+
+    return [block.sort(byLocation), lines.sort(byLocation)]
+}
+
+// ESLint applyDirectives: at the problem's position, the last directive point for its rule (or for
+// all rules) decides; block and line directives are applied one after the other.
+function isSuppressed(points, ruleId, line, column) {
+    const problem = { column: column + 1, line }
+
+    return points.some((list) => {
+        let disabled = false
+        for (const point of list) {
+            if (byLocation(point, problem) > 0) {
+                break
+            }
+            if (point.id === null || point.id === ruleId) {
+                disabled = point.type === "disable"
+            }
+        }
+
+        return disabled
+    })
+}
+
 function flush() {
     const pending = queue.sort((a, b) => a.line - b.line || a.column - b.column || a.sequence - b.sequence)
-    const taken = new Set()
+    const points = directivePoints(pending.length === 0 ? [] : pending[0].context.sourceCode.getDisableDirectives?.().directives ?? [])
+    const taken = new Map()
     for (const item of pending) {
+        if (isSuppressed(points, item.context.id, item.line, item.column)) {
+            continue
+        }
         const fix = item.descriptor.fix?.()
         if (fix !== undefined) {
             const span = `${fix.range[0]}:${fix.range[1]}`
-            if (taken.has(span)) {
+            if (!taken.has(span)) {
+                taken.set(span, fix.text)
+            } else if (taken.get(span) !== fix.text) {
                 item.descriptor = { ...item.descriptor, fix: undefined }
             }
-            taken.add(span)
         }
         item.context.report(item.descriptor)
     }
@@ -166,6 +236,7 @@ function wrapRule(rule) {
                 reset()
             }
             created.add(token)
+            retypeTokens(context.sourceCode)
             const listeners = rule.create(wrapContext(context)) ?? {}
             open++
             const exit = listeners["Program:exit"]
