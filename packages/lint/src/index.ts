@@ -6,7 +6,6 @@ import vitest from "@vitest/eslint-plugin"
 import { importX } from "eslint-plugin-import-x"
 import importZod from "eslint-plugin-import-zod"
 import gitignore from "eslint-config-flat-gitignore"
-import eslintPluginUnicorn from "eslint-plugin-unicorn"
 import unusedImports from "eslint-plugin-unused-imports"
 import {
     type Config,
@@ -74,7 +73,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
                 "@typescript-eslint": tseslint.plugin,
                 // @ts-expect-error This is an issue with @typescript-eslint/utils.
                 "custom":             customPlugin,
-                "unicorn":            eslintPluginUnicorn,
                 "unused-imports":     unusedImports,
             },
 
@@ -188,21 +186,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
                 ],
                 "no-throw-literal":                 "error",
                 "no-var":                           "error",
-                "unicorn/better-regex":             "error",
-                "unicorn/consistent-destructuring": "error",
-                "unicorn/expiring-todo-comments":   "off",
-                // This rule isn't supported in oxlint.
-                "unicorn/import-style":             [
-                    "error",
-                    {
-                        styles: {
-                            "@react-template/core": {
-                                named:     false,
-                                namespace: true,
-                            },
-                        },
-                    },
-                ],
                 "unused-imports/no-unused-imports": "error",
                 "unused-imports/no-unused-vars":    [
                     "warn",

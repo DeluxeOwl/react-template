@@ -1,6 +1,7 @@
 import type { OxlintConfig, OxlintOverride } from "oxlint"
 
 import { reactConfig } from "./react.ts"
+import { unicornConfig } from "./unicorn.ts"
 import { vendoredRules } from "./vendored.ts"
 import { stylisticConfig } from "./stylistic.ts"
 import { typeAwareConfig } from "./type-aware.ts"
@@ -11,6 +12,7 @@ import { sweepitConfig, sweepitReactConfig } from "./sweepit.ts"
 
 export { runOxlintFix } from "./fix.ts"
 export { reactConfig } from "./react.ts"
+export { unicornConfig } from "./unicorn.ts"
 export { stylisticConfig } from "./stylistic.ts"
 export { typeAwareConfig } from "./type-aware.ts"
 export { typescriptConfig } from "./typescript.ts"
@@ -74,6 +76,7 @@ export function createOxlintConfig(options?: OxlintConfigOptions): OxlintConfig 
         perfectionistConfig,
         typeAwareConfig,
         sweepitConfig,
+        unicornConfig,
         { ignorePatterns: options?.ignorePatterns ?? [] },
     )
 }
@@ -91,6 +94,7 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
         typeAwareConfig,
         sweepitConfig,
         sweepitReactConfig,
+        unicornConfig,
         { ignorePatterns: options?.ignorePatterns ?? [], overrides: vendored },
     )
 }

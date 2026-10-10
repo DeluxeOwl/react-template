@@ -44,7 +44,7 @@ async function lintRestrictions(options?: ReactConfigOptions): Promise<Linter.Li
 describe("shared lint configuration", () => {
     describe("given view-model hooks and verb-first callbacks", () => {
         describe("when applying the shared defaults", () => {
-            it("then it does not require stateful hooks, verb-last callbacks, or expiring TODO comments", async () => {
+            it("then it does not require stateful hooks or verb-last callbacks", async () => {
                 expect.hasAssertions()
 
                 // GIVEN / WHEN
@@ -53,7 +53,6 @@ describe("shared lint configuration", () => {
                 // THEN
                 expect(severity(config, "sweepit/no-useless-hook")).toBe(0)
                 expect(severity(config, "sweepit/jsx-on-handler-verb-suffix")).toBe(0)
-                expect(severity(config, "unicorn/expiring-todo-comments")).toBe(0)
             })
         })
     })
