@@ -45,6 +45,7 @@ var eslintDisableDirectives = [
  *   a disable comment.
  */
 function getEslintDisabledRules(comment) {
+  comment = comment.replace(/^(\s*)oxlint-/u, '$1eslint-')
   for (let eslintDisableDirective of eslintDisableDirectives) {
     let disabledRules = getEslintDisabledRulesByType(
       comment,

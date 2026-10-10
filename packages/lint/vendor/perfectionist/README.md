@@ -9,6 +9,7 @@ External runtime dependencies: `@eslint-community/eslint-utils` (upstream range 
 
 ## Local patches
 
+- `utils/get-eslint-disabled-rules.js`: oxlint honours `oxlint-disable…` comments like `eslint-disable…` ones, and the repo spells directives for rules that moved to oxlint that way. Read them as the directives they are: otherwise, e.g., sorting imports moves a file-top `/* oxlint-disable … */` along with the first import, where the `eslint-disable` spelling stayed put
 - `rules/sort-variable-declarations.js`: Import the identical helper/constant directly; @typescript-eslint/utils root also eagerly loads ESLint classes (not used by these rules)
 - `utils/create-eslint-rule.js`: Import the identical helper/constant directly; @typescript-eslint/utils root also eagerly loads ESLint classes (not used by these rules)
 - `rules/sort-variable-declarations/compute-dependencies.js`: Import the identical helper/constant directly; @typescript-eslint/utils root also eagerly loads ESLint classes (not used by these rules)
