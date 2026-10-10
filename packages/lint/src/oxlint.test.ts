@@ -77,7 +77,7 @@ describe("shared oxlint React presets", () => {
 
                 // GIVEN
                 const dir = fixture("createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })")
-                const component = "export function Card() {\n    return <div dangerouslySetInnerHTML={{ __html: \"trusted\" }} />\n}\n"
+                const component = "export function Card(): React.ReactNode {\n    return <div dangerouslySetInnerHTML={{ __html: \"trusted\" }} />\n}\n"
 
                 // WHEN
                 const vendored = lint(dir, { "src/components/ui/card.tsx": component })
@@ -87,6 +87,44 @@ describe("shared oxlint React presets", () => {
                 expect(vendored.status).toBe(0)
                 expect(feature.status).toBe(1)
                 expect(feature.output).toContain("no-danger")
+            })
+
+            it("then it still requires return types in vendored code", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const dir = fixture("createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })")
+
+                // WHEN
+                const vendored = lint(dir, { "src/components/ui/card.tsx": "export function Card() {\n    return <div />\n}\n" })
+
+                // THEN
+                expect(vendored.status).toBe(1)
+                expect(vendored.output).toContain("explicit-function-return-type")
+            })
+        })
+    })
+
+    describe("given prefix- and suffix-named CQRS handlers", () => {
+        describe("when applying the base preset", () => {
+            it("then it infers handler errors without relaxing other exported functions", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const dir = fixture("createOxlintConfig()")
+                const handler = "export function handle() {\n    return 1\n}\n"
+
+                // WHEN
+                const handlers = lint(dir, {
+                    "src/todos/command-create-todo.ts": handler,
+                    "src/todos/create-todo.command.ts": handler,
+                    "src/todos/list-todos.query.ts":    handler,
+                })
+                const source = lint(dir, { "src/todos/create-todo.ts": handler })
+
+                // THEN
+                expect(handlers.output).not.toContain("explicit-function-return-type")
+                expect(source.output).toContain("explicit-function-return-type")
             })
         })
     })

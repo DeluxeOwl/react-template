@@ -211,7 +211,7 @@ export const noProviderWithStaticChildrenRule = ESLintUtils.RuleCreator(
                     candidates.push({ fn: enclosing, node })
                 }
             },
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+            // oxlint-disable-next-line typescript-eslint-js/naming-convention
             "Program:exit": () => {
                 for (const { fn, node } of candidates) {
                     if (requireStateHook && !statefulFunctions.has(fn)) {

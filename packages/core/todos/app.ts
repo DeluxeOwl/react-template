@@ -7,7 +7,7 @@ import { ListTodosHandler } from "./query-list-todos"
 import { CreateTodoHandler } from "./command-create-todo"
 import { ToggleTodoHandler } from "./command-toggle-todo"
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// oxlint-disable-next-line typescript-eslint-js/explicit-function-return-type
 export function createTodoApp(params: {
     todoRepository: TodoRepository
 }) {

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* oxlint-disable typescript-eslint-js/explicit-function-return-type */
 import type { Client, ResultSet } from "@libsql/client"
 import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core"
 

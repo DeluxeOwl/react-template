@@ -79,90 +79,20 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
             },
 
             rules: {
-                "@typescript-eslint/array-type":                      "error",
-                "@typescript-eslint/consistent-generic-constructors": "error",
-                "@typescript-eslint/consistent-indexed-object-style": "error",
-                "@typescript-eslint/consistent-type-definitions":     ["error", "interface"],
-                "@typescript-eslint/consistent-type-exports":         "error",
-                "@typescript-eslint/explicit-function-return-type":   [
-                    "error", {
-                        allowExpressions: true,
-                        allowIIFEs:       true,
-                    },
-                ],
+                "@typescript-eslint/consistent-type-exports": "error",
                 // For ordering classes and such, conflicts with perfectionist/sort-interfaces
                 // Could maybe configure it for classes
-                "@typescript-eslint/member-ordering": [
+                "@typescript-eslint/member-ordering":         [
                     "off",
                     { default: ["signature", "method", "constructor", "field"] },
                 ],
                 // Classes use method, react uses signature
-                "@typescript-eslint/method-signature-style": ["off"],
-                // Naming conventions
-                // NOTE: I would like Go's naming conventions, like PascalCase anywhere, or at least for exports.
-                // But I've decided against it. It would confuse the AI a lot or create an additional format step.
-                // Typescript already has the `export` keyword.
-                "@typescript-eslint/naming-convention":      [
-                    "warn",
-                    // 1. Exemption: Allow strictly underscores for unused parameters (e.g., _, __).
-                    // "format": null disables further casing checks for these specific matches.
-                    {
-                        filter: {
-                            match: true,
-                            regex: "^_+$",
-                        },
-                        format:   null,
-                        selector: "parameter",
-                    },
-                    // 2. Parameters: Must be strictly camelCase.
-                    // This rule applies to all parameters that did not match the _ exemption above.
-                    {
-                        format:             ["camelCase"],
-                        leadingUnderscore:  "forbid",
-                        selector:           "parameter",
-                        trailingUnderscore: "forbid",
-                    },
-
-                    // 3. Properties: allow anything
-                    {
-                        format:   null,
-                        selector: "property",
-                    },
-                    // 4. Global Default: Apply to all other identifiers (variables, functions, classes, etc.).
-                    // Enforcing camelCase and PascalCase automatically rejects snake_case and UPPER_SNAKE_CASE.
-                    {
-                        format:             ["camelCase", "PascalCase"],
-                        leadingUnderscore:  "forbid",
-                        selector:           "default",
-                        trailingUnderscore: "forbid",
-                    },
-                ],
-                "@typescript-eslint/no-confusing-void-expression": "error",
-                "@typescript-eslint/no-deprecated":                "error",
+                "@typescript-eslint/method-signature-style":                 ["off"],
+                "@typescript-eslint/no-confusing-void-expression":           "error",
+                "@typescript-eslint/no-deprecated":                          "error",
                 // These 2 are handled by oxlint.
-                "@typescript-eslint/no-explicit-any":              ["off"],
-                "@typescript-eslint/no-inferrable-types":          "error",
-                "@typescript-eslint/no-magic-numbers":             [
-                    "error", {
-                        enforceConst:              true,
-                        ignore:                    [-1, 0, 1, 60, 1000, 24, 12, 300],
-                        ignoreArrayIndexes:        true,
-                        ignoreNumericLiteralTypes: true,
-                        ignoreTypeIndexes:         true,
-                    },
-                ],
-                "@typescript-eslint/no-require-imports":    ["off"],
-                // Related to restricted imports
-                "@typescript-eslint/no-restricted-imports": [
-                    "error", {
-                        paths: [
-                            {
-                                message: "Please use node-compatible APIs instead. Bun is known to be unstable. Using node compatible APIs is future-proof.",
-                                name:    "bun",
-                            },
-                        ],
-                    },
-                ],
+                "@typescript-eslint/no-explicit-any":                        ["off"],
+                "@typescript-eslint/no-require-imports":                     ["off"],
                 // Related to restricted types
                 "@typescript-eslint/no-restricted-types":                    ["off"],
                 "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
@@ -174,7 +104,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
                 "@typescript-eslint/no-useless-default-assignment":          "error",
                 // Disabled, too many positives
                 "@typescript-eslint/only-throw-error":                       "off",
-                "@typescript-eslint/prefer-function-type":                   "error",
                 // This is not bad but really, it will confuse the LLMs
                 "@typescript-eslint/prefer-readonly-parameter-types":        "off",
                 "@typescript-eslint/prefer-string-starts-ends-with":         "error",
@@ -325,15 +254,7 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
         {
             files: ["**/*.test.ts", "**/*.test.tsx"],
             rules: {
-                "@typescript-eslint/no-magic-numbers":         "off",
                 "@typescript-eslint/no-unsafe-type-assertion": "off",
-            },
-        },
-        // Inferred handler return types keep domain error unions complete.
-        {
-            files: ["**/command-*.ts", "**/query-*.ts", "**/*.command.ts", "**/*.query.ts"],
-            rules: {
-                "@typescript-eslint/explicit-function-return-type": "off",
             },
         },
         migratedToOxlint(),

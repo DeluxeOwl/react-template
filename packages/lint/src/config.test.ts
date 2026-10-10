@@ -100,7 +100,6 @@ describe("shared lint configuration", () => {
                 expect(severity(handwritten, "custom/no-margin-on-root-jsx")).toBe(2)
                 expect(severity(strictVendor, "custom/no-margin-on-root-jsx")).toBe(2)
                 expect(severity(vendored, "@typescript-eslint/no-unsafe-assignment")).toBe(2)
-                expect(severity(vendored, "@typescript-eslint/explicit-function-return-type")).toBe(2)
                 expect(severity(vendored, "custom/require-jsx-return-type")).toBe(2)
             })
         })
@@ -122,26 +121,6 @@ describe("shared lint configuration", () => {
                 expect(severity(ts, "vitest/expect-expect")).toBe(1)
                 expect(severity(tsx, "vitest/expect-expect")).toBe(1)
                 expect(severity(source, "vitest/expect-expect")).toBeUndefined()
-            })
-        })
-    })
-
-    describe("given prefix- and suffix-named CQRS handlers", () => {
-        describe("when applying the handler preset", () => {
-            it("then it infers handler errors without relaxing other exported functions", async () => {
-                expect.hasAssertions()
-
-                // GIVEN / WHEN
-                const prefix = await configFor("todos/command-create-todo.ts")
-                const suffix = await configFor("todos/create-todo.command.ts")
-                const query = await configFor("todos/list-todos.query.ts")
-                const source = await configFor("app.tsx")
-
-                // THEN
-                expect(severity(prefix, "@typescript-eslint/explicit-function-return-type")).toBe(0)
-                expect(severity(suffix, "@typescript-eslint/explicit-function-return-type")).toBe(0)
-                expect(severity(query, "@typescript-eslint/explicit-function-return-type")).toBe(0)
-                expect(severity(source, "@typescript-eslint/explicit-function-return-type")).toBe(2)
             })
         })
     })

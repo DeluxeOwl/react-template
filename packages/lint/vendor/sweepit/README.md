@@ -5,10 +5,10 @@ The upstream plugin is a single bundle, copied whole; index.js exposes only the 
 
 Rules (20): `complexity`, `no-return-object-repetition`, `jsx-bem-compound-naming`, `jsx-flat-owner-tree`, `jsx-server-action-prop-suffix`, `max-custom-props`, `no-boolean-capability-props`, `no-componenttype-props`, `no-custom-kebab-case-props`, `no-element-props`, `no-exported-context-hooks`, `no-handle-prefix-utils`, `no-handler-return-type`, `no-hook-jsx`, `no-optional-props-without-defaults`, `no-prefixed-prop-bundles`, `no-prop-drilling`, `no-render-helper-functions`, `no-set-prefix-utils`, `no-title-case-props`.
 
-Enabled upstream rules not vendored (they stay in ESLint):
+Enabled upstream rules not vendored:
 
-- `no-object-props`: uses the TypeScript type checker when available (imported/derived prop types); oxlint JS plugins get no type information
-- `no-array-props`: uses the TypeScript type checker when available (imported/derived prop types); oxlint JS plugins get no type information
+- `no-object-props`: stays in ESLint: it uses the TypeScript type checker when available (imported/derived prop types), and oxlint JS plugins get no type information.
+- `no-array-props`: stays in ESLint: it uses the TypeScript type checker when available (imported/derived prop types), and oxlint JS plugins get no type information.
 
 External runtime dependencies: none.
 
@@ -25,8 +25,8 @@ External runtime dependencies: none.
 - `index.cjs`: Remove the unused jsx-compound-part-export-naming registration.
 - `index.cjs`: Remove no-inline-call-expressions, which the inventory does not enable.
 - `index.cjs`: Remove the unused no-inline-call-expressions registration.
-- `index.cjs`: Remove no-object-props, which stays in ESLint (uses the TypeScript type checker when available (imported/derived prop types); oxlint JS plugins get no type information).
+- `index.cjs`: Remove no-object-props, which stays in ESLint: it uses the TypeScript type checker when available (imported/derived prop types), and oxlint JS plugins get no type information.
 - `index.cjs`: Remove the no-object-props registration.
-- `index.cjs`: Remove no-array-props, which stays in ESLint (uses the TypeScript type checker when available (imported/derived prop types); oxlint JS plugins get no type information).
+- `index.cjs`: Remove no-array-props, which stays in ESLint: it uses the TypeScript type checker when available (imported/derived prop types), and oxlint JS plugins get no type information.
 - `index.cjs`: Remove the no-array-props registration.
 - `index.cjs`: Export only rule definitions, not the deleted ESLint configs.

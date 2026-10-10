@@ -6,6 +6,7 @@ import { stylisticConfig } from "./stylistic.ts"
 import { typeAwareConfig } from "./type-aware.ts"
 import { typescriptConfig } from "./typescript.ts"
 import { perfectionistConfig } from "./perfectionist.ts"
+import { typescriptEslintConfig } from "./typescript-eslint.ts"
 import { sweepitConfig, sweepitReactConfig } from "./sweepit.ts"
 
 export { runOxlintFix } from "./fix.ts"
@@ -14,6 +15,7 @@ export { stylisticConfig } from "./stylistic.ts"
 export { typeAwareConfig } from "./type-aware.ts"
 export { typescriptConfig } from "./typescript.ts"
 export { perfectionistConfig } from "./perfectionist.ts"
+export { typescriptEslintConfig } from "./typescript-eslint.ts"
 export { sweepitConfig, sweepitReactConfig } from "./sweepit.ts"
 export { defaultVendoredFiles, vendoredRules } from "./vendored.ts"
 
@@ -65,7 +67,15 @@ export function mergeOxlintConfigs(...configs: OxlintConfig[]): OxlintConfig {
 }
 
 export function createOxlintConfig(options?: OxlintConfigOptions): OxlintConfig {
-    return mergeOxlintConfigs(typescriptConfig, stylisticConfig, perfectionistConfig, typeAwareConfig, sweepitConfig, { ignorePatterns: options?.ignorePatterns ?? [] })
+    return mergeOxlintConfigs(
+        typescriptConfig,
+        typescriptEslintConfig,
+        stylisticConfig,
+        perfectionistConfig,
+        typeAwareConfig,
+        sweepitConfig,
+        { ignorePatterns: options?.ignorePatterns ?? [] },
+    )
 }
 
 export function createOxlintReactConfig(options?: OxlintReactConfigOptions): OxlintConfig {
@@ -74,6 +84,7 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
 
     return mergeOxlintConfigs(
         typescriptConfig,
+        typescriptEslintConfig,
         reactConfig,
         stylisticConfig,
         perfectionistConfig,

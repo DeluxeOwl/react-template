@@ -51,7 +51,7 @@ export interface PublicIdCodec<TPrefix extends string = string> {
 }
 
 function bigintToBase62(num: bigint): string {
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+    // oxlint-disable-next-line typescript-eslint-js/no-magic-numbers
     if (num === 0n) {
         return Base62Zero
     }
@@ -59,7 +59,7 @@ function bigintToBase62(num: bigint): string {
     let rest = num
     let result = ""
 
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+    // oxlint-disable-next-line typescript-eslint-js/no-magic-numbers
     while (rest > 0n) {
         result = Base62Chars[Number(rest % Base62Radix)] + result
         rest /= Base62Radix
