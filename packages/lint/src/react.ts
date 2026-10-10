@@ -1,6 +1,5 @@
 
 // @ts-check
-import tseslint from "typescript-eslint"
 import sweepit from "eslint-plugin-sweepit"
 import reactHooks from "eslint-plugin-react-hooks"
 import eslintReact from "@eslint-react/eslint-plugin"
@@ -14,10 +13,63 @@ import {
 } from "eslint/config"
 import youMightNotNeedAnEffect from "eslint-plugin-react-you-might-not-need-an-effect"
 
-import createConfig from "./index"
+import createConfig, { type ConfigOptions } from "./index"
 
-// Depends on the default config
-export default function createReactConfig(rootDir: string): Config[] {
+export interface TailwindRestriction {
+    fix?:     string
+    message?: string
+    pattern:  string
+}
+
+export interface ReactConfigOptions extends ConfigOptions {
+    vendoredFiles?:                  string[]
+    additionalTailwindRestrictions?: TailwindRestriction[]
+}
+
+// Opt in only when the stylesheet imports `shadow-plugin`. Color utilities remain valid.
+export const smoothShadowRestrictions: TailwindRestriction[] = [
+    {
+        fix:     "$1smooth-shadow$2",
+        message: "Use the smooth-shadow scale (smooth-shadow-ring-* on elevated surfaces) instead of Tailwind's default shadows.",
+        pattern: "^([a-zA-Z0-9:/_-]*:)?shadow(-(?:xs|sm|md|lg|xl|2xl|none))?$",
+    },
+    {
+        message: "No smooth-shadow-2xs exists. Use 'smooth-shadow-xs' or no shadow at all.",
+        pattern: "^([a-zA-Z0-9:/_-]*:)?shadow-2xs$",
+    },
+]
+
+function createVendoredConfig(files: string[]): Config {
+    return {
+        files,
+        rules: {
+            "@eslint-react/dom-no-dangerously-set-innerhtml":            "off",
+            "@eslint-react/no-array-index-key":                          "off",
+            "@eslint-react/no-context-provider":                         "off",
+            "@eslint-react/no-nested-component-definitions":             "off",
+            "@eslint-react/set-state-in-effect":                         "off",
+            "@eslint-react/use-state":                                   "off",
+            "better-tailwindcss/no-unknown-classes":                     "off",
+            "custom/no-margin-on-root-jsx":                              "off",
+            "custom/prefer-discriminated-union":                         "off",
+            "no-restricted-syntax":                                      "off",
+            "react-hooks/set-state-in-effect":                           "off",
+            "react-hooks/todo":                                          "off",
+            "react-you-might-not-need-an-effect/no-event-handler":       "off",
+            "react-you-might-not-need-an-effect/no-initialize-state":    "off",
+            "react-you-might-not-need-an-effect/no-pass-data-to-parent": "off",
+            "sweepit/complexity":                                        "off",
+            "sweepit/jsx-bem-compound-naming":                           "off",
+            "sweepit/jsx-on-handler-verb-suffix":                        "off",
+            "sweepit/no-array-props":                                    "off",
+            "sweepit/no-boolean-capability-props":                       "off",
+            "sweepit/no-object-props":                                   "off",
+            "sweepit/no-prop-drilling":                                  "off",
+        },
+    }
+}
+
+export default function createReactConfig(rootDir: string, options?: ReactConfigOptions): Config[] {
     return defineConfig([
         {
             ignores: [
@@ -44,18 +96,9 @@ export default function createReactConfig(rootDir: string): Config[] {
                 pluginQuery.configs["flat/recommended"],
                 // @ts-expect-error Weird types.
                 reactRenderTypes.configs.recommended,
-                createConfig(rootDir),
+                createConfig(rootDir, options),
             ],
-            files:           ["**/*.{mjs,js,jsx,ts,tsx}"],
-            languageOptions: {
-                parser:        tseslint.parser,
-                parserOptions: {
-                    projectService: {
-                        allowDefaultProject: ["*.d.ts"],
-                    },
-                    tsconfigRootDir: rootDir,
-                },
-            },
+            files: ["**/*.{mjs,js,jsx,ts,tsx}"],
 
             plugins: {
                 "better-tailwindcss": betterTailwindcss,
@@ -68,7 +111,8 @@ export default function createReactConfig(rootDir: string): Config[] {
                 "sweepit/jsx-bem-compound-naming":               "error",
                 "sweepit/jsx-compound-part-export-naming":       "off",
                 "sweepit/jsx-flat-owner-tree":                   "error",
-                "sweepit/jsx-on-handler-verb-suffix":            "error",
+                // Accept verb-first callbacks such as `onCreateAppointment`.
+                "sweepit/jsx-on-handler-verb-suffix":            "off",
                 "sweepit/jsx-server-action-prop-suffix":         "error",
                 "sweepit/max-custom-props":                      "error",
                 "sweepit/no-array-props":                        "error",
@@ -109,7 +153,8 @@ export default function createReactConfig(rootDir: string): Config[] {
                 "sweepit/no-render-helper-functions":                  "error",
                 "sweepit/no-set-prefix-utils":                         "error",
                 "sweepit/no-title-case-props":                         "error",
-                "sweepit/no-useless-hook":                             "error",
+                // View-model hooks can wrap pure logic or call React 19 `use`.
+                "sweepit/no-useless-hook":                             "off",
                 ...betterTailwindcss.configs["stylistic-warn"].rules,
                 ...betterTailwindcss.configs["correctness-error"].rules,
                 "better-tailwindcss/enforce-consistent-line-wrapping": [
@@ -177,11 +222,14 @@ export default function createReactConfig(rootDir: string): Config[] {
                                 message: "Use flexbox or grid instead of 'float-' utilities.",
                                 pattern: "^([a-zA-Z0-9:/_-]*:)?float-",
                             },
+                            // Rule options replace arrays in ESLint. Append here to retain shared restrictions.
+                            ...options?.additionalTailwindRestrictions ?? [],
                         ],
                     },
                 ],
             },
         },
-
+        // Relax only the selected third-party files. Type-safety and return-type rules stay enabled.
+        ...options?.vendoredFiles?.length ? [createVendoredConfig(options.vendoredFiles)] : [],
     ])
 }

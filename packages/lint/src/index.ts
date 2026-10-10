@@ -23,15 +23,13 @@ import customPlugin from "./custom"
 
 // bun run eslint --inspect-config
 
-// Using eslint for some rules that aren't available in oxlint
-// oxlint-disable-next-line max-lines-per-function
-export default function createConfig(
-    rootDir: string,
-    options?: {
-        allowDefaultProject?: string[]
-        oxlintConfigPath?:    string
-    },
-): Config[] {
+export interface ConfigOptions {
+    oxlintConfigPath?:    string
+    allowDefaultProject?: string[]
+}
+
+// oxlint-disable-next-line max-lines-per-function -- This factory declares the complete shared ESLint preset.
+export default function createConfig(rootDir: string, options?: ConfigOptions): Config[] {
     const allowDefaultProject = options?.allowDefaultProject ?? []
     const oxlintConfigPath = options?.oxlintConfigPath ?? path.join(rootDir, ".oxlintrc.json")
 
@@ -463,7 +461,7 @@ export default function createConfig(
                 "sweepit/no-return-object-repetition": "error",
                 "unicorn/better-regex":                "error",
                 "unicorn/consistent-destructuring":    "error",
-                "unicorn/expiring-todo-comments":      ["error", { allowWarningComments: false }],
+                "unicorn/expiring-todo-comments":      "off",
                 // This rule isn't supported in oxlint.
                 "unicorn/import-style":                [
                     "error",
@@ -507,12 +505,14 @@ export default function createConfig(
             },
         },
         {
-            files:   ["**/*.test.ts"],
+            files:   ["**/*.test.ts", "**/*.test.tsx"],
             plugins: {
                 vitest,
             },
             rules: {
                 ...vitest.configs.all.rules,
+                // One behavior can require more than five assertions, such as a DTO round-trip.
+                "vitest/max-expects":        "off",
                 "vitest/no-identical-title": "off",
             },
             settings: {
@@ -529,9 +529,9 @@ export default function createConfig(
                 "@typescript-eslint/no-unsafe-type-assertion": "off",
             },
         },
-        // Commands and queries dont specify output
+        // Inferred handler return types keep domain error unions complete.
         {
-            files: ["**/command-*.ts", "**/query-*.ts"],
+            files: ["**/command-*.ts", "**/query-*.ts", "**/*.command.ts", "**/*.query.ts"],
             rules: {
                 "@typescript-eslint/explicit-function-return-type": "off",
             },

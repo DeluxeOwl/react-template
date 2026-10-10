@@ -10,10 +10,14 @@ export default defineConfig([
         ignores: ["auto-imports.d.ts"],
     },
     {
-        extends:  [reactConfig(import.meta.dirname)],
+        extends: [
+            reactConfig(import.meta.dirname, {
+                vendoredFiles: ["ui/components/ui/**", "ui/hooks/**"],
+            }),
+        ],
         settings: {
             "better-tailwindcss": {
-                entryPoint: "src/index.css",
+                entryPoint: "index.css",
             },
         },
     },

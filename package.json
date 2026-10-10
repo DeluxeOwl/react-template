@@ -28,6 +28,7 @@
     },
     "type": "module",
     "devDependencies": {
+        "@ast-grep/cli": "^0.40.0",
         "@deluxeowl/lint": "workspace:*",
         "@praha/byethrow-docs": "^0.11.1",
         "@total-typescript/ts-reset": "^0.6.1",
@@ -38,12 +39,20 @@
         "oxlint": "^1.62.0",
         "scaffdog": "^4.1.0"
     },
+    "trustedDependencies": [
+        "@ast-grep/cli",
+        "dprint",
+        "esbuild",
+        "sqlite3"
+    ],
     "scripts": {
         "postinstall": "bun run --filter @deluxeowl/lint build",
         "dev": "tilt up",
         "lint:oxlint": "bun run --workspaces lint:oxlint",
         "lint:eslint": "bun run --workspaces lint:eslint",
         "lint:sg": "ast-grep scan",
+        "lint:sg:suppress": "bun scripts/suppress-vendored-ast-grep.ts apps/web/ui/components/ui apps/web/ui/hooks",
+        "lint:sg:check": "bun scripts/suppress-vendored-ast-grep.ts apps/web/ui/components/ui apps/web/ui/hooks --check",
         "format:dprint": "dprint fmt",
         "lint:duplicate": "jscpd -c .jscpd.json",
         "typecheck": "bun run --workspaces typecheck",

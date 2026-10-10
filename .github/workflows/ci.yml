@@ -47,6 +47,9 @@ jobs:
       - name: lint:sg
         run: devbox run -- bun run lint:sg
 
+      - name: vendored ast-grep directives
+        run: devbox run -- bun run lint:sg:check
+
       - name: lint:duplicate
         run: devbox run -- bun run lint:duplicate
 

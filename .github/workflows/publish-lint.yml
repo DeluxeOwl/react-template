@@ -19,6 +19,7 @@ jobs:
           registry-url: "https://npm.pkg.github.com"
           scope: "@deluxeowl"
       - run: bun install --frozen-lockfile
+      - run: bun run --filter @deluxeowl/lint typecheck
       - run: bun run --filter @deluxeowl/lint test
       - run: bun run --filter @deluxeowl/lint build
       - run: cd packages/lint && npm publish

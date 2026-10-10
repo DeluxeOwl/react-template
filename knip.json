@@ -2,7 +2,6 @@
     "$schema": "https://unpkg.com/knip@6/schema.json",
     "ignoreExportsUsedInFile": true,
     "ignoreBinaries": [
-        "ast-grep",
         "tilt",
         "lefthook",
         "tsc"

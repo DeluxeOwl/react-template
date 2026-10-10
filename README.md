@@ -87,19 +87,21 @@ live-sync path end to end.
 
 Run from the repo root (inside `devbox shell`).
 
-| Command                  | What it does                                        |
-| ------------------------ | --------------------------------------------------- |
-| `bun run dev`            | Start web + server + https/mDNS (tilt, `Tiltfile`)  |
-| `bun run typecheck`      | `tsc --noEmit` across all workspaces                |
-| `bun run test`           | All tests (Vitest, sequential across workspaces)    |
-| `bun run lint:oxlint`    | oxlint (fast Rust linter)                           |
-| `bun run lint:eslint`    | ESLint (type-aware rules)                           |
-| `bun run lint:sg`        | ast-grep structural rules                           |
-| `bun run lint:duplicate` | jscpd copy-paste detector                           |
-| `bun run format:dprint`  | Format JSON/YAML/Markdown (TS/JS handled by ESLint) |
-| `bun run deadcode`       | knip (unused files/exports/deps)                    |
-| `bun run lint:all`       | Full pre-push gate (lefthook)                       |
-| `bun run generate`       | Scaffold a new package (scaffdog)                   |
+| Command                    | What it does                                        |
+| -------------------------- | --------------------------------------------------- |
+| `bun run dev`              | Start web + server + https/mDNS (tilt, `Tiltfile`)  |
+| `bun run typecheck`        | `tsc --noEmit` across all workspaces                |
+| `bun run test`             | All tests (Vitest, sequential across workspaces)    |
+| `bun run lint:oxlint`      | oxlint (fast Rust linter)                           |
+| `bun run lint:eslint`      | ESLint (type-aware rules)                           |
+| `bun run lint:sg`          | ast-grep structural rules                           |
+| `bun run lint:sg:suppress` | Add ast-grep directives to vendored UI              |
+| `bun run lint:sg:check`    | Check vendored UI for missing or unused directives  |
+| `bun run lint:duplicate`   | jscpd copy-paste detector                           |
+| `bun run format:dprint`    | Format JSON/YAML/Markdown (TS/JS handled by ESLint) |
+| `bun run deadcode`         | knip (unused files/exports/deps)                    |
+| `bun run lint:all`         | Full pre-push gate (lefthook)                       |
+| `bun run generate`         | Scaffold a new package (scaffdog)                   |
 
 The full command reference (test filters, per-workspace runs, code-style rules) lives in
 [`AGENTS.md`](./AGENTS.md).
@@ -156,6 +158,61 @@ export default createConfig(import.meta.dirname)
 // .oxlintrc.json  (path is relative to this config file)
 { "extends": ["./node_modules/@deluxeowl/lint/oxlint/typescript.json"] }
 ```
+
+### React projects and vendored UI
+
+The React factory accepts the base factory options, such as `allowDefaultProject` and `oxlintConfigPath`.
+It also accepts explicit paths for vendored components:
+
+```ts
+import createReactConfig from "@deluxeowl/lint/react"
+
+export default createReactConfig(import.meta.dirname, {
+    vendoredFiles: ["src/components/ui/**", "src/components/hooks/**"],
+})
+```
+
+The vendor override relaxes structural rules only for those files.
+Type-safety rules, explicit return types, and magic-number rules remain enabled.
+The corresponding opt-in oxlint preset covers standard shadcn/ReUI directories:
+
+```jsonc
+{ "extends": ["./node_modules/@deluxeowl/lint/oxlint/react-vendored.json"] }
+```
+
+Projects without vendored UI continue to use `oxlint/react.json`.
+Both React presets allow Node imports in scripts, configuration files, and tests, but not browser source.
+They reject the `@phosphor-icons/react` barrel. Direct icon imports remain valid.
+
+### Additional Tailwind restrictions
+
+ESLint replaces rule-option arrays rather than merging them.
+Use `additionalTailwindRestrictions` to retain the shared color and RTL restrictions:
+
+```ts
+import createReactConfig, { smoothShadowRestrictions } from "@deluxeowl/lint/react"
+
+export default createReactConfig(import.meta.dirname, {
+    additionalTailwindRestrictions: smoothShadowRestrictions,
+})
+```
+
+**Enable `smoothShadowRestrictions` only if the stylesheet imports `shadow-plugin`.**
+The restrictions replace shadow sizes with `smooth-shadow-*` and leave shadow colors unchanged.
+The default configuration does not require that plugin.
+
+### Vendored ast-grep directives
+
+The workspace-local `@ast-grep/cli` binary serves both lint scripts and VSCode.
+After a shadcn upgrade, run `bun run lint:sg:suppress` from the repository root.
+Then run `bun run lint:sg:check`.
+The check reports unsuppressed violations and unused directives without changing files.
+Unlike `.ignore`, these directives also work in the language server.
+The normal scan retains the `unused-suppression` check.
+
+Other consumers can use `addAstGrepSuppressions` from `@deluxeowl/lint/ast-grep`.
+It accepts source text and `{ line, ruleId }` findings, with zero-based lines from ast-grep JSON.
+It returns the annotated source or an `Error` for invalid findings.
 
 `@deluxeowl/lint` is the only built package (ESM via zshy). Changing it requires a version
 bump + a `lint-vX.Y.Z` tag push, which triggers `.github/workflows/publish-lint.yml`.

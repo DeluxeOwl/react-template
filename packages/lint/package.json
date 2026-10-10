@@ -1,6 +1,6 @@
 {
     "name": "@deluxeowl/lint",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "type": "module",
     "private": false,
     "license": "UNLICENSED",
@@ -16,7 +16,8 @@
     "zshy": {
         "exports": {
             ".": "./src/index.ts",
-            "./react": "./src/react.ts"
+            "./react": "./src/react.ts",
+            "./ast-grep": "./src/ast-grep.ts"
         },
         "cjs": false
     },
@@ -78,6 +79,10 @@
         "./react": {
             "types": "./dist/react.d.ts",
             "default": "./dist/react.js"
+        },
+        "./ast-grep": {
+            "types": "./dist/ast-grep.d.ts",
+            "default": "./dist/ast-grep.js"
         }
     }
 }

@@ -19,6 +19,8 @@
         "source.fixAll.ast-grep": "never",
         "source.fixAll.eslint": "explicit"
     },
+    // Use the same workspace-local ast-grep version as the lint scripts.
+    "astGrep.serverPath": "node_modules/.bin/ast-grep",
     "eslint.validate": [
         "javascript",
         "javascriptreact",

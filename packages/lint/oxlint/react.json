@@ -7,6 +7,17 @@
         "./typescript.json"
     ],
     "rules": {
+        "eslint/no-restricted-imports": [
+            "error",
+            {
+                "paths": [
+                    {
+                        "message": "Import the icon directly, for example '@phosphor-icons/react/CaretDown'. The barrel forces the bundler to transform the full icon library.",
+                        "name": "@phosphor-icons/react"
+                    }
+                ]
+            }
+        ],
         "react/jsx-handler-names": "off",
         "react/button-has-type": "warn",
         "react/jsx-no-undef": "off",
@@ -30,6 +41,19 @@
         "jsx-a11y/anchor-ambiguous-text": "warn",
         "import/no-nodejs-modules": "error"
     },
+    "overrides": [
+        {
+            "files": [
+                "**/scripts/**",
+                "**/*.config.{js,mjs,cjs,ts,mts,cts}",
+                "**/*.test.ts",
+                "**/*.test.tsx"
+            ],
+            "rules": {
+                "import/no-nodejs-modules": "off"
+            }
+        }
+    ],
     "settings": {
         "jsx-a11y": {
             "polymorphicPropName": null,
