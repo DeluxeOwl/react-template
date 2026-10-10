@@ -1,5 +1,6 @@
 // Makes oxlint pick the same fix as ESLint when two reports want to fix the same range.
-// Also gives the file's tokens typescript-estree's types before the first rule runs (tokens.js).
+// Also gives the file's tokens typescript-estree's types before the first rule runs (tokens.js), and
+// adds the globals a preset asks for in its settings to the file's scope (globals.js).
 //
 // ESLint sorts a file's problems by (line, column) — ties in report order, which is the order of
 // the rules in the config — then applies fixes sorted by range (start, then end) with a stable sort,
@@ -35,6 +36,7 @@
 // is created a second time, and the abandoned state is dropped.
 
 import { retypeTokens } from "./tokens.js"
+import { addConfiguredGlobals } from "./globals.js"
 
 let queue = []
 let created = new Set()
@@ -245,6 +247,7 @@ function wrapRule(rule) {
             }
             created.add(token)
             retypeTokens(context.sourceCode)
+            addConfiguredGlobals(context)
             const listeners = rule.create(wrapContext(context)) ?? {}
             open++
             const exit = listeners["Program:exit"]

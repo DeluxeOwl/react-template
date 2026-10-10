@@ -54,6 +54,12 @@ export const reactConfig = {
         "react/react-in-jsx-scope":  "allow",
     },
     settings: {
+        // ESLint ran the rules that moved here with the browser globals on these files. oxlint's own
+        // `globals` would also reach its native rules (no-redeclare would flag every `name`), so only
+        // our JS-plugin rules get them: see vendor/_compat/globals.js.
+        "@deluxeowl/lint": {
+            globals: "browser",
+        },
         // The JSON preset also set `polymorphicPropName: null`, which is oxlint's default.
         "jsx-a11y": {
             components: {},

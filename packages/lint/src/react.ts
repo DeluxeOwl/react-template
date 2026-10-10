@@ -1,5 +1,6 @@
 
 // @ts-check
+import globals from "globals"
 import sweepit from "eslint-plugin-sweepit"
 import reactHooks from "eslint-plugin-react-hooks"
 import eslintReact from "@eslint-react/eslint-plugin"
@@ -91,6 +92,18 @@ export default function createReactConfig(rootDir: string, options?: ReactConfig
                 }),
             ],
             files: ["**/*.{mjs,js,jsx,ts,tsx}"],
+
+            // These files used to get the browser globals and JSX parsing from the preset of
+            // react-you-might-not-need-an-effect, whose rules now run in oxlint. Set here so the
+            // rules still in ESLint see the same scope as before.
+            languageOptions: {
+                globals:       globals.browser,
+                parserOptions: {
+                    ecmaFeatures: {
+                        jsx: true,
+                    },
+                },
+            },
 
             plugins: {
                 "better-tailwindcss": betterTailwindcss,
