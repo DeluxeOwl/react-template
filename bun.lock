@@ -184,7 +184,6 @@
         "@praha/error-factory": "catalog:",
         "citty": "^0.2.2",
         "zod": "catalog:",
-        "zx": "^8.8.5",
       },
       "devDependencies": {
         "@types/bun": "catalog:",
@@ -2025,8 +2024,6 @@
     "zod-validation-error": ["zod-validation-error@4.0.2", "", { "peerDependencies": { "zod": "^3.25.0 || ^4.0.0" } }, "sha512-Q6/nZLe6jxuU80qb/4uJ4t5v2VEZ44lzQjPDhYJNztRQ4wyWc6VF3D3Kb/fAuPetZQnhS3hnajCf9CsWesghLQ=="],
 
     "zshy": ["zshy@0.7.3", "", { "dependencies": { "arg": "^5.0.2", "fast-glob": "^3.3.2", "table": "^6.9.0" }, "peerDependencies": { "typescript": ">5.5.0" }, "bin": { "zshy": "dist/index.cjs" } }, "sha512-MLCAh1mwonX25z58SJEAvHGY8j4xSMsNGM1XCgYwYZgBWEO/4YeH1u+EejJlUbHbz21N2YQ0Dgg8WznKMEU26w=="],
-
-    "zx": ["zx@8.8.5", "", { "bin": { "zx": "build/cli.js" } }, "sha512-SNgDF5L0gfN7FwVOdEFguY3orU5AkfFZm9B5YSHog/UDHv+lvmd82ZAsOenOkQixigwH2+yyH198AwNdKhj+RA=="],
 
     "@babel/core/semver": ["semver@6.3.1", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA=="],
 

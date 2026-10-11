@@ -18,7 +18,6 @@
         "@praha/byethrow": "catalog:",
         "@praha/error-factory": "catalog:",
         "citty": "^0.2.2",
-        "zod": "catalog:",
-        "zx": "^8.8.5"
+        "zod": "catalog:"
     }
 }

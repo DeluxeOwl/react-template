@@ -1,49 +1,25 @@
 /**
- * Finds duplicate function names across the codebase using ast-grep.
+ * Finds duplicate function names across the codebase.
  *
  * This script:
- * 1. Runs ast-grep to find all named functions (function declarations & arrow functions)
- * 2. Parses the JSON output to extract function names and locations
+ * 1. Lists the TypeScript files (.ts, .mts, .cts, .tsx) in the given directories that git doesn't
+ *    ignore, skipping dot directories
+ * 2. Parses them with TypeScript and collects the named functions: function declarations with a
+ *    body, and arrow functions assigned to a variable
  * 3. Reports any duplicate function names with their file locations
+ *
+ * This used to run ast-grep patterns, which skipped every function with a return type or type
+ * parameters (docs/oxlint-migration.md, Phase 9).
  *
  * Run: bun scripts/cli find-duplicate-functions [dirs...]
  * Example: bun scripts/cli find-duplicate-functions apps/ packages/
  */
 
-import { $ } from "zx"
-
-const PATTERNS = [
-    // Function declarations
-    "function $NAME($$$PARAMS) { $$$BODY }",
-    // Arrow functions (sync)
-    "const $NAME = ($$$PARAMS) => $BODY",
-    "let $NAME = ($$$PARAMS) => $BODY",
-    "var $NAME = ($$$PARAMS) => $BODY",
-    // Arrow functions (async)
-    "const $NAME = async ($$$PARAMS) => $BODY",
-    "let $NAME = async ($$$PARAMS) => $BODY",
-    "var $NAME = async ($$$PARAMS) => $BODY",
-]
-
-interface AstGrepMatch {
-    file:           string
-    text:           string
-    metaVariables?: {
-        single?: {
-            NAME?: { text: string }
-        }
-    }
-    range: {
-        end:   {
-            column: number
-            line:   number
-        }
-        start: {
-            column: number
-            line:   number
-        }
-    }
-}
+import ts from "typescript"
+import path from "node:path"
+import { existsSync } from "node:fs"
+import { readFile } from "node:fs/promises"
+import { spawnSync } from "node:child_process"
 
 interface FunctionInfo {
     file:    string
@@ -52,110 +28,83 @@ interface FunctionInfo {
     preview: string
 }
 
-function extractFromMetavariable(match: AstGrepMatch): null | string {
-    return match.metaVariables?.single?.NAME?.text ?? null
-}
-
-function extractFromText(text: string): null | string {
-    // Function declaration: function foo(...
-    const funcMatch = /^function\s+(?<name>[$A-Z_a-z][\w$]*)\s*\(/u.exec(text)
-    if (funcMatch) {
-        return funcMatch.groups?.name ?? null
-    }
-
-    // Arrow function: const foo = (...) =>
-    const arrowMatch = /^(?:const|let|var)\s+(?<name>[$A-Z_a-z][\w$]*)\s*=/u.exec(text)
-    if (arrowMatch) {
-        return arrowMatch.groups?.name ?? null
-    }
-
-    return null
-}
-
-function extractFunctionName(match: AstGrepMatch): null | string {
-    return extractFromMetavariable(match) ?? extractFromText(match.text)
-}
-
+const SourceExtensions = new Set([".ts", ".cts", ".mts", ".tsx"])
 const PreviewLines = 3
+const MaxListingBytes = 64_000_000
 
-function getPreview(text: string): string {
-    const lines = text.split("\n").slice(0, PreviewLines)
-    return lines.map((line) => `      ${line}`).join("\n")
+function isSourceFile(file: string): boolean {
+    const isHidden = file.split("/").some((part) => part.startsWith("."))
+
+    return SourceExtensions.has(path.extname(file)) && !isHidden
 }
 
-function parseAstGrepOutput(stdout: string): FunctionInfo[] {
-    if (stdout.trim() === "") {
+/** The files under `dir` that git tracks or would track, so .gitignore applies. */
+function listSourceFiles(dir: string): string[] {
+    const args = ["-C", dir, "ls-files", "--cached", "--others", "--exclude-standard"]
+    const result = spawnSync("git", args, { encoding: "utf8", maxBuffer: MaxListingBytes })
+
+    if (result.status !== 0) {
+        console.error(`git ls-files failed in ${dir}:`, result.stderr)
         return []
     }
 
-    // @ts-expect-error Can't be bothered to add zod.
-    const matches: AstGrepMatch[] = JSON.parse(stdout)
-    const functions: FunctionInfo[] = []
+    return result.stdout.split("\n")
+        .filter((file) => isSourceFile(file))
+        .map((file) => path.join(dir, file))
+        .filter((file) => existsSync(file))
+}
 
-    for (const match of matches) {
-        const name = extractFunctionName(match)
-        if (name !== null) {
+/** `function name() {}`, or `const name = () => …` (any declarator, `let` and `var` too). */
+function getFunctionName(node: ts.Node): ts.Identifier | undefined {
+    if (ts.isFunctionDeclaration(node) && node.body !== undefined) {
+        return node.name
+    }
+    const isArrowVariable = ts.isVariableDeclaration(node) && node.initializer !== undefined && ts.isArrowFunction(node.initializer)
+
+    return isArrowVariable && ts.isIdentifier(node.name) ? node.name : undefined
+}
+
+export function collectFunctions(file: string, text: string): FunctionInfo[] {
+    const scriptKind = file.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS
+    const source = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true, scriptKind)
+    const lines = text.split("\n")
+    const functions: FunctionInfo[] = []
+    const visit = (node: ts.Node): void => {
+        const name = getFunctionName(node)
+
+        if (name !== undefined) {
+            const { line } = source.getLineAndCharacterOfPosition(name.getStart(source))
+            const preview = lines
+                .slice(line, line + PreviewLines)
+                .map((previewLine) => `      ${previewLine}`)
+                .join("\n")
+
             functions.push({
-                file:    match.file,
-                // 0-indexed to 1-indexed
-                line:    match.range.start.line + 1,
-                name,
-                preview: getPreview(match.text),
+                file, line: line + 1, name: name.text, preview,
             })
         }
+        ts.forEachChild(node, visit)
     }
 
+    visit(source)
     return functions
 }
 
-interface RunASTGrep {
-    lang:    string
-    pattern: string
-    dirs:    readonly string[]
-}
-
-async function runAstGrep(params: Readonly<RunASTGrep>): Promise<FunctionInfo[]> {
-    const {
-        dirs, lang, pattern,
-    } = params
-    const args = ["run", "--pattern", pattern, "--lang", lang, "--json", ...dirs]
-    const result = await $`ast-grep ${args}`.quiet().nothrow()
-
-    if (result.exitCode !== 0 && result.stderr.trim() !== "") {
-        console.error(`ast-grep failed for pattern "${pattern}":`, result.stderr)
-        return []
-    }
-
-    return parseAstGrepOutput(result.stdout)
-}
-
-function dedupeByLocation(functions: FunctionInfo[], seen: Set<string>): FunctionInfo[] {
-    return functions.filter((fn) => {
-        const key = `${fn.file}:${fn.line}`
-        if (seen.has(key)) {
-            return false
-        }
-        seen.add(key)
-        return true
-    })
-}
-
 export async function findAllFunctions(dirs: readonly string[]): Promise<FunctionInfo[]> {
-    const allFunctions: FunctionInfo[] = []
-    const seen = new Set<string>()
+    const files = new Set<string>()
 
-    for (const lang of ["ts", "tsx"]) {
-        for (const pattern of PATTERNS) {
-            const functions = await runAstGrep({
-                dirs,
-                lang,
-                pattern,
-            })
-            allFunctions.push(...dedupeByLocation(functions, seen))
+    for (const dir of dirs) {
+        for (const file of listSourceFiles(dir)) {
+            files.add(file)
         }
     }
 
-    return allFunctions
+    const functions: FunctionInfo[] = []
+
+    for (const file of files) {
+        functions.push(...collectFunctions(file, await readFile(file, "utf8")))
+    }
+    return functions
 }
 
 const IgnoredNames = new Set([
