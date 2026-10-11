@@ -33,7 +33,8 @@
         "lint:oxlint": "oxlint-fix .",
         "typecheck": "tsc --noEmit -p tsconfig.lib.json && tsc --noEmit -p tsconfig.tooling.json",
         "test": "bun vitest-on-node.ts --run --passWithNoTests --reporter=tree",
-        "vendor": "bun scripts/vendor/vendor.ts"
+        "vendor": "bun scripts/vendor/vendor.ts",
+        "dump-ast": "node scripts/dump-ast.ts"
     },
     "dependencies": {
         "@babel/core": "^7.29.0",
