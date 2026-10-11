@@ -2,11 +2,13 @@
 //
 // oxlint applies one round of fixes per run. ESLint lints and fixes again, up to 10 passes per file,
 // so fixes that depend on each other (a line break, then the indentation and key alignment of the
-// new line) all land in one `eslint --fix`. ESLint also stops fixing a file whose text after a pass
-// is the text it had two passes earlier: two rules undo each other's fixes ("Circular fixes
-// detected"). Such a file keeps that text here too: later rounds' fixes to it are undone. Changes
-// are detected through `git ls-files` (tracked and untracked, not ignored) under the current
-// directory; outside a git work tree all rounds run.
+// new line) all land in one `eslint --fix`. When rules undo each other's fixes, a file comes back to
+// a text it already had. ESLint notices only a text from two passes earlier ("Circular fixes
+// detected"); here a file stops at any text it already had, so longer cycles stop too (e.g. line
+// wrapping and key alignment, which take two rounds each to undo each other). Such a file keeps
+// that text: later rounds' fixes to it are undone. Changes are detected through `git ls-files`
+// (tracked and untracked, not ignored) under the current directory; outside a git work tree all
+// rounds run.
 //
 // oxlint can need more rounds than ESLint needs passes to reach the same text: it holds back the
 // fixes of type-aware rules in a round where other fixes change the file, and resolves overlapping
@@ -65,10 +67,11 @@ function report(result: SpawnSyncReturns<string>): number {
 }
 
 interface Rounds {
-    // Files that went back to their text of two rounds earlier, with that text
-    circular:      Map<string, Buffer>
-    hashes:        Map<string, string>
-    hashesBefore?: Map<string, string>
+    // Files that came back to a text they had in an earlier round, with that text
+    circular: Map<string, Buffer>
+    hashes:   Map<string, string>
+    // Hashes of the earlier texts of each file that changed
+    history:  Map<string, Set<string>>
 }
 
 interface FixRun {
@@ -83,12 +86,16 @@ function recordRound(rounds: Rounds, after: Map<string, string>): boolean {
     const changed = [...after].filter(([file, hash]) => rounds.hashes.get(file) !== hash)
 
     for (const [file, hash] of changed) {
-        if (rounds.hashesBefore?.get(file) === hash) {
+        const history = rounds.history.get(file) ?? new Set<string>()
+
+        history.add(rounds.hashes.get(file) ?? "")
+        rounds.history.set(file, history)
+
+        if (history.has(hash)) {
             rounds.circular.set(file, readFileSync(file))
             process.stderr.write(`Circular fixes detected while fixing ${file}. It is likely that you have conflicting rules in your configuration.\n`)
         }
     }
-    rounds.hashesBefore = rounds.hashes
     rounds.hashes = after
 
     return changed.length > 0
@@ -98,7 +105,13 @@ function startRun(args: string[], cwd: string): FixRun {
     const hashes = snapshot(cwd)
 
     return {
-        args, cwd, rounds: hashes === undefined ? undefined : { circular: new Map<string, Buffer>(), hashes },
+        args,
+        cwd,
+        rounds: hashes === undefined
+            ? undefined
+            : {
+                    circular: new Map<string, Buffer>(), hashes, history: new Map<string, Set<string>>(),
+                },
     }
 }
 

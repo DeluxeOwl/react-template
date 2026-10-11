@@ -279,19 +279,20 @@ describe("shared oxlint React presets", () => {
         })
     })
 
-    describe("given two rules that undo each other's fixes", () => {
+    describe("given two rules that undo each other's fixes in four rounds", () => {
         describe("when fixing with runOxlintFix", () => {
-            it("then it stops where eslint --fix stops, and warns", { timeout: fixLoopTimeout }, () => {
+            it("then it stops at the first text the file already had, and warns", { timeout: fixLoopTimeout }, () => {
                 expect.hasAssertions()
 
                 // GIVEN
-                // Round 1 moves queryFn first (@tanstack/query/infinite-query-property-order) and
-                // removes the double space (@stylistic/no-multi-spaces); round 2 sorts the keys back
-                // (perfectionist/sort-objects); round 3 repeats round 1. ESLint stops there ("Circular
-                // fixes detected"); the 10th round would end on the sorted keys.
-                const source = "import { useInfiniteQuery } from \"@tanstack/react-query\"\n\nexport const  value = 1\n\nexport function useProjects(): unknown {\n    return useInfiniteQuery({\n        getNextPageParam: (page: number) => page,\n        queryFn:          () => 1,\n        queryKey:         [\"projects\"],\n    })\n}\n"
-                const expected = "import { useInfiniteQuery } from \"@tanstack/react-query\"\n\nexport const value = 1\n\nexport function useProjects(): unknown {\n    return useInfiniteQuery({\n        queryFn:          () => 1,\n        getNextPageParam: (page: number) => page,\n        queryKey:         [\"projects\"],\n    })\n}\n"
-                const dir = fixture("createOxlintReactConfig()")
+                // Line wrapping (better-tailwindcss) makes the long class string a multi-line
+                // template; key-spacing drops the alignment of the multi-line value; the string
+                // now fits, so line wrapping makes it one line again; key-spacing aligns it, and
+                // it is too long again. A check for two-round cycles (eslint --fix) misses this.
+                const classes = "ps-4 pe-4 ms-4 me-4 border-s-2 border-e-2 rounded-s-md rounded-e-md start-0 end-0 text-start text-end gap-4"
+                const source = `declare function tv(config: object): string\n\nexport const result = tv({ base: "${classes}", variants: { size: { normal: "${classes}" } } })\n`
+                const repeated = "declare function tv(config: object): string\n\nexport const result = tv({\n    base:     `\n      start-0 end-0 ms-4 me-4 gap-4 rounded-s-md rounded-e-md border-s-2 border-e-2 ps-4 pe-4 text-end text-start\n    `,\n    variants: {\n        size: {\n            normal: `\n              start-0 end-0 ms-4 me-4 gap-4 rounded-s-md rounded-e-md border-s-2 border-e-2 ps-4 pe-4 text-end\n              text-start\n            `,\n        },\n    },\n})\n"
+                const dir = fixture(`createOxlintReactConfig({ tailwindSettings: { cwd: ${JSON.stringify(webDir)}, entryPoint: "index.css" } })`)
                 const stderr = vi.spyOn(process.stderr, "write").mockReturnValue(true)
 
                 onTestFinished(() => {
@@ -299,14 +300,14 @@ describe("shared oxlint React presets", () => {
                 })
                 spawnSync("git", ["init", "--quiet"], { cwd: dir })
                 mkdirSync(path.join(dir, "src"))
-                writeFileSync(path.join(dir, "src/use-projects.ts"), source)
+                writeFileSync(path.join(dir, "src/result.tsx"), source)
 
                 // WHEN
-                const status = runOxlintFix(["src/use-projects.ts"], { cwd: dir })
+                const status = runOxlintFix(["src/result.tsx"], { cwd: dir })
 
                 // THEN
                 expect(status).toBe(1)
-                expect(readFileSync(path.join(dir, "src/use-projects.ts"), "utf8")).toBe(expected)
+                expect(readFileSync(path.join(dir, "src/result.tsx"), "utf8")).toBe(repeated)
                 expect(stderr).toHaveBeenCalledWith(expect.stringContaining("Circular fixes detected"))
             })
         })
