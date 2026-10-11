@@ -10,6 +10,6 @@ export default defineConfig([
         ignores: ["vendor/**"],
     },
     {
-        extends: [createConfig(import.meta.dirname, { allowDefaultProject: ["eslint.config.ts", "oxlint.config.ts", "bin/*.js"] })],
+        extends: [createConfig(import.meta.dirname)],
     },
 ])

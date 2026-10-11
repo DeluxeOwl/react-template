@@ -42,7 +42,7 @@ describe("shared lint configuration", () => {
 
     describe("given explicitly selected vendored files", () => {
         describe("when calculating the effective config", () => {
-            it("then it relaxes only vendor policy while retaining type safety", async () => {
+            it("then it relaxes only vendor policy", async () => {
                 expect.hasAssertions()
 
                 // GIVEN / WHEN
@@ -55,7 +55,6 @@ describe("shared lint configuration", () => {
                 expect(severity(vendored, "sweepit/no-object-props")).toBe(0)
                 expect(severity(handwritten, "sweepit/no-object-props")).toBe(2)
                 expect(severity(strictVendor, "sweepit/no-object-props")).toBe(2)
-                expect(severity(vendored, "@typescript-eslint/no-unsafe-assignment")).toBe(2)
             })
         })
     })

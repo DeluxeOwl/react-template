@@ -115,7 +115,7 @@ export class TodoHTTP {
                         && error.cause instanceof ValidationError
                     ) {
                         // If you only use Zod you can safely cast to ZodIssue[]
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+                        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
                         const zodError = new z.ZodError(error.cause.issues as z.core.$ZodIssue[])
 
                         throw new ORPCError("INPUT_VALIDATION_FAILED", {

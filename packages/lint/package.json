@@ -31,10 +31,10 @@
         "dprint.jsonc"
     ],
     "scripts": {
-        "build": "zshy",
+        "build": "zshy -p tsconfig.lib.json",
         "lint:oxlint": "oxlint-fix .",
         "lint:eslint": "eslint --fix .",
-        "typecheck": "tsc --noEmit",
+        "typecheck": "tsc --noEmit -p tsconfig.lib.json && tsc --noEmit -p tsconfig.tooling.json",
         "test": "vitest --run --passWithNoTests --reporter=tree"
     },
     "dependencies": {

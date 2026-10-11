@@ -426,8 +426,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         )
 
                         // A nested transaction returns an error
-                        // oxlint-disable-next-line require-await
-                        // eslint-disable-next-line @typescript-eslint/require-await
+                        // oxlint-disable-next-line typescript/require-await
                         const innerResult = innerRepo.withinTransaction(ctx, async (_: Context, __: TodoRepository) => {
                             return Result.fail(new TodoNotFoundError({ id: "nested-fail" }))
                         })

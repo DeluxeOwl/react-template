@@ -116,7 +116,7 @@ export class TodoRepositorySqlite implements TodoRepository {
         }
 
         return Result.try({
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+            // oxlint-disable-next-line typescript/no-unsafe-type-assertion
             catch: (error) => error as E,
             try:   async () => this.state.db.transaction(async (tx) => {
                 const txRepo = new TodoRepositorySqlite({

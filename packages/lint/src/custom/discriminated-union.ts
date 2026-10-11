@@ -77,6 +77,7 @@ export const preferDiscriminatedUnionRule = RuleCreator(
             },
         }
     },
+    // oxlint-disable-next-line typescript/no-deprecated -- RuleCreator infers the options type from it; moving to oxlint's rule API drops it
     defaultOptions: [],
     meta:           {
         docs: {

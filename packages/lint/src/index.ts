@@ -68,38 +68,28 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
             },
 
             rules: {
-                "@typescript-eslint/consistent-type-exports": "error",
                 // For ordering classes and such, conflicts with perfectionist/sort-interfaces
                 // Could maybe configure it for classes
-                "@typescript-eslint/member-ordering":         [
+                "@typescript-eslint/member-ordering": [
                     "off",
                     { default: ["signature", "method", "constructor", "field"] },
                 ],
                 // Classes use method, react uses signature
-                "@typescript-eslint/method-signature-style":                 ["off"],
-                "@typescript-eslint/no-confusing-void-expression":           "error",
-                "@typescript-eslint/no-deprecated":                          "error",
+                "@typescript-eslint/method-signature-style":          ["off"],
                 // These 2 are handled by oxlint.
-                "@typescript-eslint/no-explicit-any":                        ["off"],
-                "@typescript-eslint/no-require-imports":                     ["off"],
+                "@typescript-eslint/no-explicit-any":                 ["off"],
+                "@typescript-eslint/no-require-imports":              ["off"],
                 // Related to restricted types
-                "@typescript-eslint/no-restricted-types":                    ["off"],
-                "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
-                "@typescript-eslint/no-unnecessary-condition":               "error",
-                "@typescript-eslint/no-unnecessary-template-expression":     "error",
-                "@typescript-eslint/no-unnecessary-type-conversion":         "error",
-                "@typescript-eslint/no-unsafe-type-assertion":               "error",
-                "@typescript-eslint/no-unused-vars":                         "off",
-                "@typescript-eslint/no-useless-default-assignment":          "error",
+                "@typescript-eslint/no-restricted-types":             ["off"],
+                "@typescript-eslint/no-unused-vars":                  "off",
                 // Disabled, too many positives
-                "@typescript-eslint/only-throw-error":                       "off",
+                "@typescript-eslint/only-throw-error":                "off",
                 // This is not bad but really, it will confuse the LLMs
-                "@typescript-eslint/prefer-readonly-parameter-types":        "off",
-                "@typescript-eslint/prefer-string-starts-ends-with":         "error",
-                "@typescript-eslint/unified-signatures":                     "error",
+                "@typescript-eslint/prefer-readonly-parameter-types": "off",
+                "@typescript-eslint/unified-signatures":              "error",
                 // 0 and 1 are common enough during ifs, arrays etc.
-                "no-magic-numbers":                                          ["off"],
-                "no-restricted-imports":                                     "off",
+                "no-magic-numbers":                                   ["off"],
+                "no-restricted-imports":                              "off",
             },
         },
         {
@@ -117,13 +107,6 @@ export default function createConfig(rootDir: string, options?: ConfigOptions): 
                 vitest: {
                     typecheck: true,
                 },
-            },
-        },
-        // Override rules for test files
-        {
-            files: ["**/*.test.ts", "**/*.test.tsx"],
-            rules: {
-                "@typescript-eslint/no-unsafe-type-assertion": "off",
             },
         },
         migratedToOxlint(),

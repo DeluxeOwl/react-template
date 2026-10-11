@@ -183,7 +183,7 @@ function hasMarginInSpread(node: TSESTree.JSXSpreadAttribute): boolean {
         if (keyName !== "className") {
             continue
         }
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
         const strings = extractStringsFromExpression(prop.value as TSESTree.Expression)
         if (strings.some((s) => MarginClassPattern.test(s))) {
             return true
@@ -273,6 +273,7 @@ export const noMarginOnRootJSXRule = RuleCreator(
             },
         }
     },
+    // oxlint-disable-next-line typescript/no-deprecated -- RuleCreator infers the options type from it; moving to oxlint's rule API drops it
     defaultOptions: [],
     meta:           {
         docs: {

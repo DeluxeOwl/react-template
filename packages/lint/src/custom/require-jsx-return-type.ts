@@ -106,7 +106,7 @@ function isComponentLike(node: FunctionNode): boolean {
     if (node.type === TSESTree.AST_NODE_TYPES.FunctionDeclaration) {
         return node.id
             ? isPascalCase(node.id.name)
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            // oxlint-disable-next-line typescript/no-unnecessary-condition
             : node.parent.type === TSESTree.AST_NODE_TYPES.ExportDefaultDeclaration
     }
     return isComponentExpression(node)
@@ -213,6 +213,7 @@ export const requireJSXReturnTypeRule = RuleCreator(
             },
         }
     },
+    // oxlint-disable-next-line typescript/no-deprecated -- RuleCreator infers the options type from it; moving to oxlint's rule API drops it
     defaultOptions: [{}],
     meta:           {
         docs: {

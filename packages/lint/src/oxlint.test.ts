@@ -79,7 +79,8 @@ describe("shared oxlint React presets", () => {
                 // GIVEN
                 const dir = fixture("createOxlintReactConfig()")
                 const vendorDir = fixture("createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })")
-                const nodeImport = "import { readFileSync } from \"node:fs\"\n\nexport const content = readFileSync(\"data.json\", \"utf8\")\n"
+                // Re-exported, not called: the fixture has no Node types, so a call would be an unsafe `any`.
+                const nodeImport = "export { readFileSync } from \"node:fs\"\n"
 
                 // WHEN
                 const tooling = lint(dir, {
@@ -131,6 +132,20 @@ describe("shared oxlint React presets", () => {
                 expect(vendored.status).toBe(1)
                 expect(vendored.output).toContain("explicit-function-return-type")
                 expect(vendored.output).toContain("custom(require-jsx-return-type)")
+            })
+
+            it("then it keeps the type-aware safety rules in vendored code", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const dir = fixture("createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })")
+
+                // WHEN
+                const vendored = lint(dir, { "src/components/ui/value.ts": "export const value: string = JSON.parse(\"1\")\n" })
+
+                // THEN
+                expect(vendored.status).toBe(1)
+                expect(vendored.output).toContain("typescript(no-unsafe-assignment)")
             })
         })
     })
