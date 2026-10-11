@@ -208,7 +208,8 @@ The default configuration does not require that plugin.
 
 ### Vendored ast-grep directives
 
-The workspace-local `@ast-grep/cli` binary serves both lint scripts and VSCode.
+devbox's `ast-grep` (pinned in `devbox.lock`) serves both lint scripts and VSCode.
+The npm `@ast-grep/cli` can't: its binary needs an install script, and `.npmrc` turns those off.
 After a shadcn upgrade, run `bun run lint:sg:suppress` from the repository root.
 Then run `bun run lint:sg:check`.
 The check reports unsuppressed violations and unused directives without changing files.

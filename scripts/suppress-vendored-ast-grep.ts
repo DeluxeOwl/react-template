@@ -7,7 +7,9 @@ import { spawnSync } from "node:child_process"
 import { readFile, writeFile } from "node:fs/promises"
 import { addAstGrepSuppressions, type AstGrepSuppression } from "@deluxeowl/lint/ast-grep"
 
-const scanBinary = path.resolve("node_modules/.bin/ast-grep")
+// ast-grep comes from devbox (devbox.json): the npm package's binary needs its install script,
+// and .npmrc turns install scripts off.
+const scanBinary = "ast-grep"
 const maxScanOutputBytes = 32_000_000
 const cliArgumentOffset = 2
 const positionSchema = z.object({ line: z.int().nonnegative() })

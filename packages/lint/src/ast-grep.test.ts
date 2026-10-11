@@ -10,7 +10,9 @@ import {
 
 import { addAstGrepSuppressions } from "./ast-grep"
 
-const scanBinary = path.resolve(import.meta.dirname, "../../../node_modules/.bin/ast-grep")
+// ast-grep comes from devbox (devbox.json): the npm package's binary needs its install script,
+// and .npmrc turns install scripts off.
+const scanBinary = "ast-grep"
 const scanConfig = path.resolve(import.meta.dirname, "../../../sgconfig.yml")
 
 const source = `function Card() {

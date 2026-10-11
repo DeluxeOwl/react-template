@@ -13,17 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-      # Node >= 22.18 for the tests: see ci.yml.
+      # Node >= 22.18 for the tests (see ci.yml), and the registry auth for npm publish.
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           registry-url: "https://npm.pkg.github.com"
           scope: "@deluxeowl"
-      - run: bun install --frozen-lockfile
-      - run: bun run --filter @deluxeowl/lint typecheck
-      - run: bun run --filter @deluxeowl/lint test
-      - run: bun run --filter @deluxeowl/lint build
+      # bun and ast-grep (the tests run it) come from devbox.json, as in ci.yml.
+      - uses: jetify-com/devbox-install-action@v0.13.0
+        with:
+          enable-cache: true
+      - run: devbox run -- bun install --frozen-lockfile
+      - run: devbox run -- bun run --filter @deluxeowl/lint typecheck
+      - run: devbox run -- bun run --filter @deluxeowl/lint test
+      - run: devbox run -- bun run --filter @deluxeowl/lint build
       - run: cd packages/lint && npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

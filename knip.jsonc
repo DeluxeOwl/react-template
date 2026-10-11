@@ -1,10 +1,12 @@
 {
     "$schema": "https://unpkg.com/knip@6/schema.json",
     "ignoreExportsUsedInFile": true,
+    // From devbox.json (tsc: TypeScript's, through the workspaces)
     "ignoreBinaries": [
         "tilt",
         "lefthook",
-        "tsc"
+        "tsc",
+        "ast-grep"
     ],
     "ignoreDependencies": [
         "@praha/byethrow-docs"
