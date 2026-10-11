@@ -92,13 +92,13 @@ Run from the repo root (inside `devbox shell`).
 | `bun run dev`              | Start web + server + https/mDNS (tilt, `Tiltfile`)  |
 | `bun run typecheck`        | `tsc --noEmit` across all workspaces                |
 | `bun run test`             | All tests (Vitest, sequential across workspaces)    |
-| `bun run lint:oxlint`      | oxlint (fast Rust linter)                           |
-| `bun run lint:eslint`      | ESLint (type-aware rules)                           |
+| `bun run lint:oxlint`      | oxlint: most rules, and TS/JS formatting            |
+| `bun run lint:eslint`      | ESLint: the rules oxlint can't run (type-checked)   |
 | `bun run lint:sg`          | ast-grep structural rules                           |
 | `bun run lint:sg:suppress` | Add ast-grep directives to vendored UI              |
 | `bun run lint:sg:check`    | Check vendored UI for missing or unused directives  |
 | `bun run lint:duplicate`   | jscpd copy-paste detector                           |
-| `bun run format:dprint`    | Format JSON/YAML/Markdown (TS/JS handled by ESLint) |
+| `bun run format:dprint`    | Format JSON/YAML/Markdown (TS/JS handled by oxlint) |
 | `bun run deadcode`         | knip (unused files/exports/deps)                    |
 | `bun run lint:all`         | Full pre-push gate (lefthook)                       |
 | `bun run generate`         | Scaffold a new package (scaffdog)                   |
@@ -145,7 +145,7 @@ config) is published to **GitHub Packages** so pet projects share the exact same
 ```
 
 ```bash
-bun add -d @deluxeowl/lint eslint oxlint typescript
+bun add -d @deluxeowl/lint eslint oxlint oxlint-tsgolint typescript
 ```
 
 ```ts

@@ -40,13 +40,13 @@ bun run --filter @react-template/core vitest run --reporter=verbose -t "then it 
 
 ```sh
 bun run lint:oxlint      # oxlint across all workspaces; also formats TS/JS (fixes until stable)
-bun run lint:eslint      # ESLint (type-aware rules) across all workspaces
+bun run lint:eslint      # ESLint: only the rules oxlint can't run (mostly type-checked)
 bun run lint:sg          # ast-grep structural rules
 bun run format:dprint    # format JSON, YAML, Markdown, Dockerfile (dprint)
 bun run lint:all         # run the full pre-push gate (lefthook)
 ```
 
-> Formatting for `.ts`/`.tsx`/`.js` is done by oxlint's `@stylistic/*` rules (vendored in `packages/lint/vendor/stylistic`, generated — never hand-edit), not dprint. `oxlint-fix` repeats `oxlint --fix` until the files stop changing; a single `oxlint --fix` can leave formatting half-done.
+> Formatting for `.ts`/`.tsx`/`.js` is done by oxlint's `@stylistic/*` rules, not dprint. Most lint rules run in oxlint from copies of upstream plugins in `packages/lint/vendor/<plugin>`: generated, never hand-edit. `oxlint-fix` repeats `oxlint --fix` until the files stop changing; a single `oxlint --fix` can leave formatting half-done.
 
 ---
 
@@ -72,7 +72,7 @@ bun run lint:all         # run the full pre-push gate (lefthook)
 ### Imports
 
 - Named imports for utilities and types: `import { foo, type Bar } from "..."`.
-- Imports are **sorted by line-length** (longest first within each group) via `eslint-plugin-perfectionist`.
+- Imports are **sorted by line length** (shortest first within each group) by perfectionist's `sort-imports`.
 - No barrel re-exports that cause circular dependencies.
 - Path alias `~/` maps to `apps/web/` root (configured in `tsconfig.app.json` and Vite).
 
@@ -184,7 +184,7 @@ function TodoList(): React.ReactNode {
 }
 ```
 
-### Complexity Limits (enforced by ESLint)
+### Complexity Limits (enforced by oxlint)
 
 - Max **15 statements** per function.
 - Max **2 parameters** per function.
@@ -234,13 +234,13 @@ Rules:
 
 ## Architecture
 
-| Layer       | Package           | Notes                                                                                                                                                                     |
-| ----------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Domain      | `packages/core`   | Pure logic, no framework. Entities, CQRS handlers, ports, oRPC contract.                                                                                                  |
-| Kernel      | `packages/kernel` | `@react-template/kernel` — framework-agnostic primitives: CQRS interfaces (`CommandHandler` / `QueryHandler`), execution `Context` + cancellation, `Result` test helpers. |
-| Server      | `apps/server`     | Bun HTTP server. Serves oRPC + OpenAPI (Scalar).                                                                                                                          |
-| Web         | `apps/web`        | React 19 SPA. Vite 7, Tailwind v4, TanStack Query v5.                                                                                                                     |
-| Shared lint | `packages/lint`   | `@deluxeowl/lint` — the one built (Model B) package; `createConfig()` / `createReactConfig()` factories, oxlint/ast-grep/dprint configs. Published to GitHub Packages.    |
+| Layer       | Package           | Notes                                                                                                                                                                                                                                                        |
+| ----------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Domain      | `packages/core`   | Pure logic, no framework. Entities, CQRS handlers, ports, oRPC contract.                                                                                                                                                                                     |
+| Kernel      | `packages/kernel` | `@react-template/kernel` — framework-agnostic primitives: CQRS interfaces (`CommandHandler` / `QueryHandler`), execution `Context` + cancellation, `Result` test helpers.                                                                                    |
+| Server      | `apps/server`     | Bun HTTP server. Serves oRPC + OpenAPI (Scalar).                                                                                                                                                                                                             |
+| Web         | `apps/web`        | React 19 SPA. Vite 7, Tailwind v4, TanStack Query v5.                                                                                                                                                                                                        |
+| Shared lint | `packages/lint`   | `@deluxeowl/lint` — the one built (Model B) package; oxlint presets (`createOxlintConfig()` / `createOxlintReactConfig()`), ESLint factories (`createConfig()` / `createReactConfig()`) for the rest, ast-grep/dprint configs. Published to GitHub Packages. |
 
 - API contract is defined in `packages/core` via oRPC route definitions, shared with the web client.
 - `apps/web/api.ts` provides the typed oRPC client + TanStack Query utilities.
