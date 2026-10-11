@@ -16,38 +16,17 @@ import {
     migratedToOxlint, baseRulesHandledByOxlint, reactRulesHandledByOxlint,
 } from "./handled-by-oxlint.ts"
 
-export interface TailwindRestriction {
-    fix?:     string
-    message?: string
-    pattern:  string
-}
-
 export interface ReactConfigOptions extends ConfigOptions {
-    vendoredFiles?:                  string[]
-    additionalTailwindRestrictions?: TailwindRestriction[]
+    vendoredFiles?: string[]
 }
-
-// Opt in only when the stylesheet imports `shadow-plugin`. Color utilities remain valid.
-export const smoothShadowRestrictions: TailwindRestriction[] = [
-    {
-        fix:     "$1smooth-shadow$2",
-        message: "Use the smooth-shadow scale (smooth-shadow-ring-* on elevated surfaces) instead of Tailwind's default shadows.",
-        pattern: "^([a-zA-Z0-9:/_-]*:)?shadow(-(?:xs|sm|md|lg|xl|2xl|none))?$",
-    },
-    {
-        message: "No smooth-shadow-2xs exists. Use 'smooth-shadow-xs' or no shadow at all.",
-        pattern: "^([a-zA-Z0-9:/_-]*:)?shadow-2xs$",
-    },
-]
 
 function createVendoredConfig(files: string[]): Config {
     return {
         files,
         rules: {
-            "better-tailwindcss/no-unknown-classes": "off",
-            "sweepit/jsx-on-handler-verb-suffix":    "off",
-            "sweepit/no-array-props":                "off",
-            "sweepit/no-object-props":               "off",
+            "sweepit/jsx-on-handler-verb-suffix": "off",
+            "sweepit/no-array-props":             "off",
+            "sweepit/no-object-props":            "off",
         },
     }
 }
@@ -102,6 +81,11 @@ export default function createReactConfig(rootDir: string, options?: ReactConfig
 
             rules: {
                 "@eslint-react/no-leaked-conditional-rendering": ["error"],
+                // The other better-tailwindcss rules run in oxlint (./oxlint/better-tailwindcss.ts). This
+                // one stays: Tailwind's canonical form of a class depends on the classes compiled before
+                // it in the same process, and oxlint lints files in parallel, in a new process each fix
+                // round, so its fixes would differ.
+                "better-tailwindcss/enforce-canonical-classes":  "warn",
                 "sweepit/jsx-compound-part-export-naming":       "off",
                 // Accept verb-first callbacks such as `onCreateAppointment`.
                 "sweepit/jsx-on-handler-verb-suffix":            "off",
@@ -115,79 +99,7 @@ export default function createReactConfig(rootDir: string, options?: ReactConfig
                     },
                 ],
                 // View-model hooks can wrap pure logic or call React 19 `use`.
-                "sweepit/no-useless-hook":                             "off",
-                ...betterTailwindcss.configs["stylistic-warn"].rules,
-                ...betterTailwindcss.configs["correctness-error"].rules,
-                "better-tailwindcss/enforce-consistent-line-wrapping": [
-                    "error", {
-                        group:      "newLine",
-                        printWidth: 120,
-                    },
-                ],
-                "better-tailwindcss/no-restricted-classes": [
-                    // See https://github.com/schoero/eslint-plugin-better-tailwindcss/issues/267
-                    "warn", {
-                        restrict: [
-                            {
-                                message: "Restricted hardcoded color. Define a css variable instead.",
-                                pattern: "^([a-zA-Z0-9:/_-]*:)?(text|bg)-(red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|slate|gray|zinc|neutral|stone)-([0-9])*(\\/[0-9]{1,3})?$",
-                            },
-                            // 1. Spacing (Padding/Margin) & Border/Rounded Left -> Start
-                            {
-                                fix:     "$1$2s$3",
-                                message: "Use logical 'start' (-s) instead of 'left' (-l) for RTL support.",
-                                pattern: "^([a-zA-Z0-9:/_-]*:)?(p|m|border-|rounded-)l([-|\\d|px|\\[].*)$",
-                            },
-                            // 2. Spacing (Padding/Margin) & Border/Rounded Right -> End
-                            {
-                                fix:     "$1$2e$3",
-                                message: "Use logical 'end' (-e) instead of 'right' (-r) for RTL support.",
-                                pattern: "^([a-zA-Z0-9:/_-]*:)?(p|m|border-|rounded-)r([-|\\d|px|\\[].*)$",
-                            },
-                            // 3. Inset Left -> Start
-                            {
-                                fix:     "$1start$2",
-                                message: "Use 'start' instead of 'left' for RTL support.",
-                                pattern: "^([a-zA-Z0-9:/_-]*:)?left([-|\\d|px|\\[].*)$",
-                            },
-                            // 4. Inset Right -> End
-                            {
-                                fix:     "$1end$2",
-                                message: "Use 'end' instead of 'right' for RTL support.",
-                                pattern: "^([a-zA-Z0-9:/_-]*:)?right([-|\\d|px|\\[].*)$",
-                            },
-                            // 5. Text Align Left -> Start
-                            {
-                                fix:     "$1text-start",
-                                message: "Use 'text-start' instead of 'text-left'.",
-                                pattern: "^([a-zA-Z0-9:/_-]*:)?text-left$",
-                            },
-                            // 6. Text Align Right -> End
-                            {
-                                fix:     "$1text-end",
-                                message: "Use 'text-end' instead of 'text-right'.",
-                                pattern: "^([a-zA-Z0-9:/_-]*:)?text-right$",
-                            },
-                            // 7. Space utilities cause layout issues. Use gap utilities instead.
-                            {
-                                message: "Use flex and 'gap' instead of 'space-' utilities.",
-                                pattern: "^([a-zA-Z0-9:/_-]*:)?space-",
-                            },
-                            // 8. Divide utilities can cause layout issues. Use gap with borders instead.
-                            {
-                                message: "Use 'gap' with border styling instead of 'divide-' utilities.",
-                                pattern: "^([a-zA-Z0-9:/_-]*:)?divide-",
-                            },
-                            // 9. Float utilities are outdated. Use flexbox or grid instead.
-                            {
-                                message: "Use flexbox or grid instead of 'float-' utilities.",
-                                pattern: "^([a-zA-Z0-9:/_-]*:)?float-",
-                            },
-                            // Rule options replace arrays in ESLint. Append here to retain shared restrictions.
-                            ...options?.additionalTailwindRestrictions ?? [],
-                        ],
-                    },
-                ],
+                "sweepit/no-useless-hook": "off",
             },
         },
         // Relax only the selected third-party files. Type-safety and return-type rules stay enabled.

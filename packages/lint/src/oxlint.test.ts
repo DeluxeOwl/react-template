@@ -12,6 +12,8 @@ import { runOxlintFix } from "./oxlint/index.ts"
 
 const scanBinary = path.resolve(import.meta.dirname, "../../../node_modules/.bin/oxlint")
 const presetsModule = path.resolve(import.meta.dirname, "oxlint/index.ts")
+// Tailwind and the app's stylesheet resolve from here; a fixture's temp dir has neither.
+const webDir = path.resolve(import.meta.dirname, "../../../apps/web")
 // runOxlintFix runs oxlint several times (one round of fixes each); slow on a busy machine
 const fixLoopTimeout = 60 * 1000
 
@@ -24,13 +26,19 @@ function fixture(configExpression: string): string {
     })
     writeFileSync(
         path.join(dir, "oxlint.config.ts"),
-        `import { createOxlintConfig, defaultVendoredFiles, createOxlintReactConfig } from ${JSON.stringify(presetsModule)}\n\nexport default ${configExpression}\n`,
+        `import { createOxlintConfig, defaultVendoredFiles, createOxlintReactConfig, smoothShadowRestrictions } from ${JSON.stringify(presetsModule)}\n\nexport default ${configExpression}\n`,
     )
 
     return dir
 }
 
-function lint(dir: string, files: Record<string, string>): { output: string, status: null | number } {
+interface LintResult {
+    output: string
+    stdout: string
+    status: null | number
+}
+
+function lint(dir: string, files: Record<string, string>): LintResult {
     for (const [file, source] of Object.entries(files)) {
         const fullPath = path.join(dir, file)
 
@@ -40,7 +48,26 @@ function lint(dir: string, files: Record<string, string>): { output: string, sta
 
     const result = spawnSync(scanBinary, ["--format=json", ...Object.keys(files)], { cwd: dir, encoding: "utf8" })
 
-    return { output: result.stdout + result.stderr, status: result.status }
+    // stderr has plugin warnings, e.g. better-tailwindcss when the fixture has no Tailwind
+    return {
+        output: result.stdout + result.stderr, status: result.status, stdout: result.stdout,
+    }
+}
+
+interface JsonDiagnostic {
+    code:    string
+    message: string
+    labels:  { span: { offset: number } }[]
+}
+
+// Messages of better-tailwindcss/no-restricted-classes in `oxlint --format=json` output, in source order.
+function restrictedClassMessages(stdout: string): string[] {
+    const { diagnostics } = JSON.parse(stdout) as { diagnostics: JsonDiagnostic[] }
+
+    return diagnostics
+        .filter((diagnostic) => diagnostic.code === "better-tailwindcss(no-restricted-classes)")
+        .toSorted((first, second) => first.labels[0].span.offset - second.labels[0].span.offset)
+        .map((diagnostic) => diagnostic.message)
 }
 
 describe("shared oxlint React presets", () => {
@@ -118,10 +145,10 @@ describe("shared oxlint React presets", () => {
                 const source = "export function Card(): React.ReactNode {\n    return <div className=\"m-4\" />\n}\n"
 
                 // WHEN
-                const { output } = lint(dir, { "src/components/ui/card.tsx": source, "src/features/card.tsx": source })
+                const { stdout } = lint(dir, { "src/components/ui/card.tsx": source, "src/features/card.tsx": source })
 
                 // THEN
-                const { diagnostics } = JSON.parse(output) as { diagnostics: { code: string, filename: string }[] }
+                const { diagnostics } = JSON.parse(stdout) as { diagnostics: { code: string, filename: string }[] }
                 const margins = diagnostics.filter((diagnostic) => diagnostic.code === "custom(no-margin-on-root-jsx)")
 
                 expect(margins.map((diagnostic) => diagnostic.filename)).toStrictEqual(["src/features/card.tsx"])
@@ -139,10 +166,10 @@ describe("shared oxlint React presets", () => {
                 const source = "export function fail(): never {\n    throw new Error(\"no\")\n}\n"
 
                 // WHEN
-                const { output } = lint(dir, { "src/components/ui/fail.ts": source, "src/features/fail.ts": source })
+                const { stdout } = lint(dir, { "src/components/ui/fail.ts": source, "src/features/fail.ts": source })
 
                 // THEN
-                const { diagnostics } = JSON.parse(output) as { diagnostics: { code: string, filename: string }[] }
+                const { diagnostics } = JSON.parse(stdout) as { diagnostics: { code: string, filename: string }[] }
                 const banned = diagnostics.filter((diagnostic) => diagnostic.code === "eslint-js(no-restricted-syntax)")
 
                 expect(banned.map((diagnostic) => diagnostic.filename)).toStrictEqual(["src/features/fail.ts"])
@@ -281,6 +308,42 @@ describe("shared oxlint React presets", () => {
                 expect(status).toBe(1)
                 expect(readFileSync(path.join(dir, "src/use-projects.ts"), "utf8")).toBe(expected)
                 expect(stderr).toHaveBeenCalledWith(expect.stringContaining("Circular fixes detected"))
+            })
+        })
+    })
+
+    describe("given React projects with and without shadow-plugin", () => {
+        describe("when adding smooth-shadow restrictions", () => {
+            it("then it keeps the color and RTL restrictions and restricts shadows only when opted in", { timeout: fixLoopTimeout }, () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const tailwindSettings = `tailwindSettings: { cwd: ${JSON.stringify(webDir)}, entryPoint: "index.css" }`
+                const defaults = fixture(`createOxlintReactConfig({ ${tailwindSettings} })`)
+                const optedIn = fixture(`createOxlintReactConfig({ additionalTailwindRestrictions: smoothShadowRestrictions, ${tailwindSettings} })`)
+                const view = { "src/view.tsx": "export const view = <div className=\"text-red-500 pl-4 shadow-lg hover:shadow-2xs shadow-red-500\" />\n" }
+
+                spawnSync("git", ["init", "--quiet"], { cwd: optedIn })
+
+                // WHEN
+                const defaultMessages = restrictedClassMessages(lint(defaults, view).stdout)
+                const optedInMessages = restrictedClassMessages(lint(optedIn, view).stdout)
+                runOxlintFix(["src/view.tsx"], { cwd: optedIn })
+                const fixed = readFileSync(path.join(optedIn, "src/view.tsx"), "utf8")
+
+                // THEN
+                expect(defaultMessages).toStrictEqual([
+                    "Restricted hardcoded color. Define a css variable instead.",
+                    "Use logical 'start' (-s) instead of 'left' (-l) for RTL support.",
+                ])
+                expect(optedInMessages).toStrictEqual([
+                    "Restricted hardcoded color. Define a css variable instead.",
+                    "Use logical 'start' (-s) instead of 'left' (-l) for RTL support.",
+                    "Use the smooth-shadow scale (smooth-shadow-ring-* on elevated surfaces) instead of Tailwind's default shadows.",
+                    "No smooth-shadow-2xs exists. Use 'smooth-shadow-xs' or no shadow at all.",
+                ])
+                expect(fixed).toContain("smooth-shadow-lg")
+                expect(fixed).toContain("hover:shadow-2xs")
             })
         })
     })

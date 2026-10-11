@@ -21,6 +21,9 @@ import { typescriptEslintConfig } from "./typescript-eslint.ts"
 import { reactRenderTypesConfig } from "./react-render-types.ts"
 import { sweepitConfig, sweepitReactConfig } from "./sweepit.ts"
 import { youMightNotNeedAnEffectConfig } from "./you-might-not-need-an-effect.ts"
+import {
+    type TailwindSettings, type TailwindRestriction, createBetterTailwindcssConfig,
+} from "./better-tailwindcss.ts"
 
 export { runOxlintFix } from "./fix.ts"
 export { reactConfig } from "./react.ts"
@@ -44,6 +47,9 @@ export { reactRenderTypesConfig } from "./react-render-types.ts"
 export { sweepitConfig, sweepitReactConfig } from "./sweepit.ts"
 export { defaultVendoredFiles, vendoredRules } from "./vendored.ts"
 export { youMightNotNeedAnEffectConfig } from "./you-might-not-need-an-effect.ts"
+export {
+    smoothShadowRestrictions, type TailwindRestriction, type TailwindSettings,
+} from "./better-tailwindcss.ts"
 
 export interface OxlintConfigOptions {
     // Gitignore-style patterns appended to the preset's `ignorePatterns` (relative to the config file).
@@ -53,7 +59,12 @@ export interface OxlintConfigOptions {
 export interface OxlintReactConfigOptions extends OxlintConfigOptions {
     // Relax vendor policy for generated UI (shadcn, ReUI). Pass `defaultVendoredFiles` for the standard
     // directories. Type-safety and return-type rules stay enabled.
-    vendoredFiles?: string[]
+    vendoredFiles?:                  string[]
+    // `settings["better-tailwindcss"]`, e.g. `{ cwd: import.meta.dirname, entryPoint: "index.css" }`.
+    tailwindSettings?:               TailwindSettings
+    // Appended to the shared better-tailwindcss/no-restricted-classes list, e.g.
+    // `smoothShadowRestrictions` when the stylesheet imports `shadow-plugin`.
+    additionalTailwindRestrictions?: TailwindRestriction[]
 }
 
 function unique<T>(values: T[]): T[] {
@@ -137,6 +148,7 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
         reactRenderTypesConfig,
         reactHooksConfig,
         eslintReactConfig,
+        createBetterTailwindcssConfig(options?.additionalTailwindRestrictions ?? [], options?.tailwindSettings),
         { ignorePatterns: options?.ignorePatterns ?? [], overrides: vendored },
     )
 }

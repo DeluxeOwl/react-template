@@ -42,6 +42,11 @@
                 "ctx/*.ts",
                 "test-helpers/*.ts"
             ]
+        },
+        "packages/lint": {
+            "entry": [
+                "vendor/better-tailwindcss/tailwindcss/tailwind.async.worker.v{3,4}.js"
+            ]
         }
     }
 }

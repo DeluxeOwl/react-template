@@ -187,15 +187,37 @@ Projects without vendored UI call `createOxlintReactConfig()` without options.
 Both React presets allow Node imports in scripts, configuration files, and tests, but not browser source.
 They reject the `@phosphor-icons/react` barrel. Direct icon imports remain valid.
 
+### Tailwind
+
+The better-tailwindcss rules run in oxlint.
+`enforce-canonical-classes` stays in the ESLint React preset: its fixes depend on the classes that one process compiled before.
+Both tools must find the stylesheet that imports Tailwind:
+
+```ts
+// oxlint.config.ts
+export default createOxlintReactConfig({
+    tailwindSettings: { cwd: import.meta.dirname, entryPoint: "index.css" },
+})
+```
+
+```ts
+// eslint.config.ts, next to the React preset
+settings: { "better-tailwindcss": { entryPoint: "index.css" } },
+```
+
+oxlint resolves `entryPoint` from `cwd`.
+Set `cwd` to `import.meta.dirname`, because oxlint can start in another directory, for example in an editor.
+
 ### Additional Tailwind restrictions
 
-ESLint replaces rule-option arrays rather than merging them.
+Rule options replace arrays rather than merging them.
 Use `additionalTailwindRestrictions` to retain the shared color and RTL restrictions:
 
 ```ts
-import createReactConfig, { smoothShadowRestrictions } from "@deluxeowl/lint/react"
+// oxlint.config.ts
+import { smoothShadowRestrictions, createOxlintReactConfig } from "@deluxeowl/lint/oxlint"
 
-export default createReactConfig(import.meta.dirname, {
+export default createOxlintReactConfig({
     additionalTailwindRestrictions: smoothShadowRestrictions,
 })
 ```

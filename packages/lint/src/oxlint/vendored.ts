@@ -18,6 +18,7 @@ export const vendoredRules = {
     "@eslint-react/no-nested-component-definitions":             "off",
     "@eslint-react/set-state-in-effect":                         "off",
     "@eslint-react/use-state":                                   "off",
+    "better-tailwindcss/no-unknown-classes":                     "off",
     "custom/no-margin-on-root-jsx":                              "off",
     "custom/prefer-discriminated-union":                         "off",
     "eslint-js/no-restricted-syntax":                            "off",
