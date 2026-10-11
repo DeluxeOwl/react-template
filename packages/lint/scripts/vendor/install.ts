@@ -2,7 +2,7 @@ import path from "node:path"
 import { tmpdir } from "node:os"
 import { createHash } from "node:crypto"
 import { createRequire } from "node:module"
-import { execFileSync } from "node:child_process"
+import { spawnSync } from "node:child_process"
 import {
     mkdirSync, existsSync, realpathSync, writeFileSync,
 } from "node:fs"
@@ -15,6 +15,8 @@ import { readManifest } from "./manifest.ts"
 // Like the repo's .npmrc (`min-release-age=7`): don't install anything published in the last week.
 const MinimumReleaseAgeDays = 7
 const JsonIndent = 4
+// bun install has no network timeout of its own; a stalled registry request would hang the tool.
+const InstallTimeoutMs = 300 * 1000
 
 // Upstream plugins take TypeScript as a peer, and bun would install the newest one (which they may
 // not support): install the TypeScript the repo runs, unless the spec pins one.
@@ -38,7 +40,12 @@ export function installUpstream(spec: PluginSpec): string {
         mkdirSync(dir, { recursive: true })
         writeFileSync(path.join(dir, "package.json"), `${JSON.stringify({ dependencies, private: true }, undefined, JsonIndent)}\n`)
         const age = `--minimum-release-age=${MinimumReleaseAgeDays * 24 * 60 * 60}`
-        execFileSync("bun", ["install", "--linker", "hoisted", age], { cwd: dir, stdio: "inherit" })
+        const install = spawnSync("bun", ["install", "--linker", "hoisted", age], {
+            cwd: dir, stdio: "inherit", timeout: InstallTimeoutMs,
+        })
+        if (install.status !== 0) {
+            fail(`bun install failed in ${dir} (${install.error?.message ?? `exit ${String(install.status)}`}); run the tool again`)
+        }
         writeFileSync(marker, pins)
     }
 
