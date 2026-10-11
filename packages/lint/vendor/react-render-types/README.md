@@ -1,15 +1,9 @@
 # react-render-types (vendored)
 
-Copied from `eslint-plugin-react-render-types@0.7.6` (MIT) by the oxlint migration's vendoring tool (`scratch/oxlint-migration/vendor/vendor.ts`, local to the migration branch for now). Do not edit these files by hand: change the tool and regenerate.
+Copied from `eslint-plugin-react-render-types@0.7.6` (MIT) by `packages/lint/scripts/vendor/vendor.ts`. Do not edit these files by hand: change the spec (`scripts/vendor/specs/react-render-types.ts`) or the tool, and run `bun run vendor react-render-types` in packages/lint.
 Only the rules enabled in our presets are included; they run inside oxlint as a JS plugin.
 
 Rules (1): `renders-uses-vars`.
-
-Enabled upstream rules not vendored:
-
-- `valid-render-prop`: stays in ESLint: it reads types from the TypeScript type checker (parserServices), which oxlint JS plugins do not get
-- `valid-render-return`: stays in ESLint: it reads types from the TypeScript type checker (parserServices), which oxlint JS plugins do not get
-- `valid-renders-jsdoc`: stays in ESLint: it reads types from the TypeScript type checker (parserServices), which oxlint JS plugins do not get
 
 External runtime dependencies: `@typescript-eslint/utils` (upstream range `^8.53.1`).
 

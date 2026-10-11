@@ -31,9 +31,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/definition/DefinitionType.js
+// node_modules/@typescript-eslint/scope-manager/dist/definition/DefinitionType.js
 var require_DefinitionType = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/definition/DefinitionType.js"(exports) {
+  "node_modules/@typescript-eslint/scope-manager/dist/definition/DefinitionType.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.DefinitionType = void 0;
@@ -54,9 +54,9 @@ var require_DefinitionType = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/scope/ScopeType.js
+// node_modules/@typescript-eslint/scope-manager/dist/scope/ScopeType.js
 var require_ScopeType = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/scope/ScopeType.js"(exports) {
+  "node_modules/@typescript-eslint/scope-manager/dist/scope/ScopeType.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ScopeType = void 0;
@@ -84,9 +84,9 @@ var require_ScopeType = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+visitor-keys@8.59.1/node_modules/@typescript-eslint/visitor-keys/dist/get-keys.js
+// node_modules/@typescript-eslint/visitor-keys/dist/get-keys.js
 var require_get_keys = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+visitor-keys@8.59.1/node_modules/@typescript-eslint/visitor-keys/dist/get-keys.js"(exports) {
+  "node_modules/@typescript-eslint/visitor-keys/dist/get-keys.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getKeys = void 0;
@@ -95,9 +95,9 @@ var require_get_keys = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+visitor-keys@8.59.1/node_modules/@typescript-eslint/visitor-keys/dist/visitor-keys.js
+// node_modules/@typescript-eslint/visitor-keys/dist/visitor-keys.js
 var require_visitor_keys = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+visitor-keys@8.59.1/node_modules/@typescript-eslint/visitor-keys/dist/visitor-keys.js"(exports) {
+  "node_modules/@typescript-eslint/visitor-keys/dist/visitor-keys.js"(exports) {
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -277,9 +277,9 @@ var require_visitor_keys = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+visitor-keys@8.59.1/node_modules/@typescript-eslint/visitor-keys/dist/index.js
+// node_modules/@typescript-eslint/visitor-keys/dist/index.js
 var require_dist = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+visitor-keys@8.59.1/node_modules/@typescript-eslint/visitor-keys/dist/index.js"(exports) {
+  "node_modules/@typescript-eslint/visitor-keys/dist/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.visitorKeys = exports.getKeys = void 0;
@@ -294,9 +294,9 @@ var require_dist = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/referencer/VisitorBase.js
+// node_modules/@typescript-eslint/scope-manager/dist/referencer/VisitorBase.js
 var require_VisitorBase = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/referencer/VisitorBase.js"(exports) {
+  "node_modules/@typescript-eslint/scope-manager/dist/referencer/VisitorBase.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.VisitorBase = void 0;
@@ -365,9 +365,9 @@ var require_VisitorBase = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/referencer/PatternVisitor.js
+// node_modules/@typescript-eslint/scope-manager/dist/referencer/PatternVisitor.js
 var require_PatternVisitor = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/referencer/PatternVisitor.js"(exports) {
+  "node_modules/@typescript-eslint/scope-manager/dist/referencer/PatternVisitor.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.PatternVisitor = void 0;
@@ -451,9 +451,9 @@ var require_PatternVisitor = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/referencer/Visitor.js
+// node_modules/@typescript-eslint/scope-manager/dist/referencer/Visitor.js
 var require_Visitor = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/referencer/Visitor.js"(exports) {
+  "node_modules/@typescript-eslint/scope-manager/dist/referencer/Visitor.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.VisitorBase = exports.Visitor = void 0;
@@ -481,9 +481,9 @@ var require_Visitor = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/ID.js
+// node_modules/@typescript-eslint/scope-manager/dist/ID.js
 var require_ID = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/ID.js"(exports) {
+  "node_modules/@typescript-eslint/scope-manager/dist/ID.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.createIdGenerator = createIdGenerator;
@@ -506,9 +506,9 @@ var require_ID = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/variable/VariableBase.js
+// node_modules/@typescript-eslint/scope-manager/dist/variable/VariableBase.js
 var require_VariableBase = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/variable/VariableBase.js"(exports) {
+  "node_modules/@typescript-eslint/scope-manager/dist/variable/VariableBase.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.VariableBase = void 0;
@@ -559,9 +559,9 @@ var require_VariableBase = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/variable/ESLintScopeVariable.js
+// node_modules/@typescript-eslint/scope-manager/dist/variable/ESLintScopeVariable.js
 var require_ESLintScopeVariable = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/variable/ESLintScopeVariable.js"(exports) {
+  "node_modules/@typescript-eslint/scope-manager/dist/variable/ESLintScopeVariable.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ESLintScopeVariable = void 0;
@@ -597,9 +597,9 @@ var require_ESLintScopeVariable = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/variable/ImplicitLibVariable.js
+// node_modules/@typescript-eslint/scope-manager/dist/variable/ImplicitLibVariable.js
 var require_ImplicitLibVariable = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+scope-manager@8.59.1/node_modules/@typescript-eslint/scope-manager/dist/variable/ImplicitLibVariable.js"(exports) {
+  "node_modules/@typescript-eslint/scope-manager/dist/variable/ImplicitLibVariable.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ImplicitLibVariable = void 0;
@@ -636,9 +636,9 @@ var require_scope = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+types@8.59.1/node_modules/@typescript-eslint/types/dist/generated/ast-spec.js
+// node_modules/@typescript-eslint/types/dist/generated/ast-spec.js
 var require_ast_spec = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+types@8.59.1/node_modules/@typescript-eslint/types/dist/generated/ast-spec.js"(exports) {
+  "node_modules/@typescript-eslint/types/dist/generated/ast-spec.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.AST_TOKEN_TYPES = exports.AST_NODE_TYPES = void 0;
@@ -833,25 +833,25 @@ var require_ast_spec = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+types@8.59.1/node_modules/@typescript-eslint/types/dist/lib.js
+// node_modules/@typescript-eslint/types/dist/lib.js
 var require_lib = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+types@8.59.1/node_modules/@typescript-eslint/types/dist/lib.js"(exports) {
+  "node_modules/@typescript-eslint/types/dist/lib.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+types@8.59.1/node_modules/@typescript-eslint/types/dist/parser-options.js
+// node_modules/@typescript-eslint/types/dist/parser-options.js
 var require_parser_options = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+types@8.59.1/node_modules/@typescript-eslint/types/dist/parser-options.js"(exports) {
+  "node_modules/@typescript-eslint/types/dist/parser-options.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+types@8.59.1/node_modules/@typescript-eslint/types/dist/ts-estree.js
+// node_modules/@typescript-eslint/types/dist/ts-estree.js
 var require_ts_estree = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+types@8.59.1/node_modules/@typescript-eslint/types/dist/ts-estree.js"(exports) {
+  "node_modules/@typescript-eslint/types/dist/ts-estree.js"(exports) {
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -896,9 +896,9 @@ var require_ts_estree = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+types@8.59.1/node_modules/@typescript-eslint/types/dist/index.js
+// node_modules/@typescript-eslint/types/dist/index.js
 var require_dist2 = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+types@8.59.1/node_modules/@typescript-eslint/types/dist/index.js"(exports) {
+  "node_modules/@typescript-eslint/types/dist/index.js"(exports) {
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -931,9 +931,9 @@ var require_dist2 = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/astUtilities.js
+// node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/astUtilities.js
 var require_astUtilities = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/astUtilities.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/astUtilities.js"(exports) {
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -985,9 +985,9 @@ var require_astUtilities = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/PatternMatcher.js
+// node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/PatternMatcher.js
 var require_PatternMatcher = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/PatternMatcher.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/PatternMatcher.js"(exports) {
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -1033,9 +1033,9 @@ var require_PatternMatcher = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/predicates.js
+// node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/predicates.js
 var require_predicates = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/predicates.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/predicates.js"(exports) {
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -1102,9 +1102,9 @@ var require_predicates = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/ReferenceTracker.js
+// node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/ReferenceTracker.js
 var require_ReferenceTracker = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/ReferenceTracker.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/ReferenceTracker.js"(exports) {
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -1154,9 +1154,9 @@ var require_ReferenceTracker = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/scopeAnalysis.js
+// node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/scopeAnalysis.js
 var require_scopeAnalysis = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/scopeAnalysis.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/scopeAnalysis.js"(exports) {
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -1203,9 +1203,9 @@ var require_scopeAnalysis = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/index.js
+// node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/index.js
 var require_eslint_utils = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/index.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/ast-utils/eslint-utils/index.js"(exports) {
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -1232,9 +1232,9 @@ var require_eslint_utils = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/helpers.js
+// node_modules/@typescript-eslint/utils/dist/ast-utils/helpers.js
 var require_helpers = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/helpers.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/ast-utils/helpers.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.isNotTokenOfTypeWithConditions = exports.isTokenOfTypeWithConditions = exports.isNodeOfTypeWithConditions = exports.isNodeOfTypes = exports.isNodeOfType = void 0;
@@ -1257,9 +1257,9 @@ var require_helpers = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/misc.js
+// node_modules/@typescript-eslint/utils/dist/ast-utils/misc.js
 var require_misc = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/misc.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/ast-utils/misc.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.LINEBREAK_MATCHER = void 0;
@@ -1271,9 +1271,9 @@ var require_misc = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ts-estree.js
+// node_modules/@typescript-eslint/utils/dist/ts-estree.js
 var require_ts_estree2 = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ts-estree.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/ts-estree.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.TSESTree = exports.AST_TOKEN_TYPES = exports.AST_NODE_TYPES = void 0;
@@ -1290,9 +1290,9 @@ var require_ts_estree2 = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/predicates.js
+// node_modules/@typescript-eslint/utils/dist/ast-utils/predicates.js
 var require_predicates2 = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/predicates.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/ast-utils/predicates.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.isLoop = exports.isImportKeyword = exports.isTypeKeyword = exports.isAwaitKeyword = exports.isAwaitExpression = exports.isIdentifier = exports.isConstructor = exports.isClassOrTypeElement = exports.isTSConstructorType = exports.isTSFunctionType = exports.isFunctionOrFunctionType = exports.isFunctionType = exports.isFunction = exports.isVariableDeclarator = exports.isTypeAssertion = exports.isLogicalOrOperator = exports.isOptionalCallExpression = exports.isNotNonNullAssertionPunctuator = exports.isNonNullAssertionPunctuator = exports.isNotOptionalChainPunctuator = exports.isOptionalChainPunctuator = void 0;
@@ -1372,9 +1372,9 @@ var require_predicates2 = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/index.js
+// node_modules/@typescript-eslint/utils/dist/ast-utils/index.js
 var require_ast_utils = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ast-utils/index.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/ast-utils/index.js"(exports) {
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -1400,9 +1400,9 @@ var require_ast_utils = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/deepMerge.js
+// node_modules/@typescript-eslint/utils/dist/eslint-utils/deepMerge.js
 var require_deepMerge = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/deepMerge.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/eslint-utils/deepMerge.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.isObjectNotArray = isObjectNotArray;
@@ -1435,9 +1435,9 @@ var require_deepMerge = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/applyDefault.js
+// node_modules/@typescript-eslint/utils/dist/eslint-utils/applyDefault.js
 var require_applyDefault = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/applyDefault.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/eslint-utils/applyDefault.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.applyDefault = applyDefault;
@@ -1462,9 +1462,9 @@ var require_applyDefault = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/parserSeemsToBeTSESLint.js
+// node_modules/@typescript-eslint/utils/dist/eslint-utils/parserSeemsToBeTSESLint.js
 var require_parserSeemsToBeTSESLint = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/parserSeemsToBeTSESLint.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/eslint-utils/parserSeemsToBeTSESLint.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.parserSeemsToBeTSESLint = parserSeemsToBeTSESLint;
@@ -1474,9 +1474,9 @@ var require_parserSeemsToBeTSESLint = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/getParserServices.js
+// node_modules/@typescript-eslint/utils/dist/eslint-utils/getParserServices.js
 var require_getParserServices = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/getParserServices.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/eslint-utils/getParserServices.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getParserServices = getParserServices;
@@ -1507,17 +1507,17 @@ var require_getParserServices = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/InferTypesFromRule.js
+// node_modules/@typescript-eslint/utils/dist/eslint-utils/InferTypesFromRule.js
 var require_InferTypesFromRule = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/InferTypesFromRule.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/eslint-utils/InferTypesFromRule.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/nullThrows.js
+// node_modules/@typescript-eslint/utils/dist/eslint-utils/nullThrows.js
 var require_nullThrows = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/nullThrows.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/eslint-utils/nullThrows.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.NullThrowsReasons = void 0;
@@ -1535,9 +1535,9 @@ var require_nullThrows = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/RuleCreator.js
+// node_modules/@typescript-eslint/utils/dist/eslint-utils/RuleCreator.js
 var require_RuleCreator = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/RuleCreator.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/eslint-utils/RuleCreator.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.RuleCreator = RuleCreator;
@@ -1583,9 +1583,9 @@ var require_RuleCreator = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/index.js
+// node_modules/@typescript-eslint/utils/dist/eslint-utils/index.js
 var require_eslint_utils2 = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/eslint-utils/index.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/eslint-utils/index.js"(exports) {
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -1613,9 +1613,9 @@ var require_eslint_utils2 = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ts-eslint/Scope.js
+// node_modules/@typescript-eslint/utils/dist/ts-eslint/Scope.js
 var require_Scope = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+utils@8.59.1+046359a6efbb307b/node_modules/@typescript-eslint/utils/dist/ts-eslint/Scope.js"(exports) {
+  "node_modules/@typescript-eslint/utils/dist/ts-eslint/Scope.js"(exports) {
     "use strict";
     var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
       if (k2 === void 0) k2 = k;
@@ -1678,9 +1678,9 @@ var require_utils = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/util/createRule.js
+// node_modules/@typescript-eslint/eslint-plugin/dist/util/createRule.js
 var require_createRule = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/util/createRule.js"(exports) {
+  "node_modules/@typescript-eslint/eslint-plugin/dist/util/createRule.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.createRule = void 0;
@@ -1689,9 +1689,9 @@ var require_createRule = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/util/isTypeImport.js
+// node_modules/@typescript-eslint/eslint-plugin/dist/util/isTypeImport.js
 var require_isTypeImport = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/util/isTypeImport.js"(exports) {
+  "node_modules/@typescript-eslint/eslint-plugin/dist/util/isTypeImport.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.isTypeImport = isTypeImport;
@@ -1703,9 +1703,9 @@ var require_isTypeImport = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/util/referenceContainsTypePredicate.js
+// node_modules/@typescript-eslint/eslint-plugin/dist/util/referenceContainsTypePredicate.js
 var require_referenceContainsTypePredicate = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/util/referenceContainsTypePredicate.js"(exports) {
+  "node_modules/@typescript-eslint/eslint-plugin/dist/util/referenceContainsTypePredicate.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.referenceContainsTypePredicate = referenceContainsTypePredicate;
@@ -1724,9 +1724,9 @@ var require_referenceContainsTypePredicate = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/util/referenceContainsTypeQuery.js
+// node_modules/@typescript-eslint/eslint-plugin/dist/util/referenceContainsTypeQuery.js
 var require_referenceContainsTypeQuery = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/util/referenceContainsTypeQuery.js"(exports) {
+  "node_modules/@typescript-eslint/eslint-plugin/dist/util/referenceContainsTypeQuery.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.referenceContainsTypeQuery = referenceContainsTypeQuery;
@@ -1745,9 +1745,9 @@ var require_referenceContainsTypeQuery = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/util/collectUnusedVariables.js
+// node_modules/@typescript-eslint/eslint-plugin/dist/util/collectUnusedVariables.js
 var require_collectUnusedVariables = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/util/collectUnusedVariables.js"(exports) {
+  "node_modules/@typescript-eslint/eslint-plugin/dist/util/collectUnusedVariables.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.collectVariables = collectVariables;
@@ -2168,9 +2168,9 @@ var require_collectUnusedVariables = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/util/escapeRegExp.js
+// node_modules/@typescript-eslint/eslint-plugin/dist/util/escapeRegExp.js
 var require_escapeRegExp = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/util/escapeRegExp.js"(exports) {
+  "node_modules/@typescript-eslint/eslint-plugin/dist/util/escapeRegExp.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.escapeRegExp = escapeRegExp;
@@ -2218,9 +2218,9 @@ var require_rule_utils = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/rules/no-unused-vars.js
+// node_modules/@typescript-eslint/eslint-plugin/dist/rules/no-unused-vars.js
 var require_no_unused_vars = __commonJS({
-  "scratch/oxlint-migration/oracle/node_modules/.bun/@typescript-eslint+eslint-plugin@8.59.1+95a4b2df260e29fa/node_modules/@typescript-eslint/eslint-plugin/dist/rules/no-unused-vars.js"(exports) {
+  "node_modules/@typescript-eslint/eslint-plugin/dist/rules/no-unused-vars.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var scope_manager_1 = require_scope();
@@ -2941,7 +2941,7 @@ var require_no_unused_vars = __commonJS({
   }
 });
 
-// scratch/oxlint-migration/oracle/node_modules/.bun/eslint-plugin-unused-imports@4.4.1+72671d1b2ce30548/node_modules/eslint-plugin-unused-imports/dist/index.mjs
+// node_modules/eslint-plugin-unused-imports/dist/index.mjs
 var import_no_unused_vars = __toESM(require_no_unused_vars(), 1);
 var noUnusedVarsBase = import_no_unused_vars.default.default ?? import_no_unused_vars.default;
 var commaFilter = { filter: (token) => token.value === "," };

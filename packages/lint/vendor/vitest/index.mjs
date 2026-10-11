@@ -6139,7 +6139,7 @@ const toThrowMatchers = [
 	"toThrowErrorMatchingInlineSnapshot"
 ];
 const DEFAULT_MESSAGE = "This rule requires `@typescript-eslint/eslint-plugin`";
-// unbound-method stays in ESLint: oxlint JS plugins have no parser services.
+// unbound-method is not vendored: oxlint JS plugins have no parser services.
 // Do not import a third-party ESLint plugin merely to load the other rules.
 const baseRule = null;
 var unbound_method_default = createEslintRule({

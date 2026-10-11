@@ -169,6 +169,7 @@
       },
       "devDependencies": {
         "@types/node": "^25.6.0",
+        "esbuild": "0.25.12",
         "vitest": "^4.1.5",
         "zshy": "^0.7.3",
       },
@@ -198,8 +199,8 @@
   },
   "trustedDependencies": [
     "@ast-grep/cli",
-    "sqlite3",
     "esbuild",
+    "sqlite3",
     "dprint",
   ],
   "catalog": {

@@ -32,7 +32,8 @@
         "build": "zshy -p tsconfig.lib.json",
         "lint:oxlint": "oxlint-fix .",
         "typecheck": "tsc --noEmit -p tsconfig.lib.json && tsc --noEmit -p tsconfig.tooling.json",
-        "test": "bun vitest-on-node.ts --run --passWithNoTests --reporter=tree"
+        "test": "bun vitest-on-node.ts --run --passWithNoTests --reporter=tree",
+        "vendor": "bun scripts/vendor/vendor.ts"
     },
     "dependencies": {
         "@babel/core": "^7.29.0",
@@ -89,6 +90,7 @@
     },
     "devDependencies": {
         "@types/node": "^25.6.0",
+        "esbuild": "0.25.12",
         "vitest": "^4.1.5",
         "zshy": "^0.7.3"
     },

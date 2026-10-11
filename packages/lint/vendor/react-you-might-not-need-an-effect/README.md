@@ -1,6 +1,6 @@
 # react-you-might-not-need-an-effect (vendored)
 
-Copied from `eslint-plugin-react-you-might-not-need-an-effect@0.10.0` (MIT) by the oxlint migration's vendoring tool (`scratch/oxlint-migration/vendor/vendor.ts`, local to the migration branch for now). Do not edit these files by hand: change the tool and regenerate.
+Copied from `eslint-plugin-react-you-might-not-need-an-effect@0.10.0` (MIT) by `packages/lint/scripts/vendor/vendor.ts`. Do not edit these files by hand: change the spec (`scripts/vendor/specs/react-you-might-not-need-an-effect.ts`) or the tool, and run `bun run vendor react-you-might-not-need-an-effect` in packages/lint.
 The upstream plugin is a single bundle, copied whole; index.js exposes only the rules enabled in our presets. They run inside oxlint as a JS plugin.
 
 Rules (8): `no-derived-state`, `no-chain-state-updates`, `no-event-handler`, `no-adjust-state-on-prop-change`, `no-reset-all-state-on-prop-change`, `no-pass-live-state-to-parent`, `no-pass-data-to-parent`, `no-initialize-state`.
