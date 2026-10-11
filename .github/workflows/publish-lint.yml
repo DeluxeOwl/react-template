@@ -24,9 +24,11 @@ jobs:
         with:
           enable-cache: true
       - run: devbox run -- bun install --frozen-lockfile
+      # Build first, as in ci.yml: the package's own oxlint.config.ts imports its built preset
+      # (@deluxeowl/lint/oxlint -> dist/), so typecheck needs dist/.
+      - run: devbox run -- bun run --filter @deluxeowl/lint build
       - run: devbox run -- bun run --filter @deluxeowl/lint typecheck
       - run: devbox run -- bun run --filter @deluxeowl/lint test
-      - run: devbox run -- bun run --filter @deluxeowl/lint build
       - run: cd packages/lint && npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
