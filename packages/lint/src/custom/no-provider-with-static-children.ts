@@ -74,7 +74,7 @@ const DefaultIgnoredHooks = [
     "useImperativeHandle",
 ]
 
-const HookNamePattern = /^use[A-Z]/
+const HookNamePattern = /^use[A-Z]/u
 
 function isFunctionNode(node: TSESTree.Node): node is FunctionNode {
     return node.type === TSESTree.AST_NODE_TYPES.ArrowFunctionExpression

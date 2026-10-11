@@ -18,14 +18,14 @@ export class InternalDBError extends ErrorFactory({
 }) {}
 
 export interface TodoRepository {
-    listTodos(Context: Context): Result.ResultAsync<Todo[], CancelledError | InternalDBError>
-    delete(Context: Context, id: string): Result.ResultAsync<void, CancelledError | InternalDBError>
-    upsert(Context: Context, todo: Todo):  Result.ResultAsync<void, CancelledError | InternalDBError>
-    getByID(Context: Context, id: string): Result.ResultAsync<Todo, CancelledError | InternalDBError | TodoNotFoundError>
+    listTodos: (Context: Context) => Result.ResultAsync<Todo[], CancelledError | InternalDBError>
+    delete:    (Context: Context, id: string) => Result.ResultAsync<void, CancelledError | InternalDBError>
+    upsert:    (Context: Context, todo: Todo) => Result.ResultAsync<void, CancelledError | InternalDBError>
+    getByID:   (Context: Context, id: string) => Result.ResultAsync<Todo, CancelledError | InternalDBError | TodoNotFoundError>
 
     // Executes the given function wrapped in a database transaction.
-    withinTransaction<T, E>(
+    withinTransaction: <T, E>(
         Context: Context,
-        fn: (Context: Context, repo: TodoRepository) => Result.ResultAsync<T, E>
-    ): Result.ResultAsync<T, E>
+        fn: (Context: Context, repo: TodoRepository) => Result.ResultAsync<T, E>,
+    ) => Result.ResultAsync<T, E>
 }

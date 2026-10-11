@@ -9,11 +9,13 @@ const sharedErrors = {
     INTERNAL_SERVER_ERROR: {},
 }
 
+const fieldErrorsSchema = z.record(z.string(), z.array(z.string()).optional())
+
 // For fields that require validation
 const sharedErrorsMutating = {
     INPUT_VALIDATION_FAILED: {
         data: z.object({
-            fieldErrors: z.record(z.string(), z.array(z.string()).optional()),
+            fieldErrors: fieldErrorsSchema,
             formErrors:  z.array(z.string()),
         }),
         status: 422,

@@ -117,13 +117,11 @@ export const typescriptConfig = {
             },
         ],
         "eslint/no-warning-comments":                         "off",
-        // New in oxlint 1.86 (D-004), `style`: would merge consecutive `const` declarations (245 hits).
+        // New in oxlint 1.86, `style`: would merge consecutive declarations; we declare one per statement.
         "eslint/one-var":                                     "off",
         "eslint/prefer-destructuring":                        "allow",
-        // New in oxlint 1.86 (D-004), `style`: would rename every capture group in existing regexes.
-        "eslint/prefer-named-capture-group":                  "off",
-        // New in oxlint 1.86 (D-004), `pedantic`: would add the `u` flag to every existing regex.
-        "eslint/require-unicode-regexp":                      "off",
+        "eslint/prefer-named-capture-group":                  "error",
+        "eslint/require-unicode-regexp":                      "error",
         "eslint/sort-imports":                                "allow",
         "eslint/sort-keys":                                   "allow",
         "eslint/unicode-bom":                                 "error",
@@ -147,9 +145,7 @@ export const typescriptConfig = {
         "typescript/consistent-indexed-object-style":         "off",
         // Important, handled by eslint
         "typescript/consistent-type-imports":                 ["error", { fixStyle: "inline-type-imports" }],
-        // New in oxlint 1.86 (D-004), `style`. ESLint deliberately disables `@typescript-eslint/method-signature-style`
-        // ("Classes use method, react uses signature").
-        "typescript/method-signature-style":                  "off",
+        "typescript/method-signature-style":                  "error",
         "typescript/no-dynamic-delete":                       "warn",
         "typescript/no-empty-object-type":                    "error",
         "typescript/no-explicit-any":                         "warn",
@@ -171,8 +167,7 @@ export const typescriptConfig = {
                 case: "kebabCase",
             },
         ],
-        // New in oxlint 1.86 (D-004), `style`: flags idiomatic nested zod schemas (`z.array(z.object({ x: z.object(...) }))`).
-        "unicorn/max-nested-calls":          "off",
+        "unicorn/max-nested-calls":          "error",
         "unicorn/no-abusive-eslint-disable": "error",
         "unicorn/no-array-for-each":         "error",
         "unicorn/no-array-reduce":           "error",

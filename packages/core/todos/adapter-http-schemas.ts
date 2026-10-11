@@ -3,7 +3,7 @@ import * as z from "zod"
 import { TodoNameMinLength } from "./todo"
 
 const todoPublicIdSchema = z.string().regex(
-    /^todo_[\dA-Za-z]{22}$/,
+    /^todo_[\dA-Za-z]{22}$/u,
     { message: "Invalid todo public ID format (expected todo_<22 base62 chars>)" },
 )
 

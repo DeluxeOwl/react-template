@@ -90,7 +90,7 @@ describe("generating a todo public id", () => {
             const id = generateTodoPublicId()
 
             // THEN
-            expect(id).toMatch(/^todo_[\dA-Za-z]{22}$/)
+            expect(id).toMatch(/^todo_[\dA-Za-z]{22}$/u)
             expect(isValidTodoPublicId(id)).toBe(true)
         })
     })

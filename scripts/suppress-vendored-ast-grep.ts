@@ -10,9 +10,10 @@ import { addAstGrepSuppressions, type AstGrepSuppression } from "@deluxeowl/lint
 const scanBinary = path.resolve("node_modules/.bin/ast-grep")
 const maxScanOutputBytes = 32_000_000
 const cliArgumentOffset = 2
+const positionSchema = z.object({ line: z.int().nonnegative() })
 const findingsSchema = z.array(z.object({
     file:   z.string(),
-    range:  z.object({ start: z.object({ line: z.int().nonnegative() }) }),
+    range:  z.object({ start: positionSchema }),
     ruleId: z.string().min(1),
 }))
 

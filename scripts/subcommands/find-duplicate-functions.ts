@@ -58,17 +58,15 @@ function extractFromMetavariable(match: AstGrepMatch): null | string {
 
 function extractFromText(text: string): null | string {
     // Function declaration: function foo(...
-    const funcMatch = text.match(/^function\s+([$A-Z_a-z][\w$]*)\s*\(/)
+    const funcMatch = /^function\s+(?<name>[$A-Z_a-z][\w$]*)\s*\(/u.exec(text)
     if (funcMatch) {
-        return funcMatch[1]
+        return funcMatch.groups?.name ?? null
     }
 
     // Arrow function: const foo = (...) =>
-    const arrowMatch = text.match(
-        /^(?:const|let|var)\s+([$A-Z_a-z][\w$]*)\s*=/,
-    )
+    const arrowMatch = /^(?:const|let|var)\s+(?<name>[$A-Z_a-z][\w$]*)\s*=/u.exec(text)
     if (arrowMatch) {
-        return arrowMatch[1]
+        return arrowMatch.groups?.name ?? null
     }
 
     return null

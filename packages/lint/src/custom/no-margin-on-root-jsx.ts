@@ -29,7 +29,8 @@ import { jsxStringValue } from "../../vendor/_compat/jsx-entities.js"
   * ----------------------------------------------------------------------------
   */
 
-const MarginClassPattern = /!?-?m[belr-txy]?-(\d+|\[.+?])|!?-?ms-(\d+|\[.+?])|!?-?me-(\d+|\[.+?])|!?-?mb-(\d+|\[.+?])|!?-?mt-(\d+|\[.+?])|!?-?ml-(\d+|\[.+?])|!?-?mr-(\d+|\[.+?])|!?-?mx-(\d+|\[.+?])|!?-?my-(\d+|\[.+?])/
+// m-, mb-, me-, ml-, mr-, ms-, mt-, mx-, my- with a number or an arbitrary value
+const MarginClassPattern = /!?-?m[belr-txy]?-(?:\d+|\[.+?\])/u
 
 function extractStringsFromLiteral(node: TSESTree.Literal): string[] {
     if (typeof node.value === "string") {

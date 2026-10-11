@@ -76,7 +76,7 @@ export function uuidToBase62(uuid: string): string {
 // Builds the generator and the validator for one prefix, sharing a single
 // compiled pattern. Domains wrap this to name their own id type.
 export function createPublicIdCodec<TPrefix extends string>(prefix: TPrefix): PublicIdCodec<TPrefix> {
-    const pattern = new RegExp(`^${prefix}_[0-9A-Za-z]{${Base62UUIDLength}}$`)
+    const pattern = new RegExp(`^${prefix}_[0-9A-Za-z]{${Base62UUIDLength}}$`, "u")
 
     return {
         generate: (): PublicId<TPrefix> => `${prefix}_${uuidToBase62(crypto.randomUUID())}`,

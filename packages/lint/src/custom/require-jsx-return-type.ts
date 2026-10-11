@@ -34,7 +34,7 @@ interface RuleOptions {
     checkAllFunctions?: boolean
 }
 
-const PascalCasePattern = /^[A-Z][\dA-Za-z]*$/
+const PascalCasePattern = /^[A-Z][\dA-Za-z]*$/u
 
 function isPascalCase(name: string): boolean {
     return PascalCasePattern.test(name)

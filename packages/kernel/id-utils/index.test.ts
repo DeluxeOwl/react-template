@@ -34,7 +34,7 @@ describe(uuidToBase62, () => {
                 const result = uuidToBase62(uuid)
 
                 // THEN
-                expect(result).toMatch(/^[\dA-Za-z]{22}$/)
+                expect(result).toMatch(/^[\dA-Za-z]{22}$/u)
             })
         })
     })
@@ -53,7 +53,7 @@ describe(createPublicIdCodec, () => {
                 const id = codec.generate()
 
                 // THEN
-                expect(id).toMatch(/^user_[\dA-Za-z]{22}$/)
+                expect(id).toMatch(/^user_[\dA-Za-z]{22}$/u)
                 expect(codec.isValid(id)).toBe(true)
             })
         })
