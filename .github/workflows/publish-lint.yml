@@ -14,8 +14,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
+      # Node >= 22.18 for the tests: see ci.yml.
       - uses: actions/setup-node@v4
         with:
+          node-version: 24
           registry-url: "https://npm.pkg.github.com"
           scope: "@deluxeowl"
       - run: bun install --frozen-lockfile

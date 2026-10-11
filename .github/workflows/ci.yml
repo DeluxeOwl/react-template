@@ -16,6 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The lint package's tests run vitest on real Node (oxlint's RuleTester
+      # refuses Bun), and oxlint then loads the fixtures' oxlint.config.ts,
+      # which needs Node >= 22.18. devbox.json has no Node, so pin it here
+      # (devbox run keeps it on PATH).
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
       # Installs the devbox CLI + the Nix packages from devbox.json (bun,
       # ast-grep, lefthook, ...). Matches the local dev environment exactly.
       - uses: jetify-com/devbox-install-action@v0.13.0
