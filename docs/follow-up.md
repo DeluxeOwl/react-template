@@ -3,22 +3,11 @@
 What is left after ESLint and ast-grep were replaced by oxlint (`@deluxeowl/lint` 0.6.0, 2026-10-11),
 most important first. The IDs (D-, F-, Q-) point into [the migration record](oxlint-migration.md).
 
-## 1. Move vetsolution to `@deluxeowl/lint` 0.6.0
+## 1. Move vetsolution to `@deluxeowl/lint` (done)
 
-Put off until this repo was done. `../vetsolution` (at `ef207e3`) still runs ESLint 10
-(`eslint.config.ts`), oxlint 1.62 (`.oxlintrc.json`) and ast-grep (`sgconfig.yml`, `@ast-grep/cli`),
-with `@deluxeowl/lint` 0.2.0.
-
-- One `oxlint.config.ts` from `createOxlintReactConfig()`, with `vendoredFiles` for its generated UI
-  (`defaultVendoredFiles` covers `components/ui`, `components/reui`, `components/hooks`,
-  `components/examples` and `ui/hooks`) and the Tailwind settings, as in `apps/web/oxlint.config.ts`.
-- Its 159 `eslint-disable` comments (41 files) must name the rules as oxlint runs them (D-015): the
-  vendored rules have new plugin names (`typescript-eslint-js/…`, `eslint-js/…`), and a comment with
-  the old name doesn't suppress them. Its 22 `ast-grep-ignore` comments (7 files) become
-  `oxlint-disable-next-line custom/…`.
-- Remove `eslint`, `@ast-grep/cli`, `sgconfig.yml`, `scripts/suppress-vendored-ast-grep.ts`, the
-  `lint:eslint` and `lint:sg*` scripts, and the ESLint and ast-grep parts of `AGENTS.md` and `.vscode/`.
-- Fix what the stricter preset finds.
+Done on 2026-10-11 with 0.7.1, in five commits on vetsolution's `main` (`c0f7e1c` to `6186464`).
+It runs only oxlint now, from one `oxlint.config.ts`, and reports nothing. Log: §3 Phase 11 of
+[the migration record](oxlint-migration.md), with decisions D-039 to D-041.
 
 ## 2. Stale disable comments are not reported
 
@@ -56,10 +45,11 @@ runs up to 20 (D-019), so a file can need a second save.
 
 ## 5. File the oxc issues
 
-Section 6b of the record lists five. Each fix would let us delete a workaround: the fix-order shim in
+Section 6b of the record lists six. Five fixes would let us delete a workaround: the fix-order shim in
 `vendor/_compat/report-order.js` (F-016), the JSX entity decoding in `vendor/_compat/jsx-entities.js`
 (F-013), `oxlint-fix` (F-001, F-022), `custom/no-bare-enable-directive` (F-028), and the suppressing in
-`report-order.js` that blocks item 2 (F-030).
+`report-order.js` that blocks item 2 (F-030). The sixth would let a next-line comment suppress a
+report that spans several lines; today that takes a disable/enable block (F-069).
 
 ## 6. Decide whether to close the ported rules' gaps
 
