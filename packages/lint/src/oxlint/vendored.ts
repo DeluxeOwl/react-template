@@ -10,7 +10,8 @@ export const defaultVendoredFiles = [
     "**/ui/hooks/**",
 ]
 
-// Rules relaxed for vendored code. Type-safety and return-type rules stay enabled.
+// Rules relaxed for vendored code. Type-safety and return-type rules stay enabled. The view-only
+// rules are off too: under ast-grep, vendored code got an `ast-grep-ignore` for each finding.
 export const vendoredRules = {
     "@eslint-react/dom-no-dangerously-set-innerhtml":            "off",
     "@eslint-react/no-array-index-key":                          "off",
@@ -19,8 +20,18 @@ export const vendoredRules = {
     "@eslint-react/set-state-in-effect":                         "off",
     "@eslint-react/use-state":                                   "off",
     "better-tailwindcss/no-unknown-classes":                     "off",
+    "custom/no-array-methods-in-component":                      "off",
+    "custom/no-builtin-hooks-in-component":                      "off",
+    "custom/no-filter-in-component":                             "off",
+    "custom/no-logic-expressions-in-component":                  "off",
+    "custom/no-logic-in-map-callback":                           "off",
+    "custom/no-loops-in-component":                              "off",
     "custom/no-margin-on-root-jsx":                              "off",
+    "custom/no-object-spread-in-component":                      "off",
+    "custom/no-switch-in-component":                             "off",
+    "custom/no-ternary-assignment-in-component":                 "off",
     "custom/prefer-discriminated-union":                         "off",
+    "custom/use-abort-controller-for-multiple-listeners":        "off",
     "eslint-js/no-restricted-syntax":                            "off",
     "jsx-a11y/anchor-has-content":                               "off",
     "jsx-a11y/click-events-have-key-events":                     "off",

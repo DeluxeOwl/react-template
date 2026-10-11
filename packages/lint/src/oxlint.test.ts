@@ -189,6 +189,48 @@ describe("shared oxlint React presets", () => {
         })
     })
 
+    describe("given a builtin hook in a feature component and in generated UI code", () => {
+        describe("when opting into the vendored preset", () => {
+            it("then the view-only rules report the feature only", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const dir = fixture("createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })")
+                const source = "export function Card(): React.ReactNode {\n    const [isOpen] = useState(false)\n    return <div><span>{String(isOpen)}</span></div>\n}\n"
+
+                // WHEN
+                const { stdout } = lint(dir, { "src/components/ui/card.tsx": source, "src/features/card.tsx": source })
+
+                // THEN
+                const { diagnostics } = JSON.parse(stdout) as { diagnostics: { code: string, filename: string }[] }
+                const hooks = diagnostics.filter((diagnostic) => diagnostic.code === "custom(no-builtin-hooks-in-component)")
+
+                expect(hooks.map((diagnostic) => diagnostic.filename)).toStrictEqual(["src/features/card.tsx"])
+            })
+        })
+    })
+
+    describe("given two event listeners added in a useEffect, in a .tsx and a .ts file", () => {
+        describe("when applying the React preset", () => {
+            it("then it asks for an AbortController in the .tsx file only, as ast-grep did", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const dir = fixture("createOxlintReactConfig()")
+                const source = "useEffect(() => {\n    window.addEventListener(\"scroll\", onScroll)\n    window.addEventListener(\"resize\", onResize)\n}, [])\n"
+
+                // WHEN
+                const { stdout } = lint(dir, { "src/use-layout.ts": source, "src/use-layout.tsx": source })
+
+                // THEN
+                const { diagnostics } = JSON.parse(stdout) as { diagnostics: { code: string, filename: string }[] }
+                const listeners = diagnostics.filter((diagnostic) => diagnostic.code === "custom(use-abort-controller-for-multiple-listeners)")
+
+                expect(listeners.map((diagnostic) => diagnostic.filename)).toStrictEqual(["src/use-layout.tsx"])
+            })
+        })
+    })
+
     describe("given a test without assertions, in test and source files", () => {
         describe("when applying the base and React presets", () => {
             it("then the vitest rules warn in .test.ts and .test.tsx files only", () => {

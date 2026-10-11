@@ -16,8 +16,7 @@
     "zshy": {
         "exports": {
             "./oxlint": "./src/oxlint/index.ts",
-            "./oxlint/custom-plugin": "./src/custom/oxlint-plugin.ts",
-            "./ast-grep": "./src/ast-grep.ts"
+            "./oxlint/custom-plugin": "./src/custom/oxlint-plugin.ts"
         },
         "cjs": false
     },
@@ -25,7 +24,6 @@
         "dist",
         "bin",
         "vendor",
-        "ast-grep",
         "dprint.jsonc"
     ],
     "scripts": {
@@ -102,10 +100,6 @@
         "./oxlint/custom-plugin": {
             "types": "./dist/custom/oxlint-plugin.d.ts",
             "default": "./dist/custom/oxlint-plugin.js"
-        },
-        "./ast-grep": {
-            "types": "./dist/ast-grep.d.ts",
-            "default": "./dist/ast-grep.js"
         }
     },
     "bin": {

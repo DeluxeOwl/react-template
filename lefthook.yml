@@ -12,8 +12,6 @@ pre-push:
   jobs:
     - name: lint/oxlint
       run: bun run lint:oxlint
-    - name: lint/ast-grep
-      run: bun run lint:sg
     - name: format/dprint
       run: bun run format:dprint
     - name: lint/duplicate-code

@@ -5,8 +5,7 @@
     "ignoreBinaries": [
         "tilt",
         "lefthook",
-        "tsc",
-        "ast-grep"
+        "tsc"
     ],
     "ignoreDependencies": [
         "@praha/byethrow-docs"

@@ -84,7 +84,7 @@ type MutationParams<T> = T extends UseMutationOptions<infer TData, infer TError,
 type CreateMutation = MutationParams<ReturnType<typeof api.todos.create.mutationOptions>>
 
 function TodoInput(): React.ReactNode {
-    // ast-grep-ignore
+    // oxlint-disable-next-line custom/no-builtin-hooks-in-component
     const [text, setText] = useState("")
 
     const mutation = useMutation<void, CreateMutation["error"], CreateMutation["variables"]>({
@@ -127,7 +127,7 @@ function App(): React.ReactNode {
                 <ErrorBoundary fallbackRender={({ error }) => {
                     return match(error)
                         .when(isKnownORPCError, (err) =>
-                            // ast-grep-ignore
+                            // oxlint-disable-next-line custom/no-array-methods-in-component -- ts-pattern's with, not Array.prototype.with
                             match(err)
                                 .with({ code: "INPUT_VALIDATION_FAILED" }, (validationErr) => <p>Bad Form {validationErr.data.formErrors[0]}</p>)
                                 .with({ code: "INTERNAL_SERVER_ERROR" }, () => <p>Internal server error</p>)

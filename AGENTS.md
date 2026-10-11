@@ -40,7 +40,6 @@ bun run --filter @react-template/core vitest run --reporter=verbose -t "then it 
 
 ```sh
 bun run lint:oxlint      # oxlint across all workspaces; also formats TS/JS (fixes until stable)
-bun run lint:sg          # ast-grep structural rules
 bun run format:dprint    # format JSON, YAML, Markdown, Dockerfile (dprint)
 bun run lint:all         # run the full pre-push gate (lefthook)
 ```
@@ -159,7 +158,7 @@ export class Todo {
 
 ### React Components (View-Only Pattern)
 
-Components must be "view-only" — enforced by ast-grep rules in `node_modules/@deluxeowl/lint/ast-grep/rules/view-only-rules.yml` (shipped by `@deluxeowl/lint`, wired via `sgconfig.yml`):
+Components must be "view-only" — enforced on `.tsx` files by the `custom/*` oxlint rules of `@deluxeowl/lint` (`packages/lint/src/custom/view-only-rules.ts`), except the custom-hook limit, which no rule checks:
 
 - **Maximum 1 custom hook** per component.
 - No array methods (`map`, `filter`, `reduce`) inside JSX directly — derive data in the hook.
@@ -233,13 +232,13 @@ Rules:
 
 ## Architecture
 
-| Layer       | Package           | Notes                                                                                                                                                                                                                                      |
-| ----------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Domain      | `packages/core`   | Pure logic, no framework. Entities, CQRS handlers, ports, oRPC contract.                                                                                                                                                                   |
-| Kernel      | `packages/kernel` | `@react-template/kernel` — framework-agnostic primitives: CQRS interfaces (`CommandHandler` / `QueryHandler`), execution `Context` + cancellation, `Result` test helpers.                                                                  |
-| Server      | `apps/server`     | Bun HTTP server. Serves oRPC + OpenAPI (Scalar).                                                                                                                                                                                           |
-| Web         | `apps/web`        | React 19 SPA. Vite 7, Tailwind v4, TanStack Query v5.                                                                                                                                                                                      |
-| Shared lint | `packages/lint`   | `@deluxeowl/lint` — the one built (Model B) package; oxlint presets (`createOxlintConfig()` / `createOxlintReactConfig()`) with our custom rules and the vendored upstream plugins, ast-grep/dprint configs. Published to GitHub Packages. |
+| Layer       | Package           | Notes                                                                                                                                                                                                                                    |
+| ----------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Domain      | `packages/core`   | Pure logic, no framework. Entities, CQRS handlers, ports, oRPC contract.                                                                                                                                                                 |
+| Kernel      | `packages/kernel` | `@react-template/kernel` — framework-agnostic primitives: CQRS interfaces (`CommandHandler` / `QueryHandler`), execution `Context` + cancellation, `Result` test helpers.                                                                |
+| Server      | `apps/server`     | Bun HTTP server. Serves oRPC + OpenAPI (Scalar).                                                                                                                                                                                         |
+| Web         | `apps/web`        | React 19 SPA. Vite 7, Tailwind v4, TanStack Query v5.                                                                                                                                                                                    |
+| Shared lint | `packages/lint`   | `@deluxeowl/lint` — the one built (Model B) package; oxlint presets (`createOxlintConfig()` / `createOxlintReactConfig()`) with our custom rules and the vendored upstream plugins, and the dprint config. Published to GitHub Packages. |
 
 - API contract is defined in `packages/core` via oRPC route definitions, shared with the web client.
 - `apps/web/api.ts` provides the typed oRPC client + TanStack Query utilities.

@@ -3,8 +3,8 @@
 A **guardrails-as-code** monorepo template for full-stack TypeScript apps. The interesting
 part isn't the stack — it's that the architecture is _enforced_, not just documented:
 errors-as-values, view-only React components, private-constructor domain entities, and a
-shared oRPC contract are all held in place by a three-linter gate (oxlint + ast-grep +
-dprint) that runs on every push and in CI.
+shared oRPC contract are all held in place by oxlint (with the repo's own rules) and dprint,
+which run on every push and in CI.
 
 ```bash
 bun create github.com/DeluxeOwl/react-template <your-app>
@@ -87,20 +87,17 @@ live-sync path end to end.
 
 Run from the repo root (inside `devbox shell`).
 
-| Command                    | What it does                                        |
-| -------------------------- | --------------------------------------------------- |
-| `bun run dev`              | Start web + server + https/mDNS (tilt, `Tiltfile`)  |
-| `bun run typecheck`        | `tsc --noEmit` across all workspaces                |
-| `bun run test`             | All tests (Vitest, sequential across workspaces)    |
-| `bun run lint:oxlint`      | oxlint: most rules, and TS/JS formatting            |
-| `bun run lint:sg`          | ast-grep structural rules                           |
-| `bun run lint:sg:suppress` | Add ast-grep directives to vendored UI              |
-| `bun run lint:sg:check`    | Check vendored UI for missing or unused directives  |
-| `bun run lint:duplicate`   | jscpd copy-paste detector                           |
-| `bun run format:dprint`    | Format JSON/YAML/Markdown (TS/JS handled by oxlint) |
-| `bun run deadcode`         | knip (unused files/exports/deps)                    |
-| `bun run lint:all`         | Full pre-push gate (lefthook)                       |
-| `bun run generate`         | Scaffold a new package (scaffdog)                   |
+| Command                  | What it does                                        |
+| ------------------------ | --------------------------------------------------- |
+| `bun run dev`            | Start web + server + https/mDNS (tilt, `Tiltfile`)  |
+| `bun run typecheck`      | `tsc --noEmit` across all workspaces                |
+| `bun run test`           | All tests (Vitest, sequential across workspaces)    |
+| `bun run lint:oxlint`    | oxlint: most rules, and TS/JS formatting            |
+| `bun run lint:duplicate` | jscpd copy-paste detector                           |
+| `bun run format:dprint`  | Format JSON/YAML/Markdown (TS/JS handled by oxlint) |
+| `bun run deadcode`       | knip (unused files/exports/deps)                    |
+| `bun run lint:all`       | Full pre-push gate (lefthook)                       |
+| `bun run generate`       | Scaffold a new package (scaffdog)                   |
 
 The full command reference (test filters, per-workspace runs, code-style rules) lives in
 [`AGENTS.md`](./AGENTS.md).
@@ -134,8 +131,8 @@ package appears under `packages/`.
 
 ## Using `@deluxeowl/lint` in another project
 
-The lint config (oxlint presets with our custom rules and the vendored upstream rules,
-ast-grep rules, dprint config) is published to **GitHub Packages** so pet projects share
+The lint config (oxlint presets with our custom rules and the vendored upstream rules, and
+the dprint config) is published to **GitHub Packages** so pet projects share
 the exact same rules.
 
 ```jsonc
@@ -170,6 +167,8 @@ export default createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })
 
 The vendor override relaxes structural rules only for those files.
 Type-safety rules, explicit return types, and magic-number rules remain enabled.
+The view-only component rules (`custom/no-builtin-hooks-in-component` and the rest) run on `.tsx` files, outside vendored UI.
+Until 0.5.0 they were ast-grep rules: when upgrading, delete `sgconfig.yml`, the `lint:sg` scripts and the `ast-grep-ignore` comments, and suppress with `oxlint-disable-next-line custom/<rule>` instead.
 Projects without vendored UI call `createOxlintReactConfig()` without options.
 The React preset allows Node imports in scripts, configuration files, and tests, but not browser source.
 It rejects the `@phosphor-icons/react` barrel. Direct icon imports remain valid.
@@ -205,20 +204,6 @@ export default createOxlintReactConfig({
 **Enable `smoothShadowRestrictions` only if the stylesheet imports `shadow-plugin`.**
 The restrictions replace shadow sizes with `smooth-shadow-*` and leave shadow colors unchanged.
 The default configuration does not require that plugin.
-
-### Vendored ast-grep directives
-
-devbox's `ast-grep` (pinned in `devbox.lock`) serves both lint scripts and VSCode.
-The npm `@ast-grep/cli` can't: its binary needs an install script, and `.npmrc` turns those off.
-After a shadcn upgrade, run `bun run lint:sg:suppress` from the repository root.
-Then run `bun run lint:sg:check`.
-The check reports unsuppressed violations and unused directives without changing files.
-Unlike `.ignore`, these directives also work in the language server.
-The normal scan retains the `unused-suppression` check.
-
-Other consumers can use `addAstGrepSuppressions` from `@deluxeowl/lint/ast-grep`.
-It accepts source text and `{ line, ruleId }` findings, with zero-based lines from ast-grep JSON.
-It returns the annotated source or an `Error` for invalid findings.
 
 `@deluxeowl/lint` is the only built package (ESM via zshy). Changing it requires a version
 bump + a `lint-vX.Y.Z` tag push, which triggers `.github/workflows/publish-lint.yml`.

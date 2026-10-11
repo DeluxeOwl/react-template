@@ -9,7 +9,6 @@
         "csstools.postcss",
         "MylesMurphy.prettify-ts",
         "YoavBls.pretty-ts-errors",
-        "ast-grep.ast-grep-vscode",
         "zeevro.fold-to-definitions",
         "yzhang.markdown-all-in-one",
         "nize.oklch-preview",

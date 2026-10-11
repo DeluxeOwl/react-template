@@ -23,3 +23,25 @@ export const customConfig = {
         "custom/require-jsx-return-type":          ["error"],
     },
 } satisfies OxlintConfig
+
+// The view-only and AbortController rules, ast-grep's until 0.5.0 (docs/oxlint-migration.md,
+// Phase 9). ast-grep ran them on .tsx files only, so the React preset does too.
+export const customReactConfig = {
+    overrides: [
+        {
+            files: ["**/*.tsx"],
+            rules: {
+                "custom/no-array-methods-in-component":               ["error"],
+                "custom/no-builtin-hooks-in-component":               ["error"],
+                "custom/no-filter-in-component":                      ["error"],
+                "custom/no-logic-expressions-in-component":           ["error"],
+                "custom/no-logic-in-map-callback":                    ["error"],
+                "custom/no-loops-in-component":                       ["error"],
+                "custom/no-object-spread-in-component":               ["error"],
+                "custom/no-switch-in-component":                      ["error"],
+                "custom/no-ternary-assignment-in-component":          ["error"],
+                "custom/use-abort-controller-for-multiple-listeners": ["error"],
+            },
+        },
+    ],
+} satisfies OxlintConfig

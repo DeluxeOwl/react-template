@@ -25,7 +25,7 @@ jobs:
           node-version: 24
 
       # Installs the devbox CLI + the Nix packages from devbox.json (bun,
-      # ast-grep, lefthook, ...). Matches the local dev environment exactly.
+      # lefthook, ...). Matches the local dev environment exactly.
       - uses: jetify-com/devbox-install-action@v0.13.0
         with:
           enable-cache: true
@@ -53,12 +53,6 @@ jobs:
       # code was not linted, so any change made by the fixers fails the job.
       - name: fixers changed nothing
         run: git diff --exit-code
-
-      - name: lint:sg
-        run: devbox run -- bun run lint:sg
-
-      - name: vendored ast-grep directives
-        run: devbox run -- bun run lint:sg:check
 
       - name: lint:duplicate
         run: devbox run -- bun run lint:duplicate

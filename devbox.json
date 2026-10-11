@@ -4,7 +4,6 @@
         "bun@latest",
         "commitlint-rs@latest",
         "lefthook@latest",
-        "ast-grep@latest",
         "caddy@latest",
         "k3d@latest",
         "tilt@latest"

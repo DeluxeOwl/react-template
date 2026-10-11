@@ -16,13 +16,10 @@
     "editor.codeActionsOnSave": {
         // Note: this being "never" doesn't clash with dangling comma, let perfectionist (oxlint) handle imports
         "source.organizeImports": "never",
-        "source.fixAll.ast-grep": "never",
         // TS/JS formatting: the @stylistic rules run in oxlint (vendored, packages/lint/vendor/stylistic).
         // One save applies one round of fixes; save again if a fix exposed another (oxlint-fix loops).
         "source.fixAll.oxc": "explicit"
     },
-    // The ast-grep the lint scripts run: devbox's (devbox.json), pinned in devbox.lock.
-    "astGrep.serverPath": ".devbox/nix/profile/default/bin/ast-grep",
     "[json]": {
         "editor.tabSize": 4,
         "editor.insertSpaces": true,

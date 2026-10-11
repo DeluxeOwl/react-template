@@ -19,7 +19,7 @@ jobs:
           node-version: 24
           registry-url: "https://npm.pkg.github.com"
           scope: "@deluxeowl"
-      # bun and ast-grep (the tests run it) come from devbox.json, as in ci.yml.
+      # bun comes from devbox.json, as in ci.yml.
       - uses: jetify-com/devbox-install-action@v0.13.0
         with:
           enable-cache: true

@@ -1,7 +1,6 @@
 import type { OxlintConfig, OxlintOverride } from "oxlint"
 
 import { reactConfig } from "./react.ts"
-import { customConfig } from "./custom.ts"
 import { vitestConfig } from "./vitest.ts"
 import { unicornConfig } from "./unicorn.ts"
 import { importXConfig } from "./import-x.ts"
@@ -17,6 +16,7 @@ import { reactRefreshConfig } from "./react-refresh.ts"
 import { perfectionistConfig } from "./perfectionist.ts"
 import { tanstackQueryConfig } from "./tanstack-query.ts"
 import { unusedImportsConfig } from "./unused-imports.ts"
+import { customConfig, customReactConfig } from "./custom.ts"
 import { typescriptEslintConfig } from "./typescript-eslint.ts"
 import { reactRenderTypesConfig } from "./react-render-types.ts"
 import { sweepitConfig, sweepitReactConfig } from "./sweepit.ts"
@@ -27,7 +27,6 @@ import {
 
 export { runOxlintFix } from "./fix.ts"
 export { reactConfig } from "./react.ts"
-export { customConfig } from "./custom.ts"
 export { vitestConfig } from "./vitest.ts"
 export { unicornConfig } from "./unicorn.ts"
 export { importXConfig } from "./import-x.ts"
@@ -42,6 +41,7 @@ export { reactRefreshConfig } from "./react-refresh.ts"
 export { perfectionistConfig } from "./perfectionist.ts"
 export { tanstackQueryConfig } from "./tanstack-query.ts"
 export { unusedImportsConfig } from "./unused-imports.ts"
+export { customConfig, customReactConfig } from "./custom.ts"
 export { typescriptEslintConfig } from "./typescript-eslint.ts"
 export { reactRenderTypesConfig } from "./react-render-types.ts"
 export { sweepitConfig, sweepitReactConfig } from "./sweepit.ts"
@@ -135,6 +135,7 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
         unusedImportsConfig,
         customConfig,
         reactConfig,
+        customReactConfig,
         stylisticConfig,
         perfectionistConfig,
         typeAwareConfig,
