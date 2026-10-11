@@ -106,11 +106,14 @@ export function mergeOxlintConfigs(...configs: OxlintConfig[]): OxlintConfig {
     return Object.fromEntries(Object.entries(merged).filter(([, value]) => value !== undefined)) satisfies OxlintConfig
 }
 
-// The options oxlint reads only from the root config (`options.typeAware`). When a config below the
-// root sets one, `oxlint` stops with an error, and VS Code skips that config and lints its files with
-// oxlint's defaults. A monorepo puts this in its root config and builds the others with `nested: true`.
+// A monorepo's root config, above workspace configs built with `nested: true`. It has:
+// - the options oxlint reads only from the root config (`options.typeAware`). When a config below the
+//   root sets one, `oxlint` stops with an error, and VS Code skips that config and lints its files
+//   with oxlint's defaults.
+// - the presets' ignore patterns. Files outside every workspace get this config and oxlint's default
+//   rules; without the patterns, a run outside a git repo lints all of `node_modules`.
 export function createOxlintRootConfig(): OxlintConfig {
-    return { options: typeAwareConfig.options }
+    return { ignorePatterns: typescriptConfig.ignorePatterns, options: typeAwareConfig.options }
 }
 
 // `nested`: without the root-only options, see `createOxlintRootConfig`.

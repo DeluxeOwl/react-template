@@ -172,6 +172,9 @@ import { createOxlintReactConfig } from "@deluxeowl/lint/oxlint"
 export default createOxlintReactConfig({ nested: true })
 ```
 
+The files outside every workspace get the root config: the presets' ignore patterns (`node_modules`,
+`dist`, …) and oxlint's default rules.
+
 Without `nested: true`, `oxlint` stops with "only supported in the root config", and VS Code skips
 that config without saying so in the editor: its files get only oxlint's default rules.
 

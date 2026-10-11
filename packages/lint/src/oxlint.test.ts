@@ -454,5 +454,25 @@ describe("shared oxlint presets in a monorepo", () => {
                 expect(result.output).toContain("The `options.typeAware` option is only supported in the root config")
             })
         })
+
+        describe("when the root also has a node_modules folder, and no git repo hides it", () => {
+            it("then a run from the root lints the workspace but skips node_modules, as the presets do", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const dir = monorepoFixture("createOxlintConfig({ nested: true })")
+
+                mkdirSync(path.join(dir, "node_modules/pkg"), { recursive: true })
+                writeFileSync(path.join(dir, "node_modules/pkg/index.js"), "debugger\n")
+                writeFileSync(path.join(dir, "workspace/load.ts"), workspaceSource)
+
+                // WHEN
+                const result = spawnSync(scanBinary, ["--format=json", "."], { cwd: dir, encoding: "utf8" })
+
+                // THEN
+                expect(result.stdout).toContain("workspace/load.ts")
+                expect(result.stdout).not.toContain("node_modules/pkg")
+            })
+        })
     })
 })
