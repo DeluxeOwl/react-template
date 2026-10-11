@@ -1,6 +1,6 @@
 // src/rules/exhaustive-deps/exhaustive-deps.rule.ts
 import { AST_NODE_TYPES as AST_NODE_TYPES3 } from "@typescript-eslint/types";
-import * as ESLintUtils from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils from "../_deps/typescript-eslint-utils-eslint-utils.js";
 
 // src/utils/ast-utils.ts
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
@@ -822,7 +822,7 @@ function dereferenceVariablesAndTypeAssertions(queryKeyNode, context) {
 
 // src/rules/stable-query-client/stable-query-client.rule.ts
 import { AST_NODE_TYPES as AST_NODE_TYPES4 } from "@typescript-eslint/types";
-import * as ESLintUtils2 from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils2 from "../_deps/typescript-eslint-utils-eslint-utils.js";
 var name2 = "stable-query-client";
 var createRule2 = ESLintUtils2.RuleCreator(getDocsUrl);
 var rule2 = createRule2({
@@ -888,7 +888,7 @@ var rule2 = createRule2({
 
 // src/rules/no-rest-destructuring/no-rest-destructuring.rule.ts
 import { AST_NODE_TYPES as AST_NODE_TYPES6 } from "@typescript-eslint/types";
-import * as ESLintUtils3 from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils3 from "../_deps/typescript-eslint-utils-eslint-utils.js";
 
 // src/rules/no-rest-destructuring/no-rest-destructuring.utils.ts
 import { AST_NODE_TYPES as AST_NODE_TYPES5 } from "@typescript-eslint/types";
@@ -986,7 +986,7 @@ var rule3 = createRule3({
 
 // src/rules/no-unstable-deps/no-unstable-deps.rule.ts
 import { AST_NODE_TYPES as AST_NODE_TYPES7 } from "@typescript-eslint/types";
-import * as ESLintUtils4 from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils4 from "../_deps/typescript-eslint-utils-eslint-utils.js";
 var name4 = "no-unstable-deps";
 var reactHookNames = ["useEffect", "useCallback", "useMemo"];
 var useQueryHookNames = [
@@ -1084,7 +1084,7 @@ var rule4 = createRule4({
 
 // src/utils/create-property-order-rule.ts
 import { AST_NODE_TYPES as AST_NODE_TYPES8 } from "@typescript-eslint/types";
-import * as ESLintUtils5 from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils5 from "../_deps/typescript-eslint-utils-eslint-utils.js";
 
 // src/utils/sort-data-by-order.ts
 function sortDataByOrder(data, orderRules, key) {
@@ -1236,7 +1236,7 @@ var rule5 = createPropertyOrderRule(
 );
 
 // src/rules/no-void-query-fn/no-void-query-fn.rule.ts
-import * as ESLintUtils6 from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils6 from "../_deps/typescript-eslint-utils-eslint-utils.js";
 var name6 = "no-void-query-fn";
 var createRule6 = ESLintUtils6.RuleCreator(getDocsUrl);
 var rule6 = createRule6({
@@ -1322,7 +1322,7 @@ var rule7 = createPropertyOrderRule(
 
 // src/rules/prefer-query-options/prefer-query-options.rule.ts
 import { AST_NODE_TYPES as AST_NODE_TYPES9 } from "@typescript-eslint/types";
-import * as ESLintUtils7 from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils7 from "../_deps/typescript-eslint-utils-eslint-utils.js";
 var name8 = "prefer-query-options";
 var queryHooks2 = [
   "useQuery",

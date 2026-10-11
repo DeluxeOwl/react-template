@@ -1,4 +1,4 @@
-import {getStringIfConstant} from '@eslint-community/eslint-utils';
+import {getStringIfConstant} from '../_deps/eslint-community-eslint-utils.js';
 import {isCallExpression} from './ast/index.js';
 
 const MESSAGE_ID = 'importStyle';

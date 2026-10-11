@@ -1,0 +1,75 @@
+import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);
+import {
+  require_ast_utils
+} from "./chunk-SFE3BQ7O.js";
+import {
+  __toESM
+} from "./chunk-WPQ5MXLX.js";
+
+// inlined:@typescript-eslint/utils/ast-utils
+var upstream = __toESM(require_ast_utils());
+var { LINEBREAK_MATCHER, PatternMatcher, ReferenceTracker, findVariable, getFunctionHeadLocation, getFunctionNameWithKind, getInnermostScope, getPropertyName, getStaticValue, getStringIfConstant, hasSideEffect, isArrowToken, isAwaitExpression, isAwaitKeyword, isClassOrTypeElement, isClosingBraceToken, isClosingBracketToken, isClosingParenToken, isColonToken, isCommaToken, isCommentToken, isConstructor, isFunction, isFunctionOrFunctionType, isFunctionType, isIdentifier, isImportKeyword, isLogicalOrOperator, isLoop, isNodeOfType, isNodeOfTypeWithConditions, isNodeOfTypes, isNonNullAssertionPunctuator, isNotArrowToken, isNotClosingBraceToken, isNotClosingBracketToken, isNotClosingParenToken, isNotColonToken, isNotCommaToken, isNotCommentToken, isNotNonNullAssertionPunctuator, isNotOpeningBraceToken, isNotOpeningBracketToken, isNotOpeningParenToken, isNotOptionalChainPunctuator, isNotSemicolonToken, isNotTokenOfTypeWithConditions, isOpeningBraceToken, isOpeningBracketToken, isOpeningParenToken, isOptionalCallExpression, isOptionalChainPunctuator, isParenthesized, isSemicolonToken, isSetter, isTSConstructorType, isTSFunctionType, isTokenOfTypeWithConditions, isTokenOnSameLine, isTypeAssertion, isTypeKeyword, isVariableDeclarator } = upstream;
+export {
+  LINEBREAK_MATCHER,
+  PatternMatcher,
+  ReferenceTracker,
+  findVariable,
+  getFunctionHeadLocation,
+  getFunctionNameWithKind,
+  getInnermostScope,
+  getPropertyName,
+  getStaticValue,
+  getStringIfConstant,
+  hasSideEffect,
+  isArrowToken,
+  isAwaitExpression,
+  isAwaitKeyword,
+  isClassOrTypeElement,
+  isClosingBraceToken,
+  isClosingBracketToken,
+  isClosingParenToken,
+  isColonToken,
+  isCommaToken,
+  isCommentToken,
+  isConstructor,
+  isFunction,
+  isFunctionOrFunctionType,
+  isFunctionType,
+  isIdentifier,
+  isImportKeyword,
+  isLogicalOrOperator,
+  isLoop,
+  isNodeOfType,
+  isNodeOfTypeWithConditions,
+  isNodeOfTypes,
+  isNonNullAssertionPunctuator,
+  isNotArrowToken,
+  isNotClosingBraceToken,
+  isNotClosingBracketToken,
+  isNotClosingParenToken,
+  isNotColonToken,
+  isNotCommaToken,
+  isNotCommentToken,
+  isNotNonNullAssertionPunctuator,
+  isNotOpeningBraceToken,
+  isNotOpeningBracketToken,
+  isNotOpeningParenToken,
+  isNotOptionalChainPunctuator,
+  isNotSemicolonToken,
+  isNotTokenOfTypeWithConditions,
+  isOpeningBraceToken,
+  isOpeningBracketToken,
+  isOpeningParenToken,
+  isOptionalCallExpression,
+  isOptionalChainPunctuator,
+  isParenthesized,
+  isSemicolonToken,
+  isSetter,
+  isTSConstructorType,
+  isTSFunctionType,
+  isTokenOfTypeWithConditions,
+  isTokenOnSameLine,
+  isTypeAssertion,
+  isTypeKeyword,
+  isVariableDeclarator
+};

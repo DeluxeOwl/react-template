@@ -1,6 +1,6 @@
 import { t as __exportAll } from "./chunk-BYypO7fO.js";
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
-import * as ASTUtils from "@typescript-eslint/utils/ast-utils";
+import * as ASTUtils from "../../../../_deps/typescript-eslint-utils-ast-utils.js";
 import { jsxStringValue } from "../../../../_compat/jsx-entities.js";
 import { delimiterCase, toLowerCase } from "string-ts";
 

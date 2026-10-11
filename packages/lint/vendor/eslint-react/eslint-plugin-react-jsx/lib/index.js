@@ -1,5 +1,5 @@
 import { DEFAULT_ESLINT_REACT_SETTINGS } from "../../@eslint-react/shared/lib/index.js";
-import * as ESLintUtils from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils from "../../../_deps/typescript-eslint-utils-eslint-utils.js";
 import { jsxStringValue } from "../../../_compat/jsx-entities.js";
 import { merge } from "../../@eslint-react/eslint/lib/index.js";
 import { findAttribute, getChildren, getElementFullType, hasAnyAttribute, hasChildren, isFragmentElement, isHostElement, isWhitespaceText } from "../../@eslint-react/jsx/lib/index.js";

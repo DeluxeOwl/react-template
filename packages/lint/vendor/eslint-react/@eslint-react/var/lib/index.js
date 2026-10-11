@@ -1,7 +1,7 @@
 import { Check, Compare, Extract, Traverse, isOneOf } from "../../ast/lib/index.js";
 import { DefinitionType } from "@typescript-eslint/scope-manager";
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
-import { findVariable, getStaticValue } from "@typescript-eslint/utils/ast-utils";
+import { findVariable, getStaticValue } from "../../../../_deps/typescript-eslint-utils-ast-utils.js";
 
 //#region src/resolve.ts
 /**

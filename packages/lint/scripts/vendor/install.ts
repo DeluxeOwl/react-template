@@ -28,7 +28,7 @@ function repoTypeScript(): string {
 
 // Installs the spec's pinned packages into a cache directory outside the repo (hoisted, so every
 // package sits at node_modules/<name>) and returns it. The cache is reused while the pins are the same.
-export function installUpstream(spec: PluginSpec): string {
+export function installUpstream(spec: Pick<PluginSpec, "dir" | "install">): string {
     const dependencies = { typescript: repoTypeScript(), ...spec.install }
     const pins = JSON.stringify(dependencies)
     const hash = createHash("sha256").update(pins)

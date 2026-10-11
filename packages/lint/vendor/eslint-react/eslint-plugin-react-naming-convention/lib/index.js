@@ -1,4 +1,4 @@
-import * as ESLintUtils from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils from "../../../_deps/typescript-eslint-utils-eslint-utils.js";
 import * as core from "../../@eslint-react/core/lib/index.js";
 import { merge } from "../../@eslint-react/eslint/lib/index.js";
 import { resolveEnclosingAssignmentTarget } from "../../@eslint-react/var/lib/index.js";

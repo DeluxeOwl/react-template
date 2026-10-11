@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import * as ESLintUtils from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils from "../_deps/typescript-eslint-utils-eslint-utils.js";
 import { TSESTree } from "@typescript-eslint/types";
 
 //#region rolldown:runtime

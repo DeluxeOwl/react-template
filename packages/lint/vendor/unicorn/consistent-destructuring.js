@@ -1,4 +1,4 @@
-import {findVariable} from '@eslint-community/eslint-utils';
+import {findVariable} from '../_deps/eslint-community-eslint-utils.js';
 import getAvailableVariableName from './utils/get-available-variable-name.js';
 import isLeftHandSide from './utils/is-left-hand-side.js';
 import {isCallOrNewExpression} from './ast/index.js';

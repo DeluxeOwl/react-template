@@ -2,7 +2,7 @@ import { Extract, Traverse } from "../../ast/lib/index.js";
 import { resolve } from "../../var/lib/index.js";
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
 import { jsxStringValue } from "../../../../_compat/jsx-entities.js";
-import { getStaticValue } from "@typescript-eslint/utils/ast-utils";
+import { getStaticValue } from "../../../../_deps/typescript-eslint-utils-ast-utils.js";
 import { P, match } from "ts-pattern";
 
 //#region src/get-attribute-name.ts

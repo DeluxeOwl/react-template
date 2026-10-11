@@ -1,5 +1,5 @@
 import { DEFAULT_ESLINT_REACT_SETTINGS, RE_JAVASCRIPT_PROTOCOL, getSettingsFromContext } from "../../@eslint-react/shared/lib/index.js";
-import * as ESLintUtils from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils from "../../../_deps/typescript-eslint-utils-eslint-utils.js";
 import { merge } from "../../@eslint-react/eslint/lib/index.js";
 import { findAttribute, getAttributeStaticValue, getElementFullType, hasAnyAttribute, hasAttribute, isHostElement, isWhitespace, resolveAttributeValue } from "../../@eslint-react/jsx/lib/index.js";
 import { AST_NODE_TYPES } from "@typescript-eslint/types";

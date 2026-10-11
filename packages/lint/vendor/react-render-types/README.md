@@ -5,7 +5,9 @@ Only the rules enabled in our presets are included; they run inside oxlint as a 
 
 Rules (1): `renders-uses-vars`.
 
-External runtime dependencies: `@typescript-eslint/utils` (upstream range `^8.53.1`).
+External runtime dependencies: none.
+
+Imports of `@typescript-eslint/utils/eslint-utils` load the bundled copies in `../_deps/` (see its README): those packages would install ESLint.
 
 ## Local patches
 

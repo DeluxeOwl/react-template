@@ -9,11 +9,12 @@ import { fail } from "./fail.ts"
 const Dependencies = v.record(v.string(), v.string())
 
 const ManifestSchema = v.object({
-    dependencies: v.optional(Dependencies),
-    license:      v.optional(v.string()),
-    name:         v.optional(v.string()),
-    type:         v.optional(v.string()),
-    version:      v.optional(v.string()),
+    dependencies:     v.optional(Dependencies),
+    license:          v.optional(v.string()),
+    name:             v.optional(v.string()),
+    peerDependencies: v.optional(Dependencies),
+    type:             v.optional(v.string()),
+    version:          v.optional(v.string()),
 })
 
 // The package.json fields the tool reads.
@@ -45,6 +46,24 @@ export function packageRoot(file: string): PackageRoot {
     }
 
     return fail(`no package.json above ${file}`)
+}
+
+interface Declaration {
+    // that code, for the error message
+    owner:    string
+    // the packages some vendored code imports at runtime
+    external: Set<string>
+}
+
+// Vendored code imports its runtime dependencies from wherever @deluxeowl/lint is installed, so
+// each must be a dependency (or peer) of the package. knip ignores vendor/, so this checks it.
+export function checkDeclared(lintDir: string, { external, owner }: Declaration): void {
+    const manifest = readManifest(lintDir)
+    const declared = new Set([...Object.keys(manifest.dependencies ?? {}), ...Object.keys(manifest.peerDependencies ?? {})])
+    const missing = [...external].filter((name) => !declared.has(name))
+    if (missing.length > 0) {
+        fail(`${owner} imports ${missing.join(", ")}: add it to the dependencies in packages/lint/package.json`)
+    }
 }
 
 // The LICENSE file of a package directory, if it has one.

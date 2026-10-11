@@ -2,12 +2,12 @@ import { DEFAULT_ESLINT_REACT_SETTINGS } from "../../@eslint-react/shared/lib/in
 import * as core from "../../@eslint-react/core/lib/index.js";
 import birecord from "birecord";
 import { P, isMatching, match } from "ts-pattern";
-import * as ESLintUtils from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils from "../../../_deps/typescript-eslint-utils-eslint-utils.js";
 import { Check, Compare, Extract, Traverse, isOneOf } from "../../@eslint-react/ast/lib/index.js";
 import { merge } from "../../@eslint-react/eslint/lib/index.js";
 import { isAssignmentTargetEqual, isValueEqual, resolve, resolveEnclosingAssignmentTarget } from "../../@eslint-react/var/lib/index.js";
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
-import { getStaticValue } from "@typescript-eslint/utils/ast-utils";
+import { getStaticValue } from "../../../_deps/typescript-eslint-utils-ast-utils.js";
 
 //#region \0rolldown/runtime.js
 var __defProp = Object.defineProperty;

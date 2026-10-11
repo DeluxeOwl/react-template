@@ -75,9 +75,8 @@ function manifestDir(file: string): string | undefined {
     return existsSync(path.join(dir, "package.json")) ? dir : undefined
 }
 
-// The full license of every bundled package (plus `own`: package@version → license text), as
-// comments for the end of the bundle, so they survive copying the one file.
-export function licenseNotices(inputs: string[], own: Map<string, string>): string {
+// package@version → license text of every bundled package (plus `own`).
+export function bundledLicenses(inputs: string[], own: Map<string, string>): Map<string, string> {
     const licenses = new Map(own)
     const unlicensed = new Set<string>()
     for (const dir of inputs.filter((input) => input.includes("/node_modules/")).map((input) => manifestDir(input))) {
@@ -94,7 +93,13 @@ export function licenseNotices(inputs: string[], own: Map<string, string>): stri
         fail(`bundled packages without a license: ${[...unlicensed].join(", ")}`)
     }
 
-    return [...licenses].toSorted(([left], [right]) => left.localeCompare(right)).map(([id, text]) => `/*\nBundled dependency: ${id}\n${text.replaceAll("*/", "* /")}\n*/`)
+    return licenses
+}
+
+// The full license of every bundled package (plus `own`), as comments for the end of the bundle,
+// so they survive copying the one file.
+export function licenseNotices(inputs: string[], own: Map<string, string>): string {
+    return [...bundledLicenses(inputs, own)].toSorted(([left], [right]) => left.localeCompare(right)).map(([id, text]) => `/*\nBundled dependency: ${id}\n${text.replaceAll("*/", "* /")}\n*/`)
         .join("\n")
 }
 

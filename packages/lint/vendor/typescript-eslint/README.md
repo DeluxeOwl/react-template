@@ -5,7 +5,9 @@ The upstream plugin is a single bundle, copied whole; index.js exposes only the 
 
 Rules (13): `ban-ts-comment`, `no-array-constructor`, `no-unnecessary-type-constraint`, `no-restricted-imports`, `array-type`, `consistent-generic-constructors`, `consistent-indexed-object-style`, `consistent-type-definitions`, `explicit-function-return-type`, `naming-convention`, `no-inferrable-types`, `no-magic-numbers`, `prefer-function-type`.
 
-External runtime dependencies: `@eslint-community/eslint-utils` (upstream range `?`), `@typescript-eslint/types` (upstream range `?`), `eslint-visitor-keys` (upstream range `?`), `typescript` (upstream range `?`).
+External runtime dependencies: `@typescript-eslint/types` (upstream range `?`), `eslint-visitor-keys` (upstream range `?`), `typescript` (upstream range `?`).
+
+Imports of `@eslint-community/eslint-utils` load the bundled copies in `../_deps/` (see its README): those packages would install ESLint.
 
 ## Local patches
 

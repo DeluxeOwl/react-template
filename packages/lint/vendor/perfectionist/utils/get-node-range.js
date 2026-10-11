@@ -1,7 +1,7 @@
 import { getEslintDisabledRules } from './get-eslint-disabled-rules.js'
 import { isPartitionComment } from './is-partition-comment.js'
 import { getCommentsBefore } from './get-comments-before.js'
-import * as ASTUtils from '@eslint-community/eslint-utils'
+import * as ASTUtils from '../../_deps/eslint-community-eslint-utils.js'
 /**
  * Determines the complete range of a node including its associated comments.
  *

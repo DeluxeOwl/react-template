@@ -5,7 +5,9 @@ The upstream plugin is a single bundle, copied whole; index.js exposes only the 
 
 Rules (9): `no-unresolved`, `named`, `namespace`, `default`, `export`, `no-named-as-default`, `no-named-as-default-member`, `no-duplicates`, `no-dynamic-require`.
 
-External runtime dependencies: `@typescript-eslint/parser` (upstream range `?`), `@typescript-eslint/types` (upstream range `^8.56.0`), `debug` (upstream range `^4.4.1`), `eslint-import-context` (upstream range `^0.1.9`), `eslint-import-resolver-typescript` (upstream range `?`), `is-glob` (upstream range `^4.0.3`), `minimatch` (upstream range `^9.0.3 || ^10.1.2`), `semver` (upstream range `^7.7.2`), `stable-hash-x` (upstream range `^0.2.0`), `unrs-resolver` (upstream range `^1.9.2`).
+External runtime dependencies: `@typescript-eslint/types` (upstream range `^8.56.0`), `debug` (upstream range `^4.4.1`), `eslint-import-context` (upstream range `^0.1.9`), `is-glob` (upstream range `^4.0.3`), `minimatch` (upstream range `^9.0.3 || ^10.1.2`), `semver` (upstream range `^7.7.2`), `stable-hash-x` (upstream range `^0.2.0`), `unrs-resolver` (upstream range `^1.9.2`).
+
+Imports of `@typescript-eslint/parser`, `eslint-import-resolver-typescript` load the bundled copies in `../_deps/` (see its README): those packages would install ESLint.
 
 ## Local patches
 

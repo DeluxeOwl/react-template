@@ -43,7 +43,7 @@ var require_astUtilities = /* @__PURE__ */ __commonJSMin(((exports) => {
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.isParenthesized = exports.hasSideEffect = exports.getStringIfConstant = exports.getStaticValue = exports.getPropertyName = exports.getFunctionNameWithKind = exports.getFunctionHeadLocation = void 0;
-	const eslintUtils$4 = __importStar(__require("@eslint-community/eslint-utils"));
+	const eslintUtils$4 = __importStar(__require("../_deps/eslint-community-eslint-utils.js"));
 	exports.getFunctionHeadLocation = eslintUtils$4.getFunctionHeadLocation;
 	exports.getFunctionNameWithKind = eslintUtils$4.getFunctionNameWithKind;
 	exports.getPropertyName = eslintUtils$4.getPropertyName;
@@ -96,7 +96,7 @@ var require_PatternMatcher = /* @__PURE__ */ __commonJSMin(((exports) => {
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.PatternMatcher = void 0;
-	exports.PatternMatcher = __importStar(__require("@eslint-community/eslint-utils")).PatternMatcher;
+	exports.PatternMatcher = __importStar(__require("../_deps/eslint-community-eslint-utils.js")).PatternMatcher;
 }));
 var require_predicates$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
@@ -142,7 +142,7 @@ var require_predicates$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.isNotSemicolonToken = exports.isSemicolonToken = exports.isNotOpeningParenToken = exports.isOpeningParenToken = exports.isNotOpeningBracketToken = exports.isOpeningBracketToken = exports.isNotOpeningBraceToken = exports.isOpeningBraceToken = exports.isNotCommentToken = exports.isCommentToken = exports.isNotCommaToken = exports.isCommaToken = exports.isNotColonToken = exports.isColonToken = exports.isNotClosingParenToken = exports.isClosingParenToken = exports.isNotClosingBracketToken = exports.isClosingBracketToken = exports.isNotClosingBraceToken = exports.isClosingBraceToken = exports.isNotArrowToken = exports.isArrowToken = void 0;
-	const eslintUtils$2 = __importStar(__require("@eslint-community/eslint-utils"));
+	const eslintUtils$2 = __importStar(__require("../_deps/eslint-community-eslint-utils.js"));
 	exports.isArrowToken = eslintUtils$2.isArrowToken;
 	exports.isNotArrowToken = eslintUtils$2.isNotArrowToken;
 	exports.isClosingBraceToken = eslintUtils$2.isClosingBraceToken;
@@ -210,7 +210,7 @@ var require_ReferenceTracker = /* @__PURE__ */ __commonJSMin(((exports) => {
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.ReferenceTracker = void 0;
-	const eslintUtils$1 = __importStar(__require("@eslint-community/eslint-utils"));
+	const eslintUtils$1 = __importStar(__require("../_deps/eslint-community-eslint-utils.js"));
 	eslintUtils$1.ReferenceTracker.READ;
 	eslintUtils$1.ReferenceTracker.CALL;
 	eslintUtils$1.ReferenceTracker.CONSTRUCT;
@@ -261,7 +261,7 @@ var require_scopeAnalysis = /* @__PURE__ */ __commonJSMin(((exports) => {
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.getInnermostScope = exports.findVariable = void 0;
-	const eslintUtils = __importStar(__require("@eslint-community/eslint-utils"));
+	const eslintUtils = __importStar(__require("../_deps/eslint-community-eslint-utils.js"));
 	exports.findVariable = eslintUtils.findVariable;
 	exports.getInnermostScope = eslintUtils.getInnermostScope;
 }));

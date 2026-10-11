@@ -5,7 +5,9 @@ Only the rules enabled in our presets are included; they run inside oxlint as a 
 
 Rules (3): `better-regex`, `consistent-destructuring`, `import-style`.
 
-External runtime dependencies: `@babel/helper-validator-identifier` (upstream range `^7.28.5`), `@eslint-community/eslint-utils` (upstream range `^4.9.1`), `clean-regexp` (upstream range `^1.0.0`), `jsesc` (upstream range `^3.1.0`), `regexp-tree` (upstream range `^0.1.27`).
+External runtime dependencies: `@babel/helper-validator-identifier` (upstream range `^7.28.5`), `clean-regexp` (upstream range `^1.0.0`), `jsesc` (upstream range `^3.1.0`), `regexp-tree` (upstream range `^0.1.27`).
+
+Imports of `@eslint-community/eslint-utils` load the bundled copies in `../_deps/` (see its README): those packages would install ESLint.
 
 ## Local patches
 

@@ -120,7 +120,14 @@ function dependencyRanges(job: Job): Record<string, string> {
     return ranges
 }
 
-export function writeReadme(job: Job, external: Set<string>): void {
+interface Imports {
+    // runtime dependencies (packages)
+    external: Set<string>
+    // imports that load a module of vendor/_deps instead (see deps.ts)
+    inlined:  Set<string>
+}
+
+export function writeReadme(job: Job, { external, inlined }: Imports): void {
     const {
         manifest, spec, target, upstream,
     } = job
@@ -139,6 +146,12 @@ export function writeReadme(job: Job, external: Set<string>): void {
         "",
         `External runtime dependencies: ${dependencies === "" ? "none" : dependencies}.`,
         "",
+        ...inlined.size > 0
+            ? [
+                    `Imports of ${[...inlined].toSorted().map((name) => `\`${name}\``)
+                        .join(", ")} load the bundled copies in \`../_deps/\` (see its README): those packages would install ESLint.`, "",
+                ]
+            : [],
         "## Local patches",
         "",
         ...patchLines.length > 0 ? patchLines : ["None — files are byte-identical to upstream."],

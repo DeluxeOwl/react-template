@@ -13,11 +13,15 @@
 //   index.d.ts  types for the entry
 //   README.md   provenance (package, version, files, external deps, local patches)
 //   LICENSE     upstream license
+// Imports of helper packages that would install ESLint (deps.ts) are pointed at bundled copies in
+// vendor/_deps/, which every run rebuilds first.
 // Never edit vendored files by hand: change the spec and regenerate.
+import path from "node:path"
 import { parseArgs } from "node:util"
 
 import { fail } from "./fail.ts"
 import { specs } from "./specs/index.ts"
+import { vendorDependencies } from "./deps.ts"
 import { vendorPlugin } from "./vendor-plugin.ts"
 
 const { positionals, values } = parseArgs({ allowPositionals: true, options: { all: { type: "boolean" } } })
@@ -26,6 +30,7 @@ const unknown = positionals.filter((name) => !specs.some((spec) => spec.dir === 
 if (selected.length === 0 || unknown.length > 0) {
     fail(`usage: bun run vendor <${specs.map((spec) => spec.dir).join("|")}>... | --all${unknown.length > 0 ? ` (unknown: ${unknown.join(", ")})` : ""}`)
 }
+await vendorDependencies(path.resolve(import.meta.dirname, "../.."))
 for (const spec of selected) {
     await vendorPlugin(spec)
 }

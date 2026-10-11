@@ -1,5 +1,5 @@
 import { DEFAULT_ESLINT_REACT_SETTINGS } from "../../@eslint-react/shared/lib/index.js";
-import * as ESLintUtils from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils from "../../../_deps/typescript-eslint-utils-eslint-utils.js";
 import { Check, Extract } from "../../@eslint-react/ast/lib/index.js";
 import * as core from "../../@eslint-react/core/lib/index.js";
 import { merge } from "../../@eslint-react/eslint/lib/index.js";

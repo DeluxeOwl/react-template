@@ -1,4 +1,4 @@
-import * as ESLintUtils from "@typescript-eslint/utils/eslint-utils";
+import * as ESLintUtils from "../../../../_deps/typescript-eslint-utils-eslint-utils.js";
 
 //#region src/utils.ts
 function getDocsUrl(ruleName) {

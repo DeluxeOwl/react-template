@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import { AST_NODE_TYPES, AST_TOKEN_TYPES, ESLintUtils } from "@typescript-eslint/utils";
+import { AST_NODE_TYPES, AST_TOKEN_TYPES, ESLintUtils } from "../_deps/typescript-eslint-utils.js";
 import { isAbsolute, posix } from "node:path";
 const DefinitionType = { ImportBinding: "ImportBinding" };
 

@@ -46,6 +46,11 @@
         "packages/lint": {
             "entry": [
                 "vendor/better-tailwindcss/tailwindcss/tailwind.async.worker.v{3,4}.js"
+            ],
+            // vendor/_deps/ requires it through esbuild's `__require(...)`, which knip doesn't read as
+            // an import. The vendoring tool checks that vendored imports are declared.
+            "ignoreDependencies": [
+                "@typescript-eslint/visitor-keys"
             ]
         }
     }

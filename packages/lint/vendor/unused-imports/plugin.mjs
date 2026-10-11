@@ -974,7 +974,7 @@ var require_astUtilities = __commonJS({
     })();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.isParenthesized = exports.hasSideEffect = exports.getStringIfConstant = exports.getStaticValue = exports.getPropertyName = exports.getFunctionNameWithKind = exports.getFunctionHeadLocation = void 0;
-    var eslintUtils = __importStar(__require("@eslint-community/eslint-utils"));
+    var eslintUtils = __importStar(__require("../_deps/eslint-community-eslint-utils.js"));
     exports.getFunctionHeadLocation = eslintUtils.getFunctionHeadLocation;
     exports.getFunctionNameWithKind = eslintUtils.getFunctionNameWithKind;
     exports.getPropertyName = eslintUtils.getPropertyName;
@@ -1028,7 +1028,7 @@ var require_PatternMatcher = __commonJS({
     })();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.PatternMatcher = void 0;
-    var eslintUtils = __importStar(__require("@eslint-community/eslint-utils"));
+    var eslintUtils = __importStar(__require("../_deps/eslint-community-eslint-utils.js"));
     exports.PatternMatcher = eslintUtils.PatternMatcher;
   }
 });
@@ -1076,7 +1076,7 @@ var require_predicates = __commonJS({
     })();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.isNotSemicolonToken = exports.isSemicolonToken = exports.isNotOpeningParenToken = exports.isOpeningParenToken = exports.isNotOpeningBracketToken = exports.isOpeningBracketToken = exports.isNotOpeningBraceToken = exports.isOpeningBraceToken = exports.isNotCommentToken = exports.isCommentToken = exports.isNotCommaToken = exports.isCommaToken = exports.isNotColonToken = exports.isColonToken = exports.isNotClosingParenToken = exports.isClosingParenToken = exports.isNotClosingBracketToken = exports.isClosingBracketToken = exports.isNotClosingBraceToken = exports.isClosingBraceToken = exports.isNotArrowToken = exports.isArrowToken = void 0;
-    var eslintUtils = __importStar(__require("@eslint-community/eslint-utils"));
+    var eslintUtils = __importStar(__require("../_deps/eslint-community-eslint-utils.js"));
     exports.isArrowToken = eslintUtils.isArrowToken;
     exports.isNotArrowToken = eslintUtils.isNotArrowToken;
     exports.isClosingBraceToken = eslintUtils.isClosingBraceToken;
@@ -1145,7 +1145,7 @@ var require_ReferenceTracker = __commonJS({
     })();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ReferenceTracker = void 0;
-    var eslintUtils = __importStar(__require("@eslint-community/eslint-utils"));
+    var eslintUtils = __importStar(__require("../_deps/eslint-community-eslint-utils.js"));
     var ReferenceTrackerREAD = eslintUtils.ReferenceTracker.READ;
     var ReferenceTrackerCALL = eslintUtils.ReferenceTracker.CALL;
     var ReferenceTrackerCONSTRUCT = eslintUtils.ReferenceTracker.CONSTRUCT;
@@ -1197,7 +1197,7 @@ var require_scopeAnalysis = __commonJS({
     })();
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getInnermostScope = exports.findVariable = void 0;
-    var eslintUtils = __importStar(__require("@eslint-community/eslint-utils"));
+    var eslintUtils = __importStar(__require("../_deps/eslint-community-eslint-utils.js"));
     exports.findVariable = eslintUtils.findVariable;
     exports.getInnermostScope = eslintUtils.getInnermostScope;
   }

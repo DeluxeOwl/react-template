@@ -9,14 +9,15 @@ import type { Upstream, PluginSpec } from "./spec.ts"
 
 import { fail } from "./fail.ts"
 import { selectRules } from "./rules.ts"
+import { inlinedImports } from "./deps.ts"
 import { field, isRecord } from "./guards.ts"
 import { installUpstream } from "./install.ts"
 import {
-    licenseFile, packageRoot, readManifest,
-} from "./manifest.ts"
-import {
     writeEntry, copyLicense, writeCompat, writeReadme,
 } from "./write.ts"
+import {
+    licenseFile, packageRoot, readManifest, checkDeclared,
+} from "./manifest.ts"
 import {
     commonDir, bareImports, packageName, localImports, collectClosure,
 } from "./closure.ts"
@@ -112,7 +113,7 @@ interface SpecifierChange {
 // Rewrites the module specifier `from` to `to` in import/export/require statements of `source`.
 function rewriteSpecifier(source: string, change: SpecifierChange): string {
     const escaped = change.from.replaceAll(/[$()*+./?[\\\]^{|}]/gu, String.raw`\$&`)
-    const statement = new RegExp(`(?<keyword>\\bfrom\\s*|\\bimport\\s*\\(\\s*|\\bimport\\s+|\\brequire\\s*\\(\\s*)(?<quote>["'])${escaped}\\k<quote>`, "gu")
+    const statement = new RegExp(`(?<keyword>\\bfrom\\s*|\\bimport\\s*\\(\\s*|\\bimport\\s+|\\b(?:__)?require\\s*\\(\\s*)(?<quote>["'])${escaped}\\k<quote>`, "gu")
 
     return source.replaceAll(statement, `$<keyword>$<quote>${change.to}$<quote>`)
 }
@@ -227,6 +228,28 @@ function applyPatches(job: Job): void {
     }
 }
 
+// Imports of the helper packages bundled in vendor/_deps (deps.ts) now load those modules.
+// Returns the specifiers that were rewritten.
+function inlineImports(job: Job): Set<string> {
+    const rewritten = new Set<string>()
+    for (const file of [...job.closure.files].map((upstreamFile) => job.vendoredPath(upstreamFile))) {
+        const source = readFileSync(file, "utf8")
+        let result = source
+        for (const [specifier, module] of Object.entries(inlinedImports)) {
+            const next = rewriteSpecifier(result, { from: specifier, to: path.relative(path.dirname(file), path.join(lintDir, "vendor/_deps", module)) })
+            if (next !== result) {
+                rewritten.add(specifier)
+            }
+            result = next
+        }
+        if (result !== source) {
+            writeFileSync(file, result)
+        }
+    }
+
+    return rewritten
+}
+
 function removeEmptyDirs(dir: string): boolean {
     let isEmpty = true
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -269,20 +292,43 @@ function externalDependencies(reached: Set<string>): Set<string> {
     return new Set(names.filter((name) => !builtinModules.includes(name)))
 }
 
+interface Imports {
+    // the packages the vendored files import
+    external: Set<string>
+    // the imports that now load a module of vendor/_deps
+    inlined:  Set<string>
+    // the vendored files left after pruning
+    reached:  Set<string>
+}
+
+// Points imports at vendor/_deps, prunes the files the patches made unreachable, and lists the
+// runtime dependencies of what's left (which must be dependencies of @deluxeowl/lint).
+function resolveImports(job: Job): Imports {
+    const inlined = inlineImports(job)
+    const reached = prune(job)
+    const external = externalDependencies(reached)
+    checkDeclared(lintDir, { external, owner: `vendor/${job.spec.dir}` })
+
+    return {
+        external, inlined, reached,
+    }
+}
+
 export async function vendorPlugin(spec: PluginSpec): Promise<void> {
     const staged = await stage(spec)
     copyFiles(staged)
     const job = spec.layout.kind === "packages" ? linkFamily(staged) : staged
     const entry = job.pluginFile === undefined ? await ruleFilesEntry(job) : await pluginEntry(job, job.pluginFile)
     applyPatches(job)
-    const reached = prune(job)
-    const external = externalDependencies(reached)
+    const {
+        external, inlined, reached,
+    } = resolveImports(job)
     writeCompat(lintDir)
     writeEntry(job, entry)
     copyLicense(job)
-    writeReadme(job, external)
+    writeReadme(job, { external, inlined })
     const final = path.join(lintDir, "vendor", spec.dir)
     rmSync(final, { force: true, recursive: true })
     renameSync(job.target, final)
-    console.log(`${spec.dir}: ${spec.pkg}@${job.manifest.version ?? "?"}, ${job.upstream.rules.length} rules, ${reached.size} files (of ${job.closure.files.size} before patches); external deps: ${external.size > 0 ? [...external].toSorted().join(", ") : "none"}`)
+    console.log(`${spec.dir}: ${spec.pkg}@${job.manifest.version ?? "?"}, ${job.upstream.rules.length} rules, ${reached.size} files (of ${job.closure.files.size} before patches); external deps: ${external.size > 0 ? [...external].toSorted().join(", ") : "none"}${inlined.size > 0 ? `; from _deps: ${[...inlined].toSorted().join(", ")}` : ""}`)
 }

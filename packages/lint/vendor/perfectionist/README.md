@@ -5,7 +5,9 @@ Only the rules enabled in our presets are included; they run inside oxlint as a 
 
 Rules (21): `sort-variable-declarations`, `sort-intersection-types`, `sort-import-attributes`, `sort-export-attributes`, `sort-heritage-clauses`, `sort-array-includes`, `sort-named-imports`, `sort-named-exports`, `sort-object-types`, `sort-union-types`, `sort-switch-case`, `sort-decorators`, `sort-interfaces`, `sort-jsx-props`, `sort-classes`, `sort-imports`, `sort-exports`, `sort-objects`, `sort-enums`, `sort-sets`, `sort-maps`.
 
-External runtime dependencies: `@eslint-community/eslint-utils` (upstream range `?`), `@typescript-eslint/types` (upstream range `?`), `@typescript-eslint/utils` (upstream range `^8.58.2`), `natural-orderby` (upstream range `^5.0.0`).
+External runtime dependencies: `@typescript-eslint/types` (upstream range `?`), `natural-orderby` (upstream range `^5.0.0`).
+
+Imports of `@eslint-community/eslint-utils`, `@typescript-eslint/utils/eslint-utils` load the bundled copies in `../_deps/` (see its README): those packages would install ESLint.
 
 ## Local patches
 
