@@ -46,12 +46,13 @@ originals. The parity tools did, and they exist only in the gitignored `scratch/
 `scratch/ast-grep-port/` (needs `ast-grep` on `PATH`). Copy them somewhere durable, such as a private
 repo or a branch that is never merged, if they should outlive that machine.
 
-## 4. Check the editor
+## 4. Check the editor (done)
 
-Not tested (Q-006: not needed then). With the oxc VS Code extension: do the `custom/*` and vendored
-rules (JS plugins) and the type-aware rules show up, and does `source.fixAll.oxc` fix on save? It
-applies one round of fixes per save where `oxlint-fix` runs up to 20 (D-019), so some files need
-more than one save.
+Done in 0.7.0 (D-038, Phase 10 of the record). VS Code showed only oxlint's defaults, because every
+workspace config set an option only the root config may set. Now the editor reports what
+`bun run lint:oxlint` reports, and fixes on save. That was checked through the language server, the
+way VS Code drives it, not by hand in VS Code. A save applies one round of fixes where `oxlint-fix`
+runs up to 20 (D-019), so a file can need a second save.
 
 ## 5. File the oxc issues
 
