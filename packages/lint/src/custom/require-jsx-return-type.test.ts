@@ -1,32 +1,10 @@
-/* oxlint-disable vitest-js/require-hook */
-import tseslint from "typescript-eslint"
-import {
-    it, afterAll, describe,
-} from "vitest"
-import { RuleTester } from "@typescript-eslint/rule-tester"
+/* oxlint-disable vitest-js/require-hook -- RuleTester.run registers its own describe and it blocks */
+import { describe } from "vitest"
 
-import { requireJSXReturnTypeRule } from "./require-jsx-return-type"
+import { createRuleTester } from "./rule-tester.ts"
+import { requireJSXReturnTypeRule } from "./require-jsx-return-type.ts"
 
-RuleTester.afterAll = afterAll
-RuleTester.describe = (name, callback) => {
-    describe(name, () => {
-        callback()
-    })
-}
-RuleTester.it = it
-
-const ruleTester = new RuleTester({
-    languageOptions: {
-        parser:        tseslint.parser,
-        parserOptions: {
-            ecmaFeatures: {
-                jsx: true,
-            },
-            ecmaVersion: 2020,
-            sourceType:  "module",
-        },
-    },
-})
+const ruleTester = createRuleTester("tsx")
 
 describe("require-jsx-return-type", () => {
     ruleTester.run("require-jsx-return-type", requireJSXReturnTypeRule, {

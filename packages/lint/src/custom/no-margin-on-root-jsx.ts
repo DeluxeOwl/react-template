@@ -1,10 +1,8 @@
+import {
+    defineRule, type ESTree, type Context,
+} from "@oxlint/plugins"
 
-import type { RuleContext } from "@typescript-eslint/utils/ts-eslint"
-
-import { TSESTree } from "@typescript-eslint/types"
-import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
-
-import { jsxStringValue } from "../../vendor/_compat/jsx-entities.js"
+import { decodeJsxEntities } from "../../vendor/_compat/jsx-entities.js"
 
 /*
   * ----------------------------------------------------------------------------
@@ -32,250 +30,162 @@ import { jsxStringValue } from "../../vendor/_compat/jsx-entities.js"
 // m-, mb-, me-, ml-, mr-, ms-, mt-, mx-, my- with a number or an arbitrary value
 const MarginClassPattern = /!?-?m[belr-txy]?-(?:\d+|\[.+?\])/u
 
-function extractStringsFromLiteral(node: TSESTree.Literal): string[] {
-    if (typeof node.value === "string") {
-        return [node.value]
-    }
-    return []
+// `margin` itself, and every longhand: marginTop, marginBlockStart, marginInlineEnd, ...
+const MarginStylePrefixes = [
+    "marginTop",
+    "marginLeft",
+    "marginRight",
+    "marginBlock",
+    "marginBottom",
+    "marginInline",
+    "marginVertical",
+    "marginHorizontal",
+]
+
+function extractStringsFromTemplateLiteral(node: ESTree.TemplateLiteral): string[] {
+    const cooked = node.quasis
+        .map((quasi) => quasi.value.cooked ?? "")
+        .filter((text) => text !== "")
+    return [...cooked, ...node.expressions.flatMap((expression) => extractStrings(expression))]
 }
 
-function extractStringsFromTemplateLiteral(node: TSESTree.TemplateLiteral): string[] {
-    const strings: string[] = []
-    for (const quasis of node.quasis) {
-        const cooked = quasis.value.cooked ?? ""
-        if (cooked !== "") {
-            strings.push(cooked)
-        }
-    }
-    for (const expr of node.expressions) {
-        strings.push(...extractStringsFromExpression(expr))
-    }
-    return strings
+function extractStringsFromArguments(node: ESTree.CallExpression): string[] {
+    return node.arguments
+        .filter((argument) => argument.type === "Literal" || argument.type === "TemplateLiteral")
+        .flatMap((argument) => extractStrings(argument))
 }
 
-function extractStringsFromCallExpression(node: TSESTree.CallExpression): string[] {
-    const strings: string[] = []
-    for (const arg of node.arguments) {
-        if (arg.type === TSESTree.AST_NODE_TYPES.Literal) {
-            strings.push(...extractStringsFromLiteral(arg))
-        } else if (arg.type === TSESTree.AST_NODE_TYPES.TemplateLiteral) {
-            strings.push(...extractStringsFromTemplateLiteral(arg))
-        }
+/** The class-name strings an expression can evaluate to. */
+function extractStrings(node: ESTree.Node): string[] {
+    if (node.type === "BinaryExpression") {
+        return node.operator === "+" ? [...extractStrings(node.left), ...extractStrings(node.right)] : []
     }
-    return strings
-}
-
-function extractStringsFromBinaryExpression(node: TSESTree.BinaryExpression): string[] {
-    if (node.operator === "+") {
-        return [...extractStringsFromExpression(node.left), ...extractStringsFromExpression(node.right)]
+    if (node.type === "CallExpression") {
+        return extractStringsFromArguments(node)
     }
-    return []
-}
-
-function extractStringsFromConditionalExpression(node: TSESTree.ConditionalExpression): string[] {
-    return [
-        ...extractStringsFromExpression(node.consequent),
-        ...extractStringsFromExpression(node.alternate),
-    ]
-}
-
-function extractStringsFromLogicalExpression(node: TSESTree.LogicalExpression): string[] {
-    return [
-        ...extractStringsFromExpression(node.left),
-        ...extractStringsFromExpression(node.right),
-    ]
-}
-
-function extractStringsFromExpression(node: TSESTree.Expression | TSESTree.JSXEmptyExpression): string[] {
-    if (node.type === TSESTree.AST_NODE_TYPES.JSXEmptyExpression) {
-        return []
+    if (node.type === "ConditionalExpression") {
+        return [...extractStrings(node.consequent), ...extractStrings(node.alternate)]
     }
-    if (node.type === TSESTree.AST_NODE_TYPES.BinaryExpression) {
-        return extractStringsFromBinaryExpression(node)
+    if (node.type === "Literal") {
+        return typeof node.value === "string" ? [node.value] : []
     }
-    if (node.type === TSESTree.AST_NODE_TYPES.CallExpression) {
-        return extractStringsFromCallExpression(node)
+    if (node.type === "LogicalExpression") {
+        return [...extractStrings(node.left), ...extractStrings(node.right)]
     }
-    if (node.type === TSESTree.AST_NODE_TYPES.ConditionalExpression) {
-        return extractStringsFromConditionalExpression(node)
-    }
-    if (node.type === TSESTree.AST_NODE_TYPES.Literal) {
-        return extractStringsFromLiteral(node)
-    }
-    if (node.type === TSESTree.AST_NODE_TYPES.LogicalExpression) {
-        return extractStringsFromLogicalExpression(node)
-    }
-    if (node.type === TSESTree.AST_NODE_TYPES.TemplateLiteral) {
+    if (node.type === "TemplateLiteral") {
         return extractStringsFromTemplateLiteral(node)
     }
     return []
 }
 
-function hasMarginClass(node: TSESTree.JSXAttribute): boolean {
-    if (node.value?.type === TSESTree.AST_NODE_TYPES.Literal) {
-        // Decoded from `raw`: oxlint leaves HTML entities such as `&#109;` encoded in `value`.
-        return MarginClassPattern.test(jsxStringValue(node.value))
+function hasMarginClassString(node: ESTree.Node): boolean {
+    return extractStrings(node).some((text) => MarginClassPattern.test(text))
+}
+
+function hasMarginClass(node: ESTree.JSXAttribute): boolean {
+    if (node.value?.type === "Literal") {
+        // oxlint leaves HTML entities such as `&#109;` encoded in a JSX attribute's `value`.
+        return MarginClassPattern.test(decodeJsxEntities(node.value.value))
     }
-    if (node.value?.type === TSESTree.AST_NODE_TYPES.JSXExpressionContainer) {
-        const strings = extractStringsFromExpression(node.value.expression)
-        return strings.some((s) => MarginClassPattern.test(s))
+    if (node.value?.type === "JSXExpressionContainer") {
+        return hasMarginClassString(node.value.expression)
     }
     return false
 }
 
-// oxlint-disable-next-line sweepit/complexity
-function hasMarginStyle(node: TSESTree.JSXAttribute): boolean {
-    if (node.value?.type !== TSESTree.AST_NODE_TYPES.JSXExpressionContainer) {
-        return false
-    }
-    const expression = node.value.expression
-    if (expression.type === TSESTree.AST_NODE_TYPES.ObjectExpression) {
-        for (const prop of expression.properties) {
-            if (prop.type === TSESTree.AST_NODE_TYPES.Property) {
-                let keyName: null | string = null
-                if (prop.key.type === TSESTree.AST_NODE_TYPES.Identifier) {
-                    keyName = prop.key.name
-                } else if (prop.key.type === TSESTree.AST_NODE_TYPES.Literal && typeof prop.key.value === "string") {
-                    keyName = prop.key.value
-                }
-                if (keyName !== null
-                    && (keyName === "margin"
-                        || keyName.startsWith("marginBlock")
-                        || keyName.startsWith("marginInline")
-                        || keyName.startsWith("marginTop")
-                        || keyName.startsWith("marginRight")
-                        || keyName.startsWith("marginBottom")
-                        || keyName.startsWith("marginLeft")
-                        || keyName.startsWith("marginVertical")
-                        || keyName.startsWith("marginHorizontal")
-                        || keyName === "marginBlockStart"
-                        || keyName === "marginBlockEnd"
-                        || keyName === "marginInlineStart"
-                        || keyName === "marginInlineEnd")) {
-                    return true
-                }
-            }
-        }
-    }
-    return false
-}
-
-function getPropertyKey(prop: TSESTree.Property): null | string {
-    if (prop.key.type === TSESTree.AST_NODE_TYPES.Identifier) {
+function getPropertyKey(prop: ESTree.ObjectProperty): null | string {
+    if (prop.key.type === "Identifier") {
         return prop.key.name
     }
-    if (prop.key.type === TSESTree.AST_NODE_TYPES.Literal && typeof prop.key.value === "string") {
+    if (prop.key.type === "Literal" && typeof prop.key.value === "string") {
         return prop.key.value
     }
     return null
 }
 
-function hasMarginInSpread(node: TSESTree.JSXSpreadAttribute): boolean {
-    const argument = node.argument
-    if (argument.type !== TSESTree.AST_NODE_TYPES.ObjectExpression) {
+function isMarginStyleKey(key: string): boolean {
+    return key === "margin" || MarginStylePrefixes.some((prefix) => key.startsWith(prefix))
+}
+
+function objectProperties(node: ESTree.Node): ESTree.ObjectProperty[] {
+    if (node.type !== "ObjectExpression") {
+        return []
+    }
+    return node.properties.filter((prop) => prop.type === "Property")
+}
+
+function hasMarginStyle(node: ESTree.JSXAttribute): boolean {
+    if (node.value?.type !== "JSXExpressionContainer") {
         return false
     }
-    for (const prop of argument.properties) {
-        if (prop.type !== TSESTree.AST_NODE_TYPES.Property) {
-            continue
-        }
-        const keyName = getPropertyKey(prop)
-        if (keyName !== "className") {
-            continue
-        }
-        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-        const strings = extractStringsFromExpression(prop.value as TSESTree.Expression)
-        if (strings.some((s) => MarginClassPattern.test(s))) {
-            return true
-        }
-    }
-    return false
+    return objectProperties(node.value.expression).some((prop) => {
+        const key = getPropertyKey(prop)
+        return key !== null && isMarginStyleKey(key)
+    })
 }
 
-function isMarginProp(node: TSESTree.JSXAttribute): boolean {
-    return hasMarginClass(node) || hasMarginStyle(node)
+function hasMarginInSpread(node: ESTree.JSXSpreadAttribute): boolean {
+    return objectProperties(node.argument)
+        .some((prop) => getPropertyKey(prop) === "className" && hasMarginClassString(prop.value))
 }
 
-function getOutermostJSXElement(node: TSESTree.JSXElement | TSESTree.JSXFragment): null | TSESTree.JSXOpeningElement {
-    if (node.type === TSESTree.AST_NODE_TYPES.JSXFragment) {
-        return null
+function hasMargin(attr: ESTree.JSXAttributeItem): boolean {
+    if (attr.type === "JSXAttribute") {
+        return hasMarginClass(attr) || hasMarginStyle(attr)
     }
-    return node.openingElement
+    return hasMarginInSpread(attr)
 }
 
-function isExportedArrowFunction(node: TSESTree.ArrowFunctionExpression): boolean {
-    if (node.parent.type === TSESTree.AST_NODE_TYPES.VariableDeclarator) {
-        const grandparent = node.parent.parent
-        const declarationParent = grandparent.parent
-        return declarationParent.type === TSESTree.AST_NODE_TYPES.ExportNamedDeclaration
-            || declarationParent.type === TSESTree.AST_NODE_TYPES.ExportDefaultDeclaration
+/** `export const Card = () => <div />` and `export default () => <div />`. */
+function isExportedArrowFunction(node: ESTree.ArrowFunctionExpression): boolean {
+    if (node.parent.type === "VariableDeclarator") {
+        const declarationParent = node.parent.parent.parent
+        return declarationParent?.type === "ExportNamedDeclaration"
+            || declarationParent?.type === "ExportDefaultDeclaration"
     }
-    if (node.parent.type === TSESTree.AST_NODE_TYPES.ExportDefaultDeclaration) {
-        return true
-    }
-    return false
+    return node.parent.type === "ExportDefaultDeclaration"
 }
 
-function analyzeJSX(node: TSESTree.JSXElement | TSESTree.JSXFragment, context: RuleContext<string, []>): void {
-    const ctx = context
-    const outermostElement = getOutermostJSXElement(node)
-    if (!outermostElement) {
+/** `export const element = <div />`. */
+function isExportedDeclarator(node: ESTree.Node): boolean {
+    return node.type === "VariableDeclarator" && node.parent.parent?.type === "ExportNamedDeclaration"
+}
+
+function analyzeJSX(node: ESTree.JSXElement | ESTree.JSXFragment, context: Context): void {
+    // A fragment renders no element of its own to put the margin on.
+    if (node.type === "JSXFragment") {
         return
     }
-    for (const attr of outermostElement.attributes) {
-        if (attr.type === TSESTree.AST_NODE_TYPES.JSXAttribute && isMarginProp(attr)) {
-            ctx.report({
-                messageId: "noMarginOnRootJSX",
-                node:      attr,
-            })
-            return
-        }
-        if (attr.type === TSESTree.AST_NODE_TYPES.JSXSpreadAttribute && hasMarginInSpread(attr)) {
-            ctx.report({
-                messageId: "noMarginOnRootJSX",
-                node:      attr,
-            })
-            return
-        }
+    const attr = node.openingElement.attributes.find((item) => hasMargin(item))
+
+    if (attr !== undefined) {
+        context.report({
+            messageId: "noMarginOnRootJSX",
+            node:      attr,
+        })
     }
 }
 
-export const noMarginOnRootJSXRule = RuleCreator(
-    (name) => `https://github.com/react-template/eslint-rules#${name}`,
-)({
+export const noMarginOnRootJSXRule = defineRule({
     create(context) {
         return {
             JSXElement(node) {
-                if (node.parent.type === TSESTree.AST_NODE_TYPES.ReturnStatement) {
-                    return
-                }
-                if (node.parent.type === TSESTree.AST_NODE_TYPES.JSXFragment) {
-                    return
-                }
-                if (node.parent.type === TSESTree.AST_NODE_TYPES.ArrowFunctionExpression
-                    && isExportedArrowFunction(node.parent)) {
+                const { parent } = node
+                const isRoot = (parent.type === "ArrowFunctionExpression" && isExportedArrowFunction(parent))
+                    || isExportedDeclarator(parent)
+
+                if (isRoot) {
                     analyzeJSX(node, context)
-                }
-                if (node.parent.type === TSESTree.AST_NODE_TYPES.VariableDeclarator) {
-                    const grandparent = node.parent.parent
-                    const declarationParent = grandparent.parent
-                    if (declarationParent.type === TSESTree.AST_NODE_TYPES.ExportNamedDeclaration) {
-                        analyzeJSX(node, context)
-                    }
                 }
             },
             ReturnStatement(node) {
-                if (node.argument?.type === TSESTree.AST_NODE_TYPES.JSXElement) {
-                    analyzeJSX(node.argument, context)
-                } else if (node.argument?.type === TSESTree.AST_NODE_TYPES.JSXFragment) {
+                if (node.argument?.type === "JSXElement" || node.argument?.type === "JSXFragment") {
                     analyzeJSX(node.argument, context)
                 }
             },
         }
     },
-    // oxlint-disable-next-line typescript/no-deprecated -- RuleCreator infers the options type from it; moving to oxlint's rule API drops it
-    defaultOptions: [],
-    meta:           {
+    meta: {
         docs: {
             description: "Disallow margin classes or style props on the outermost JSX element",
         },
@@ -285,5 +195,4 @@ export const noMarginOnRootJSXRule = RuleCreator(
         schema: [],
         type:   "problem",
     },
-    name: "no-margin-on-root-jsx",
 })

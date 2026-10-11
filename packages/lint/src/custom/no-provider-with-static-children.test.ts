@@ -1,32 +1,10 @@
-/* oxlint-disable vitest-js/require-hook */
-import tseslint from "typescript-eslint"
-import {
-    it, afterAll, describe,
-} from "vitest"
-import { RuleTester } from "@typescript-eslint/rule-tester"
+/* oxlint-disable vitest-js/require-hook -- RuleTester.run registers its own describe and it blocks */
+import { describe } from "vitest"
 
-import { noProviderWithStaticChildrenRule } from "./no-provider-with-static-children"
+import { createRuleTester } from "./rule-tester.ts"
+import { noProviderWithStaticChildrenRule } from "./no-provider-with-static-children.ts"
 
-RuleTester.afterAll = afterAll
-RuleTester.describe = (name, callback) => {
-    describe(name, () => {
-        callback()
-    })
-}
-RuleTester.it = it
-
-const ruleTester = new RuleTester({
-    languageOptions: {
-        parser:        tseslint.parser,
-        parserOptions: {
-            ecmaFeatures: {
-                jsx: true,
-            },
-            ecmaVersion: 2020,
-            sourceType:  "module",
-        },
-    },
-})
+const ruleTester = createRuleTester("tsx")
 
 describe("no-provider-with-static-children", () => {
     ruleTester.run("no-provider-with-static-children", noProviderWithStaticChildrenRule, {

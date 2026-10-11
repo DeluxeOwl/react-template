@@ -1,6 +1,5 @@
 import { camelCase } from "change-case"
-import { TSESTree } from "@typescript-eslint/types"
-import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
+import { defineRule, type ESTree } from "@oxlint/plugins"
 
 /*
  * ----------------------------------------------------------------------------
@@ -48,14 +47,26 @@ function isMatchedPackage(source: string, packages: string[]): boolean {
     return packages.some((pkg) => source.startsWith(`${pkg}/`) || source === pkg)
 }
 
-export const enforceNamespaceImportRule = RuleCreator(
-    (name) => `https://github.com/react-template/eslint-rules#${name}`,
-)<Options, "mustBeNamespace" | "wrongLocalName">({
+// oxlint already merged `meta.defaultOptions` in and validated against `meta.schema`.
+function packagesOption(options: readonly unknown[]): string[] {
+    const [first] = options
+
+    if (typeof first === "object" && first !== null && "packages" in first && Array.isArray(first.packages)) {
+        return first.packages.filter((entry): entry is string => typeof entry === "string")
+    }
+    return []
+}
+
+function isNamespaceSpecifier(specifier: ESTree.ImportDeclarationSpecifier): specifier is ESTree.ImportNamespaceSpecifier {
+    return specifier.type === "ImportNamespaceSpecifier"
+}
+
+export const enforceNamespaceImportRule = defineRule({
     create(context) {
-        const [{ packages }] = context.options
+        const packages = packagesOption(context.options)
 
         return {
-            ImportDeclaration(node: TSESTree.ImportDeclaration) {
+            ImportDeclaration(node) {
                 const source = node.source.value
 
                 if (!isMatchedPackage(source, packages)) {
@@ -63,14 +74,9 @@ export const enforceNamespaceImportRule = RuleCreator(
                 }
 
                 // Must be a namespace import (import * as foo from "...")
-                const namespaceSpecifier = node.specifiers.find(
-                    (s) => s.type === TSESTree.AST_NODE_TYPES.ImportNamespaceSpecifier,
-                )
+                const namespaceSpecifier = node.specifiers.find((specifier) => isNamespaceSpecifier(specifier))
 
-                const hasOnlyNamespace
-                    = node.specifiers.length === 1 && namespaceSpecifier !== undefined
-
-                if (!hasOnlyNamespace) {
+                if (node.specifiers.length !== 1 || namespaceSpecifier === undefined) {
                     context.report({
                         data: {
                             expected: expectedNameFor(source),
@@ -100,10 +106,9 @@ export const enforceNamespaceImportRule = RuleCreator(
             },
         }
     },
-    // oxlint-disable-next-line typescript/no-deprecated -- RuleCreator infers the options type from it; moving to oxlint's rule API drops it
-    defaultOptions: [{ packages: [] }],
-    meta:           {
-        docs: {
+    meta: {
+        defaultOptions: [{ packages: [] }],
+        docs:           {
             description:
                 "Enforce namespace imports (`import * as name`) with a camelCase name matching the last path segment, for specified scoped packages.",
         },
@@ -128,5 +133,4 @@ export const enforceNamespaceImportRule = RuleCreator(
         ],
         type: "problem",
     },
-    name: "enforce-namespace-import",
 })

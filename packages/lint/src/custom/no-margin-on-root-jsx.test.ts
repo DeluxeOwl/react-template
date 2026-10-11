@@ -1,39 +1,22 @@
-/* oxlint-disable vitest-js/require-hook */
-import tseslint from "typescript-eslint"
-import {
-    it, afterAll, describe,
-} from "vitest"
-import { RuleTester } from "@typescript-eslint/rule-tester"
+/* oxlint-disable vitest-js/require-hook -- RuleTester.run registers its own describe and it blocks */
+import { describe } from "vitest"
 
-import { noMarginOnRootJSXRule } from "./no-margin-on-root-jsx"
+import { createRuleTester } from "./rule-tester.ts"
+import { noMarginOnRootJSXRule } from "./no-margin-on-root-jsx.ts"
 
-RuleTester.afterAll = afterAll
-RuleTester.describe = (name, callback) => {
-    describe(name, () => {
-        callback()
-    })
-}
-RuleTester.it = it
+const ruleTester = createRuleTester("tsx")
 
-const ruleTester = new RuleTester({
-    languageOptions: {
-        parser:        tseslint.parser,
-        parserOptions: {
-            ecmaFeatures: {
-                jsx: true,
-            },
-            ecmaVersion: 2020,
-            sourceType:  "module",
-        },
-    },
-})
-
-describe("enforce-namespace-import", () => {
+describe("no-margin-on-root-jsx", () => {
     ruleTester.run("no-margin-on-root-jsx", noMarginOnRootJSXRule, {
         invalid: [
         // Basic margin class
             {
                 code:   `export const Component = () => <div className="m-4">Content</div>`,
+                errors: [{ messageId: "noMarginOnRootJSX" }],
+            },
+            // An HTML entity in the class string (`&#45;` is "-")
+            {
+                code:   `export const Component = () => <div className="m&#45;4">Content</div>`,
                 errors: [{ messageId: "noMarginOnRootJSX" }],
             },
             // Margin right (mr)

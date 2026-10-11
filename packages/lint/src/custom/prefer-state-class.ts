@@ -1,6 +1,6 @@
-// oxlint-disable max-statements, sweepit/complexity
-import { TSESTree } from "@typescript-eslint/types"
-import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
+import {
+    type Node, defineRule, type ESTree,
+} from "@oxlint/plugins"
 
 /*
  * ----------------------------------------------------------------------------
@@ -43,119 +43,93 @@ import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
  * ----------------------------------------------------------------------------
  */
 
-export const preferStateClassRule = RuleCreator(
-    (name) => `https://github.com/react-template/eslint-rules#${name}`,
-)<[], "multipleParameters" | "noPrivateConstructor" | "noStateParameter" | "noStaticCreateMethod" | "wrongStateParameterName">({
+type MessageId = "multipleParameters" | "noPrivateConstructor" | "noStateParameter" | "noStaticCreateMethod" | "wrongStateParameterName"
+
+interface Problem {
+    node:      Node
+    messageId: MessageId
+    data:      Record<string, string>
+}
+
+function problem(messageId: MessageId, at: Omit<Problem, "messageId">): Problem {
+    return { ...at, messageId }
+}
+
+function findConstructor(node: ESTree.Class): ESTree.MethodDefinition | undefined {
+    return node.body.body.find(
+        (member): member is ESTree.MethodDefinition => member.type === "MethodDefinition" && member.kind === "constructor",
+    )
+}
+
+// `private state: T` or `private state = value`
+function parameterName(parameter: ESTree.FormalParameter): null | string {
+    if (parameter.type === "Identifier") {
+        return parameter.name
+    }
+    if (parameter.type === "AssignmentPattern" && parameter.left.type === "Identifier") {
+        return parameter.left.name
+    }
+    return null
+}
+
+// Rules 1 to 3: a private constructor whose only parameter is `private state`.
+function constructorProblem(constructor: ESTree.MethodDefinition, className: string): null | Problem {
+    if (constructor.accessibility !== "private") {
+        return problem("noPrivateConstructor", { data: { className }, node: constructor })
+    }
+
+    const { params } = constructor.value
+
+    if (params.length > 1) {
+        return problem("multipleParameters", { data: { className }, node: constructor })
+    }
+
+    const param = params.at(0)
+
+    // Must be a parameter property: it has a modifier like `private`.
+    if (param?.type !== "TSParameterProperty") {
+        return problem("noStateParameter", { data: { className }, node: constructor })
+    }
+
+    const name = parameterName(param.parameter)
+
+    return name === "state"
+        ? null
+        : problem("wrongStateParameterName", { data: { paramName: name ?? "undefined" }, node: param })
+}
+
+// Rule 4: a static method whose name starts with "create".
+function createMethodProblem(node: ESTree.Class, className: string): null | Problem {
+    const hasStaticCreateMethod = node.body.body.some((member) => member.type === "MethodDefinition"
+        && member.kind === "method"
+        && member.static
+        && member.key.type === "Identifier"
+        && member.key.name.startsWith("create"))
+
+    return hasStaticCreateMethod ? null : problem("noStaticCreateMethod", { data: { className }, node })
+}
+
+export const preferStateClassRule = defineRule({
     create(context) {
         return {
-            ClassDeclaration(node: TSESTree.ClassDeclaration) {
+            ClassDeclaration(node) {
+                const constructor = findConstructor(node)
+
+                // Only classes with a constructor are checked.
+                if (constructor === undefined) {
+                    return
+                }
+
                 const className = node.id?.name ?? "<anonymous>"
-                const constructor = node.body.body.find(
-                    (member): member is TSESTree.MethodDefinition =>
-                        member.type === TSESTree.AST_NODE_TYPES.MethodDefinition
-                        && member.kind === "constructor",
-                )
+                const found = constructorProblem(constructor, className) ?? createMethodProblem(node, className)
 
-                // If there's no constructor at all, that's fine - we only check
-                // classes that have a constructor
-                if (!constructor) {
-                    return
-                }
-
-                // Rule 1: Constructor must be private
-                if (constructor.accessibility !== "private") {
-                    context.report({
-                        data:      { className },
-                        messageId: "noPrivateConstructor",
-                        node:      constructor,
-                    })
-                    return
-                }
-
-                // Check if constructor has parameters
-                const params = constructor.value.params
-
-                // Rule 2: Must have exactly one parameter
-                if (params.length === 0) {
-                    context.report({
-                        data:      { className },
-                        messageId: "noStateParameter",
-                        node:      constructor,
-                    })
-                    return
-                }
-
-                if (params.length > 1) {
-                    context.report({
-                        data:      { className },
-                        messageId: "multipleParameters",
-                        node:      constructor,
-                    })
-                    return
-                }
-
-                const param = params[0]
-
-                // Must be a parameter property (has accessiblity modifier like `private`)
-                if (
-                    param.type !== TSESTree.AST_NODE_TYPES.TSParameterProperty
-                ) {
-                    context.report({
-                        data:      { className },
-                        messageId: "noStateParameter",
-                        node:      constructor,
-                    })
-                    return
-                }
-
-                const parameterProperty = param
-
-                // Get the parameter name - handle both Identifier and AssignmentPattern
-                // For: `private state: Type` -> parameter is Identifier with name "state"
-                // For: `private state = default` -> parameter is AssignmentPattern with left as Identifier
-                let paramName: string | undefined
-                if (parameterProperty.parameter.type === TSESTree.AST_NODE_TYPES.Identifier) {
-                    paramName = (parameterProperty.parameter).name
-                } else {
-                    const left = (parameterProperty.parameter as TSESTree.AssignmentPattern).left
-                    if (left.type === TSESTree.AST_NODE_TYPES.Identifier) {
-                        paramName = left.name
-                    }
-                }
-
-                // Rule 3: Parameter must be named "state"
-                if (paramName !== "state") {
-                    context.report({
-                        data:      { paramName: paramName ?? "undefined" },
-                        messageId: "wrongStateParameterName",
-                        node:      parameterProperty,
-                    })
-                    return
-                }
-
-                // Rule 4: Must have a static method starting with "create"
-                const hasStaticCreateMethod = node.body.body.some(
-                    (member): member is TSESTree.MethodDefinition =>
-                        member.type === TSESTree.AST_NODE_TYPES.MethodDefinition
-                        && member.kind === "method"
-                        && member.static
-                        && member.key.type === TSESTree.AST_NODE_TYPES.Identifier
-                        && member.key.name.startsWith("create"),
-                )
-
-                if (!hasStaticCreateMethod) {
-                    context.report({
-                        data:      { className },
-                        messageId: "noStaticCreateMethod",
-                        node,
-                    })
+                if (found !== null) {
+                    context.report(found)
                 }
             },
         }
     },
-    // oxlint-disable-next-line typescript/no-deprecated -- RuleCreator infers the options type from it; moving to oxlint's rule API drops it
-    defaultOptions: [],
-    meta:           {
+    meta: {
         docs: {
             description:
                 "Enforce classes with a private constructor to have a static 'create' method and a private 'state' parameter that is an object type.",
@@ -175,5 +149,4 @@ export const preferStateClassRule = RuleCreator(
         schema: [],
         type:   "problem",
     },
-    name: "prefer-state-class",
 })

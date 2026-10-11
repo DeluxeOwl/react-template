@@ -1,29 +1,8 @@
-/* oxlint-disable vitest-js/require-hook */
-import tseslint from "typescript-eslint"
-import {
-    it, afterAll, describe,
-} from "vitest"
-import { RuleTester } from "@typescript-eslint/rule-tester"
+/* oxlint-disable vitest-js/require-hook -- RuleTester.run registers its own describe and it blocks */
+import { createRuleTester } from "./rule-tester.ts"
+import { preferStateClassRule } from "./prefer-state-class.ts"
 
-import { preferStateClassRule } from "./prefer-state-class"
-
-RuleTester.afterAll = afterAll
-RuleTester.describe = (name, callback) => {
-    describe(name, () => {
-        callback()
-    })
-}
-RuleTester.it = it
-
-const ruleTester = new RuleTester({
-    languageOptions: {
-        parser:        tseslint.parser,
-        parserOptions: {
-            ecmaVersion: 2020,
-            sourceType:  "module",
-        },
-    },
-})
+const ruleTester = createRuleTester("ts")
 
 ruleTester.run("prefer-state-class", preferStateClassRule, {
     invalid: [

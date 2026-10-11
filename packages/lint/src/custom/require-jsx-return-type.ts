@@ -1,8 +1,6 @@
-
-import type { SourceCode, ReportFixFunction } from "@typescript-eslint/utils/ts-eslint"
-
-import { TSESTree } from "@typescript-eslint/types"
-import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
+import {
+    defineRule, type FixFn, type Token, type ESTree, type SourceCode,
+} from "@oxlint/plugins"
 
 /*
   * ----------------------------------------------------------------------------
@@ -24,52 +22,59 @@ import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
   * ----------------------------------------------------------------------------
   */
 
-type FunctionNode
-    = | TSESTree.ArrowFunctionExpression
-        | TSESTree.FunctionDeclaration
-        | TSESTree.FunctionExpression
+type FunctionNode = ESTree.ArrowFunctionExpression | ESTree.Function
 
 interface RuleOptions {
-    typeName?:          string
-    checkAllFunctions?: boolean
+    typeName:          string
+    checkAllFunctions: boolean
 }
 
 const PascalCasePattern = /^[A-Z][\dA-Za-z]*$/u
+
+// oxlint already merged `meta.defaultOptions` in and validated against `meta.schema`.
+function readOptions(options: readonly unknown[]): RuleOptions {
+    const [first] = options
+    const given = typeof first === "object" && first !== null ? first : {}
+
+    return {
+        checkAllFunctions: "checkAllFunctions" in given && given.checkAllFunctions === true,
+        typeName:          "typeName" in given && typeof given.typeName === "string" ? given.typeName : "React.ReactNode",
+    }
+}
 
 function isPascalCase(name: string): boolean {
     return PascalCasePattern.test(name)
 }
 
-function isJSXLike(node: null | TSESTree.Node | undefined): boolean {
-    if (!node) {
+function isJSXLike(node: ESTree.Node | null): boolean {
+    if (node === null) {
         return false
     }
-    if (node.type === TSESTree.AST_NODE_TYPES.JSXElement || node.type === TSESTree.AST_NODE_TYPES.JSXFragment) {
+    if (node.type === "JSXElement" || node.type === "JSXFragment") {
         return true
     }
-    if (node.type === TSESTree.AST_NODE_TYPES.ConditionalExpression) {
+    if (node.type === "ConditionalExpression") {
         return isJSXLike(node.consequent) || isJSXLike(node.alternate)
     }
-    if (node.type === TSESTree.AST_NODE_TYPES.LogicalExpression) {
+    if (node.type === "LogicalExpression") {
         return isJSXLike(node.right)
     }
-    if (node.type === TSESTree.AST_NODE_TYPES.TSAsExpression
-        || node.type === TSESTree.AST_NODE_TYPES.TSNonNullExpression
-        || node.type === TSESTree.AST_NODE_TYPES.TSSatisfiesExpression) {
+    if (node.type === "TSAsExpression" || node.type === "TSNonNullExpression" || node.type === "TSSatisfiesExpression") {
         return isJSXLike(node.expression)
     }
     return false
 }
 
-function isFunctionNode(node: TSESTree.Node): node is FunctionNode {
-    return node.type === TSESTree.AST_NODE_TYPES.ArrowFunctionExpression
-        || node.type === TSESTree.AST_NODE_TYPES.FunctionDeclaration
-        || node.type === TSESTree.AST_NODE_TYPES.FunctionExpression
+function isFunctionNode(node: ESTree.Node): node is FunctionNode {
+    return node.type === "ArrowFunctionExpression"
+        || node.type === "FunctionDeclaration"
+        || node.type === "FunctionExpression"
 }
 
-function getEnclosingFunction(node: TSESTree.Node): FunctionNode | null {
-    let current: TSESTree.Node | undefined = node.parent
-    while (current) {
+function getEnclosingFunction(node: ESTree.Node): FunctionNode | null {
+    let current = node.parent
+
+    while (current !== null) {
         if (isFunctionNode(current)) {
             return current
         }
@@ -78,36 +83,33 @@ function getEnclosingFunction(node: TSESTree.Node): FunctionNode | null {
     return null
 }
 
-function isPascalCaseDeclarator(node: TSESTree.Node): boolean {
-    return node.type === TSESTree.AST_NODE_TYPES.VariableDeclarator
-        && node.id.type === TSESTree.AST_NODE_TYPES.Identifier
+function isPascalCaseDeclarator(node: ESTree.Node): boolean {
+    return node.type === "VariableDeclarator"
+        && node.id.type === "Identifier"
         && isPascalCase(node.id.name)
 }
 
 /** `memo(() => <div />)` / `forwardRef(...)` assigned to a PascalCase binding. */
-function isWrappedComponent(node: TSESTree.CallExpression): boolean {
+function isWrappedComponent(node: ESTree.CallExpression): boolean {
     const owner = node.parent
-    return isPascalCaseDeclarator(owner)
-        || owner.type === TSESTree.AST_NODE_TYPES.ExportDefaultDeclaration
+    return isPascalCaseDeclarator(owner) || owner.type === "ExportDefaultDeclaration"
 }
 
 function isComponentExpression(node: FunctionNode): boolean {
     const parent = node.parent
-    if (parent.type === TSESTree.AST_NODE_TYPES.ExportDefaultDeclaration) {
+    if (parent.type === "ExportDefaultDeclaration") {
         return true
     }
-    if (parent.type === TSESTree.AST_NODE_TYPES.CallExpression) {
+    if (parent.type === "CallExpression") {
         return isWrappedComponent(parent)
     }
     return isPascalCaseDeclarator(parent)
 }
 
 function isComponentLike(node: FunctionNode): boolean {
-    if (node.type === TSESTree.AST_NODE_TYPES.FunctionDeclaration) {
-        return node.id
-            ? isPascalCase(node.id.name)
-            // oxlint-disable-next-line typescript/no-unnecessary-condition
-            : node.parent.type === TSESTree.AST_NODE_TYPES.ExportDefaultDeclaration
+    if (node.type === "FunctionDeclaration") {
+        // `export default function () {}` has no name.
+        return node.id === null ? node.parent.type === "ExportDefaultDeclaration" : isPascalCase(node.id.name)
     }
     return isComponentExpression(node)
 }
@@ -115,13 +117,11 @@ function isComponentLike(node: FunctionNode): boolean {
 /** `const Card: React.FC = () => <div />` already pins the return type. */
 function hasContextualType(node: FunctionNode): boolean {
     const parent = node.parent
-    return parent.type === TSESTree.AST_NODE_TYPES.VariableDeclarator
-        // No annotation is `undefined` in typescript-estree and `null` in oxlint.
-        && Boolean(parent.id.typeAnnotation)
+    return parent.type === "VariableDeclarator" && Boolean(parent.id.typeAnnotation)
 }
 
 function isCandidate(node: FunctionNode, checkAllFunctions: boolean): boolean {
-    if (node.returnType || hasContextualType(node)) {
+    if (Boolean(node.returnType) || hasContextualType(node)) {
         return false
     }
     return checkAllFunctions || isComponentLike(node)
@@ -131,41 +131,46 @@ function isCandidate(node: FunctionNode, checkAllFunctions: boolean): boolean {
  * The token the return type must follow: the `)` closing the parameter list, or
  * the lone parameter of a parenless arrow (`x => ...`).
  */
-function getAnchorToken(node: FunctionNode, sourceCode: SourceCode): null | TSESTree.Token {
-    if (node.type !== TSESTree.AST_NODE_TYPES.ArrowFunctionExpression) {
+function getAnchorToken(node: FunctionNode, sourceCode: SourceCode): null | Token {
+    if (node.body === null) {
+        return null
+    }
+    if (node.type !== "ArrowFunctionExpression") {
         return sourceCode.getTokenBefore(node.body)
     }
     const arrowToken = sourceCode.getTokenBefore(
         node.body,
-        (token) => token.type === TSESTree.AST_TOKEN_TYPES.Punctuator && token.value === "=>",
+        (token) => token.type === "Punctuator" && token.value === "=>",
     )
-    return arrowToken ? sourceCode.getTokenBefore(arrowToken) : null
+    return arrowToken === null ? null : sourceCode.getTokenBefore(arrowToken)
 }
 
-function getReportNode(node: FunctionNode): TSESTree.Node {
-    if (node.type === TSESTree.AST_NODE_TYPES.FunctionDeclaration && node.id) {
+function getReportNode(node: FunctionNode): ESTree.Node {
+    if (node.type === "FunctionDeclaration" && node.id !== null) {
         return node.id
     }
-    if (node.parent.type === TSESTree.AST_NODE_TYPES.VariableDeclarator) {
+    if (node.parent.type === "VariableDeclarator") {
         return node.parent.id
     }
     return node
 }
 
-export const requireJSXReturnTypeRule = RuleCreator(
-    (name) => `https://github.com/react-template/eslint-rules#${name}`,
-)<[RuleOptions], "missingJSXReturnType">({
-    create(context, [options]) {
+// An arrow whose body is the JSX itself: `() => <div />`.
+function returnsJSXExpression(node: FunctionNode): boolean {
+    return node.type === "ArrowFunctionExpression" && node.body.type !== "BlockStatement" && isJSXLike(node.body)
+}
+
+export const requireJSXReturnTypeRule = defineRule({
+    create(context) {
         const sourceCode = context.sourceCode
-        const typeName = options.typeName ?? "React.ReactNode"
-        const checkAllFunctions = options.checkAllFunctions ?? false
+        const { checkAllFunctions, typeName } = readOptions(context.options)
         const candidates = new Set<FunctionNode>()
         const jsxReturning = new Set<FunctionNode>()
 
-        function buildFixer(node: FunctionNode): ReportFixFunction {
+        function buildFixer(node: FunctionNode): FixFn {
             return (fixer) => {
                 const anchor = getAnchorToken(node, sourceCode)
-                if (!anchor) {
+                if (anchor === null) {
                     return null
                 }
                 if (anchor.value === ")") {
@@ -180,7 +185,7 @@ export const requireJSXReturnTypeRule = RuleCreator(
                 return
             }
             candidates.add(node)
-            if (node.body.type !== TSESTree.AST_NODE_TYPES.BlockStatement && isJSXLike(node.body)) {
+            if (returnsJSXExpression(node)) {
                 jsxReturning.add(node)
             }
         }
@@ -202,21 +207,20 @@ export const requireJSXReturnTypeRule = RuleCreator(
                     }
                 }
             },
-            "ReturnStatement": (node: TSESTree.ReturnStatement) => {
+            "ReturnStatement": (node) => {
                 if (!isJSXLike(node.argument)) {
                     return
                 }
                 const enclosing = getEnclosingFunction(node)
-                if (enclosing) {
+                if (enclosing !== null) {
                     jsxReturning.add(enclosing)
                 }
             },
         }
     },
-    // oxlint-disable-next-line typescript/no-deprecated -- RuleCreator infers the options type from it; moving to oxlint's rule API drops it
-    defaultOptions: [{}],
-    meta:           {
-        docs: {
+    meta: {
+        defaultOptions: [{}],
+        docs:           {
             description: "Require an explicit React.ReactNode return type on functions that return JSX",
         },
         fixable:  "code",
@@ -241,5 +245,4 @@ export const requireJSXReturnTypeRule = RuleCreator(
         ],
         type: "problem",
     },
-    name: "require-jsx-return-type",
 })

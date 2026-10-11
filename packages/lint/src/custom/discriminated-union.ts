@@ -1,5 +1,6 @@
-import { TSESTree } from "@typescript-eslint/types"
-import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
+import {
+    type Node, defineRule, type ESTree,
+} from "@oxlint/plugins"
 
 /*
  * ----------------------------------------------------------------------------
@@ -29,38 +30,23 @@ import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
  * ----------------------------------------------------------------------------
  */
 
-function hasUnionType(node: TSESTree.TypeElement): boolean {
-    if (node.type !== TSESTree.AST_NODE_TYPES.TSPropertySignature) {
-        return false
-    }
-    return node.typeAnnotation?.typeAnnotation.type === TSESTree.AST_NODE_TYPES.TSUnionType
+const minOptionalProperties = 2
+
+function hasUnionType(member: ESTree.TSSignature): boolean {
+    return member.type === "TSPropertySignature" && member.typeAnnotation?.typeAnnotation.type === "TSUnionType"
 }
 
-function isOptionalProperty(node: TSESTree.TypeElement): boolean {
-    return node.type === TSESTree.AST_NODE_TYPES.TSPropertySignature && node.optional
+function isOptionalProperty(member: ESTree.TSSignature): boolean {
+    return member.type === "TSPropertySignature" && member.optional
 }
 
-export const preferDiscriminatedUnionRule = RuleCreator(
-    (name) => `https://github.com/react-template/eslint-rules#${name}`,
-)({
+export const preferDiscriminatedUnionRule = defineRule({
     create(context) {
-        function analyzeMembers(members: TSESTree.TypeElement[], reportNode: TSESTree.Node): void {
-            let unionTypeCount = 0
-            let optionalPropertyCount = 0
+        function analyzeMembers(members: ESTree.TSSignature[], reportNode: Node): void {
+            const hasUnion = members.some((member) => hasUnionType(member))
+            const optionalCount = members.filter((member) => isOptionalProperty(member)).length
 
-            for (const member of members) {
-                if (member.type === TSESTree.AST_NODE_TYPES.TSPropertySignature) {
-                    if (hasUnionType(member)) {
-                        unionTypeCount++
-                    }
-                    if (isOptionalProperty(member)) {
-                        optionalPropertyCount++
-                    }
-                }
-            }
-
-            const propertyCount = 2
-            if (unionTypeCount >= 1 && optionalPropertyCount >= propertyCount) {
+            if (hasUnion && optionalCount >= minOptionalProperties) {
                 context.report({
                     messageId: "preferDiscriminatedUnion",
                     node:      reportNode,
@@ -77,9 +63,7 @@ export const preferDiscriminatedUnionRule = RuleCreator(
             },
         }
     },
-    // oxlint-disable-next-line typescript/no-deprecated -- RuleCreator infers the options type from it; moving to oxlint's rule API drops it
-    defaultOptions: [],
-    meta:           {
+    meta: {
         docs: {
             description: "Suggest using discriminated unions when a type has union properties and multiple optional properties",
         },
@@ -89,5 +73,4 @@ export const preferDiscriminatedUnionRule = RuleCreator(
         schema: [],
         type:   "suggestion",
     },
-    name: "prefer-discriminated-union",
 })

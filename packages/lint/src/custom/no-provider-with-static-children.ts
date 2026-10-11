@@ -1,9 +1,6 @@
-import type { Scope } from "@typescript-eslint/utils/ts-eslint"
-
-import { TSESTree } from "@typescript-eslint/types"
-import { DefinitionType } from "@typescript-eslint/scope-manager"
-import { findVariable } from "@typescript-eslint/utils/ast-utils"
-import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
+import {
+    defineRule, type Scope, type ESTree, type Variable,
+} from "@oxlint/plugins"
 
 /*
  * ----------------------------------------------------------------------------
@@ -50,17 +47,12 @@ import { RuleCreator } from "@typescript-eslint/utils/eslint-utils"
  * ----------------------------------------------------------------------------
  */
 
-export type Options = [{
-    ignoredHooks?:     string[]
-    requireStateHook?: boolean
-}]
+type FunctionNode = ESTree.ArrowFunctionExpression | ESTree.Function
 
-export type MessageIds = "providerWithStaticChildren"
-
-type FunctionNode
-    = | TSESTree.ArrowFunctionExpression
-        | TSESTree.FunctionDeclaration
-        | TSESTree.FunctionExpression
+interface RuleOptions {
+    requireStateHook: boolean
+    ignoredHooks:     string[]
+}
 
 const DefaultIgnoredHooks = [
     "useId",
@@ -76,15 +68,29 @@ const DefaultIgnoredHooks = [
 
 const HookNamePattern = /^use[A-Z]/u
 
-function isFunctionNode(node: TSESTree.Node): node is FunctionNode {
-    return node.type === TSESTree.AST_NODE_TYPES.ArrowFunctionExpression
-        || node.type === TSESTree.AST_NODE_TYPES.FunctionDeclaration
-        || node.type === TSESTree.AST_NODE_TYPES.FunctionExpression
+// oxlint already merged `meta.defaultOptions` in and validated against `meta.schema`.
+function readOptions(options: readonly unknown[]): RuleOptions {
+    const [first] = options
+    const given = typeof first === "object" && first !== null ? first : {}
+
+    return {
+        ignoredHooks: "ignoredHooks" in given && Array.isArray(given.ignoredHooks)
+            ? given.ignoredHooks.filter((hook): hook is string => typeof hook === "string")
+            : DefaultIgnoredHooks,
+        requireStateHook: !("requireStateHook" in given) || given.requireStateHook !== false,
+    }
 }
 
-function getEnclosingFunction(node: TSESTree.Node): FunctionNode | null {
-    let current: TSESTree.Node | undefined = node.parent
-    while (current) {
+function isFunctionNode(node: ESTree.Node): node is FunctionNode {
+    return node.type === "ArrowFunctionExpression"
+        || node.type === "FunctionDeclaration"
+        || node.type === "FunctionExpression"
+}
+
+function getEnclosingFunction(node: ESTree.Node): FunctionNode | null {
+    let current = node.parent
+
+    while (current !== null) {
         if (isFunctionNode(current)) {
             return current
         }
@@ -94,32 +100,31 @@ function getEnclosingFunction(node: TSESTree.Node): FunctionNode | null {
 }
 
 /** `useState(...)` and `React.useState(...)` both resolve to "useState". */
-function getCalleeName(node: TSESTree.CallExpression): null | string {
-    if (node.callee.type === TSESTree.AST_NODE_TYPES.Identifier) {
-        return node.callee.name
+function getCalleeName(node: ESTree.CallExpression): null | string {
+    const { callee } = node
+
+    if (callee.type === "Identifier") {
+        return callee.name
     }
-    if (node.callee.type === TSESTree.AST_NODE_TYPES.MemberExpression
-        && node.callee.property.type === TSESTree.AST_NODE_TYPES.Identifier
-        && !node.callee.computed) {
-        return node.callee.property.name
+    if (callee.type === "MemberExpression" && !callee.computed && callee.property.type === "Identifier") {
+        return callee.property.name
     }
     return null
 }
 
-function getJSXName(node: TSESTree.JSXTagNameExpression): null | string {
-    if (node.type === TSESTree.AST_NODE_TYPES.JSXIdentifier) {
+function getJSXName(node: ESTree.JSXElementName): null | string {
+    if (node.type === "JSXIdentifier") {
         return node.name
     }
-    if (node.type === TSESTree.AST_NODE_TYPES.JSXMemberExpression) {
+    if (node.type === "JSXMemberExpression") {
         return `${getJSXName(node.object) ?? "?"}.${node.property.name}`
     }
     return null
 }
 
-function hasValueAttribute(node: TSESTree.JSXOpeningElement): boolean {
-    return node.attributes.some((attr) =>
-        attr.type === TSESTree.AST_NODE_TYPES.JSXAttribute
-        && attr.name.type === TSESTree.AST_NODE_TYPES.JSXIdentifier
+function hasValueAttribute(node: ESTree.JSXOpeningElement): boolean {
+    return node.attributes.some((attr) => attr.type === "JSXAttribute"
+        && attr.name.type === "JSXIdentifier"
         && attr.name.name === "value")
 }
 
@@ -127,23 +132,34 @@ function hasValueAttribute(node: TSESTree.JSXOpeningElement): boolean {
  * `<Ctx.Provider>` (legacy) or `<SomethingContext value={...}>` (React 19
  * shorthand, where the context object is rendered directly).
  */
-function isContextProvider(node: TSESTree.JSXOpeningElement): boolean {
-    if (node.name.type === TSESTree.AST_NODE_TYPES.JSXMemberExpression) {
+function isContextProvider(node: ESTree.JSXOpeningElement): boolean {
+    if (node.name.type === "JSXMemberExpression") {
         return node.name.property.name === "Provider"
     }
-    if (node.name.type === TSESTree.AST_NODE_TYPES.JSXIdentifier) {
+    if (node.name.type === "JSXIdentifier") {
         return node.name.name.endsWith("Context") && hasValueAttribute(node)
     }
     return false
 }
 
-/** The identifier an expression is rooted at: `props.children` -> `props`. */
-function getRootIdentifier(node: TSESTree.Node): null | TSESTree.Identifier {
-    if (node.type === TSESTree.AST_NODE_TYPES.Identifier) {
-        return node
+/** The name an expression is rooted at: `props.children` -> `props`. */
+function getRootName(node: ESTree.Node): null | string {
+    if (node.type === "Identifier") {
+        return node.name
     }
-    if (node.type === TSESTree.AST_NODE_TYPES.MemberExpression) {
-        return getRootIdentifier(node.object)
+    if (node.type === "MemberExpression") {
+        return getRootName(node.object)
+    }
+    return null
+}
+
+function findVariable(scope: Scope, name: string): null | Variable {
+    for (let current: null | Scope = scope; current !== null; current = current.upper) {
+        const variable = current.set.get(name)
+
+        if (variable !== undefined) {
+            return variable
+        }
     }
     return null
 }
@@ -154,61 +170,58 @@ function getRootIdentifier(node: TSESTree.Node): null | TSESTree.Identifier {
  * (JSX literals, `.map(...)` calls, local variables) is a new element tree on
  * every render.
  */
-function isChildrenFromProps(node: TSESTree.Node, scope: Scope.Scope): boolean {
-    if (node.type === TSESTree.AST_NODE_TYPES.ConditionalExpression) {
+function isChildrenFromProps(node: ESTree.Node, scope: Scope): boolean {
+    if (node.type === "ConditionalExpression") {
         return isChildrenFromProps(node.consequent, scope)
             && isChildrenFromProps(node.alternate, scope)
     }
-    if (node.type === TSESTree.AST_NODE_TYPES.LogicalExpression) {
+    if (node.type === "LogicalExpression") {
         return isChildrenFromProps(node.right, scope)
     }
-    const root = getRootIdentifier(node)
-    if (!root) {
+    const rootName = getRootName(node)
+    if (rootName === null) {
         return false
     }
-    const variable = findVariable(scope, root.name)
-    return variable?.defs.some((def) => def.type === DefinitionType.Parameter) ?? false
+    const variable = findVariable(scope, rootName)
+    return variable?.defs.some((def) => def.type === "Parameter") ?? false
 }
 
-export const noProviderWithStaticChildrenRule = RuleCreator(
-    (name) => `https://github.com/react-template/eslint-rules#${name}`,
-)<Options, MessageIds>({
-    create(context, [options]) {
-        const ignoredHooks = options.ignoredHooks ?? DefaultIgnoredHooks
-        const requireStateHook = options.requireStateHook ?? true
+export const noProviderWithStaticChildrenRule = defineRule({
+    create(context) {
+        const { ignoredHooks, requireStateHook } = readOptions(context.options)
         const statefulFunctions = new Set<FunctionNode>()
-        const candidates: { fn: FunctionNode, node: TSESTree.JSXElement }[] = []
+        const candidates: { fn: FunctionNode, node: ESTree.JSXElement }[] = []
 
-        function isStaticChild(child: TSESTree.JSXChild): boolean {
-            if (child.type === TSESTree.AST_NODE_TYPES.JSXText) {
+        function isStaticChild(child: ESTree.JSXChild): boolean {
+            if (child.type === "JSXText") {
                 return false
             }
-            if (child.type !== TSESTree.AST_NODE_TYPES.JSXExpressionContainer) {
+            if (child.type !== "JSXExpressionContainer") {
                 return true
             }
-            if (child.expression.type === TSESTree.AST_NODE_TYPES.JSXEmptyExpression) {
+            if (child.expression.type === "JSXEmptyExpression") {
                 return false
             }
             return !isChildrenFromProps(child.expression, context.sourceCode.getScope(child))
         }
 
         return {
-            "CallExpression": (node: TSESTree.CallExpression) => {
+            "CallExpression": (node) => {
                 const name = getCalleeName(node)
                 if (name === null || !HookNamePattern.test(name) || ignoredHooks.includes(name)) {
                     return
                 }
                 const enclosing = getEnclosingFunction(node)
-                if (enclosing) {
+                if (enclosing !== null) {
                     statefulFunctions.add(enclosing)
                 }
             },
-            "JSXElement": (node: TSESTree.JSXElement) => {
-                if (!isContextProvider(node.openingElement) || !node.children.some(isStaticChild)) {
+            "JSXElement": (node) => {
+                if (!isContextProvider(node.openingElement) || !node.children.some((child) => isStaticChild(child))) {
                     return
                 }
                 const enclosing = getEnclosingFunction(node)
-                if (enclosing) {
+                if (enclosing !== null) {
                     candidates.push({ fn: enclosing, node })
                 }
             },
@@ -227,10 +240,9 @@ export const noProviderWithStaticChildrenRule = RuleCreator(
             },
         }
     },
-    // oxlint-disable-next-line typescript/no-deprecated -- RuleCreator infers the options type from it; moving to oxlint's rule API drops it
-    defaultOptions: [{}],
-    meta:           {
-        docs: {
+    meta: {
+        defaultOptions: [{}],
+        docs:           {
             description: "Disallow rendering a context provider around a hard-coded subtree inside a stateful component",
         },
         messages: {
@@ -255,5 +267,4 @@ export const noProviderWithStaticChildrenRule = RuleCreator(
         ],
         type: "problem",
     },
-    name: "no-provider-with-static-children",
 })
