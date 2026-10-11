@@ -158,9 +158,9 @@ export class Todo {
 
 ### React Components (View-Only Pattern)
 
-Components must be "view-only" — enforced on `.tsx` files by the `custom/*` oxlint rules of `@deluxeowl/lint` (`packages/lint/src/custom/view-only-rules.ts`), except the custom-hook limit, which no rule checks:
+Components must be "view-only" — enforced on `.tsx` files by the `custom/*` oxlint rules of `@deluxeowl/lint` (`packages/lint/src/custom/view-only-rules.ts`):
 
-- **Maximum 1 custom hook** per component.
+- **Maximum 1 custom hook** per component. The lint rule (`custom/no-multiple-hooks-in-component`) flags the third hook declaration.
 - No array methods (`map`, `filter`, `reduce`) inside JSX directly — derive data in the hook.
 - No logic (`if`/`switch`/ternary chains), no loops inside the component body.
 - No IIFEs inside JSX.

@@ -13,8 +13,9 @@ import {
  * and flag what those flagged, including their gaps: see view-only-component.ts for what counts as a
  * component, and plain-call.ts for the calls they recognize.
  *
- * The YAML file also had `no-multiple-hooks-in-component`, which never matched anything: its third
- * hook condition sat on the hook call instead of on the declaration. It is not ported.
+ * `no-multiple-hooks-in-component` is the exception: in ast-grep it never matched anything (its third
+ * hook condition sat on the hook call instead of on the declaration). The port does what its comment
+ * said: it flags the third hook declaration in a component.
  */
 
 const BuiltinHooks = new Set([
@@ -173,6 +174,59 @@ export const noTernaryAssignmentInComponentRule = createViewOnlyRule({
     collect:     collectDeclarationsContaining(["ConditionalExpression"]),
     description: "Disallow conditional expressions in variable declarations in components",
     message:     "Avoid ternary assignments in components. Move conditional logic to a custom hook.",
+})
+
+// `use` and a capital letter at the start of a call, as ast-grep's `regex: ^use[A-Z]` on the call's
+// text: `useQuery<T>()`, `useFoo?.()`, `useStore.getState()` and tagged templates count,
+// `React.useState()` and `(useState)()` don't.
+const HookCallStart = /^use[A-Z]/u
+
+// Two hook declarations in a component are fine; the third and every later one are reported.
+const AllowedHookDeclarations = 2
+
+/** The statements of the block, switch case or program that `node` is a statement of. */
+function getSiblingStatements(node: ESTree.Node): readonly ESTree.Node[] {
+    const { parent } = node
+
+    if (parent?.type === "BlockStatement" || parent?.type === "Program" || parent?.type === "StaticBlock") {
+        return parent.body
+    }
+    if (parent?.type === "SwitchCase") {
+        return parent.consequent
+    }
+    return []
+}
+
+function hasHookDeclarationsBefore(declaration: ESTree.Node, hookDeclarations: ReadonlySet<ESTree.Node>): boolean {
+    const statements = getSiblingStatements(declaration)
+    const before = statements.slice(0, statements.indexOf(declaration))
+
+    return before.filter((statement) => hookDeclarations.has(statement)).length >= AllowedHookDeclarations
+}
+
+// A hook declaration is a `let`/`const` declaration with a hook call anywhere in it, also in a
+// function it declares (`const f = () => useX()`); it counts once however many calls it has. The
+// third one in a block, and every later one, is reported. They don't have to be next to each other.
+// Hook calls that aren't in a declaration (`useEffect(…)`) and `var` don't count.
+export const noMultipleHooksInComponentRule = createViewOnlyRule({
+    collect: (sourceCode) => {
+        const hookDeclarations = new Set<ESTree.Node>()
+        const addHookCall = (node: ESTree.CallExpression | ESTree.TaggedTemplateExpression): void => {
+            if (HookCallStart.test(sourceCode.getText(node))) {
+                addDeclarationsAround(node, hookDeclarations)
+            }
+        }
+
+        return {
+            candidates: () => [...hookDeclarations].filter((node) => hasHookDeclarationsBefore(node, hookDeclarations)),
+            visitor:    {
+                CallExpression:           addHookCall,
+                TaggedTemplateExpression: addHookCall,
+            },
+        }
+    },
+    description: "Disallow a third hook declaration in a component: combine the hooks into one custom hook",
+    message:     "Components should use at most one custom hook. Combine hooks into a single custom hook.",
 })
 
 export const noLoopsInComponentRule = createViewOnlyRule({

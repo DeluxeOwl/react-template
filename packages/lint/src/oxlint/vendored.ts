@@ -27,6 +27,7 @@ export const vendoredRules = {
     "custom/no-logic-in-map-callback":                           "off",
     "custom/no-loops-in-component":                              "off",
     "custom/no-margin-on-root-jsx":                              "off",
+    "custom/no-multiple-hooks-in-component":                     "off",
     "custom/no-object-spread-in-component":                      "off",
     "custom/no-switch-in-component":                             "off",
     "custom/no-ternary-assignment-in-component":                 "off",

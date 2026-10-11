@@ -37,6 +37,7 @@ export const customReactConfig = {
                 "custom/no-logic-expressions-in-component":           ["error"],
                 "custom/no-logic-in-map-callback":                    ["error"],
                 "custom/no-loops-in-component":                       ["error"],
+                "custom/no-multiple-hooks-in-component":              ["error"],
                 "custom/no-object-spread-in-component":               ["error"],
                 "custom/no-switch-in-component":                      ["error"],
                 "custom/no-ternary-assignment-in-component":          ["error"],

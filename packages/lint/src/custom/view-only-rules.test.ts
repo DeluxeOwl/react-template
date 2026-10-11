@@ -10,6 +10,7 @@ import {
     noArrayMethodsInComponentRule,
     noBuiltinHooksInComponentRule,
     noObjectSpreadInComponentRule,
+    noMultipleHooksInComponentRule,
     noLogicExpressionsInComponentRule,
     noTernaryAssignmentInComponentRule,
 } from "./view-only-rules.ts"
@@ -281,6 +282,53 @@ describe("no-ternary-assignment-in-component", () => {
         valid: [
             "const Card = () => <div>{isAdmin ? <i /> : <span />}</div>",
             inComponent("type Value<T> = T extends string ? \"text\" : \"other\""),
+        ],
+    })
+})
+
+// ast-grep's rule never matched anything; these cases were checked against it with the third hook
+// condition moved to the declaration (docs/oxlint-migration.md, Q-018).
+describe("no-multiple-hooks-in-component", () => {
+    ruleTester.run("no-multiple-hooks-in-component", noMultipleHooksInComponentRule, {
+        invalid: [
+            {
+                code: `const Foo = () => {
+    const { users } = useUsers()
+    const { theme } = useTheme()
+    const { foo } = useSomething()
+    return <div style={theme}><span>{users.length}</span></div>
+}`,
+                errors: [
+                    {
+                        column: 4, line: 4, messageId: "viewOnly",
+                    },
+                ],
+            },
+            { code: inComponent("const a = useA(); const b = useB(); const c = useC(); const d = useD()"), errors: [error, error] },
+            { code: inComponent("const a = useA(); const x = 1; let b = useB(); save(); let c = useC()"), errors: [error] },
+            // Builtin hooks count, and so do the calls the other rules' patterns miss.
+            { code: inComponent("const [count] = useState<number>(0); const store = useStore.getState(); const value = useValue?.()"), errors: [error] },
+            { code: inComponent("const a = useA(); const b = format(useB()); const onSave = () => useC()"), errors: [error] },
+            { code: inComponent("const a = useA(); const b = useB(); const styles = useStyles`color: red`"), errors: [error] },
+            { code: "function Card() { const a = useA(); const b = useB(); const c = useC(); return <div><span /></div> }", errors: [error] },
+            // Three in a callback's block: the callback's declaration counts once in the component's.
+            { code: inComponent("const render = () => { const a = useA(); const b = useB(); const c = useC() }"), errors: [error] },
+        ],
+        valid: [
+            inComponent("const { users } = useUsers(); const { theme } = useTheme()"),
+            inComponent("const a = useA(), b = useB(), c = useC()"),
+            inComponent("const a = useA(); const b = useB(); useEffect(() => {}, [])"),
+            inComponent("const a = useA(); const b = useB(); var c = useC()"),
+            inComponent("const a = useA(); const b = useB(); const [c] = React.useState(0); const d = (useD)(); const e = user.load(); const f = useless()"),
+            inComponent("const a = useA(); const b = useB(); if (ready) { const c = useC() }"),
+            // Not components: a wrapper without nested JSX, and a custom hook.
+            `const Provider = () => {
+    const a = useA()
+    const b = useB()
+    const c = useC()
+    return <Ctx.Provider value={{ a, b, c }}>{children}</Ctx.Provider>
+}`,
+            "function useCard() { const a = useA(); const b = useB(); const c = useC(); return [a, b, c] }",
         ],
     })
 })

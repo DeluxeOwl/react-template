@@ -16,6 +16,7 @@ import {
     noArrayMethodsInComponentRule,
     noBuiltinHooksInComponentRule,
     noObjectSpreadInComponentRule,
+    noMultipleHooksInComponentRule,
     noLogicExpressionsInComponentRule,
     noTernaryAssignmentInComponentRule,
 } from "./view-only-rules.ts"
@@ -34,6 +35,7 @@ export default definePlugin({
         "no-logic-in-map-callback":                    noLogicInMapCallbackRule,
         "no-loops-in-component":                       noLoopsInComponentRule,
         "no-margin-on-root-jsx":                       noMarginOnRootJSXRule,
+        "no-multiple-hooks-in-component":              noMultipleHooksInComponentRule,
         "no-object-spread-in-component":               noObjectSpreadInComponentRule,
         "no-provider-with-static-children":            noProviderWithStaticChildrenRule,
         "no-switch-in-component":                      noSwitchInComponentRule,
