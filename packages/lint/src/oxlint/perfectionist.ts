@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url"
 // eslint-plugin-perfectionist 5.9.0 (packages/lint/vendor/perfectionist, generated — see its README).
 // Options are exactly what the ESLint preset resolved to (`configs["recommended-natural"]` plus the
 // overrides that used to live in `../index.ts`); parity with ESLint (diagnostics and byte-identical
-// --fix output, also together with the @stylistic rules) is recorded in scratch/oxlint-migration.md.
+// --fix output, also together with the @stylistic rules) is recorded in docs/oxlint-migration.md.
 const perfectionistPlugin = fileURLToPath(new URL("../../vendor/perfectionist/index.js", import.meta.url))
 
 // By line length (`order` defaults to "asc": shortest first); ties alphabetical.

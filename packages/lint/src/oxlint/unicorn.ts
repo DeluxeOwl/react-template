@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url"
 // copy of eslint-plugin-unicorn 64.0.0 (packages/lint/vendor/unicorn, generated — see its README)
 // under the alias `unicorn-js` (oxlint reserves `unicorn` for its native rules). Options are exactly
 // what the ESLint preset resolved to; parity with ESLint (diagnostics and byte-identical --fix
-// output) is recorded in scratch/oxlint-migration.md.
+// output) is recorded in docs/oxlint-migration.md.
 const unicornPlugin = fileURLToPath(new URL("../../vendor/unicorn/index.js", import.meta.url))
 
 export const unicornConfig = {

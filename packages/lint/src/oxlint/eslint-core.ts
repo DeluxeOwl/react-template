@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url"
 // (packages/lint/vendor/eslint, generated — see its README), under the alias `eslint-js` (oxlint
 // reserves `eslint` for its native rules). Options are exactly what the ESLint preset resolved to;
 // parity with ESLint (diagnostics and byte-identical --fix output) is recorded in
-// scratch/oxlint-migration.md. oxlint's native versions of three of them differ in spans and fixes
+// docs/oxlint-migration.md. oxlint's native versions of three of them differ in spans and fixes
 // (native no-var writes `const` where ESLint writes `let`), so they are turned off here.
 const eslintPlugin = fileURLToPath(new URL("../../vendor/eslint/index.js", import.meta.url))
 

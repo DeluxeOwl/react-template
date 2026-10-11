@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url"
 // 8.59.1 (packages/lint/vendor/typescript-eslint, generated — see its README), under the alias
 // `typescript-eslint-js` (oxlint reserves `@typescript-eslint`). Options and the two file exemptions
 // are exactly what the ESLint preset resolved to; parity with ESLint (diagnostics and byte-identical
-// --fix output) is recorded in scratch/oxlint-migration.md. oxlint's native counterparts differ in
+// --fix output) is recorded in docs/oxlint-migration.md. oxlint's native counterparts differ in
 // spans, fixes and coverage, so the ones our categories switch on are turned off here.
 const typescriptEslintPlugin = fileURLToPath(new URL("../../vendor/typescript-eslint/index.js", import.meta.url))
 

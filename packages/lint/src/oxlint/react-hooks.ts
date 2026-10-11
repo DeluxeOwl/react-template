@@ -8,9 +8,9 @@ import { fileURLToPath } from "node:url"
 // as the ESLint preset had them; `exhaustive-deps` was already oxlint's native
 // `react/exhaustive-deps`. The React Compiler rules run the upstream Babel-based compiler, so they
 // report what ESLint reported. oxlint's native versions find components differently and anchor
-// reports elsewhere, so they're off here (D-018 in scratch/oxlint-migration.md). Severities are ESLint's, except
+// reports elsewhere, so they're off here (D-018 in docs/oxlint-migration.md). Severities are ESLint's, except
 // `incompatible-library`: ESLint warned, but its native twin was an error, so it stays an error
-// (D-018). Parity with ESLint is recorded in scratch/oxlint-migration.md.
+// (D-018). Parity with ESLint is recorded in docs/oxlint-migration.md.
 const reactHooksPlugin = fileURLToPath(new URL("../../vendor/react-hooks/index.js", import.meta.url))
 
 export const reactHooksConfig = {

@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url"
 // (packages/lint/vendor/react-refresh, generated — see its README). oxlint's native
 // `react/only-export-components` reports different findings (styled templates, unknown HOCs,
 // anonymous exports, enums), so it stays off. Severity and options are what the ESLint preset
-// (`recommended`) resolved to; parity with ESLint is recorded in scratch/oxlint-migration.md.
+// (`recommended`) resolved to; parity with ESLint is recorded in docs/oxlint-migration.md.
 const reactRefreshPlugin = fileURLToPath(new URL("../../vendor/react-refresh/index.js", import.meta.url))
 
 export const reactRefreshConfig = {

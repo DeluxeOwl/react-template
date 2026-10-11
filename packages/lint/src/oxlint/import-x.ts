@@ -8,12 +8,12 @@ import { fileURLToPath } from "node:url"
 // reserves `import-x`). Imported modules are parsed with @typescript-eslint/parser and resolved with
 // eslint-import-resolver-typescript ({ alwaysTryTypes, bun, project: the importing file's package }),
 // as the ESLint preset configured them; oxlint settings cannot carry a resolver object, so the vendored
-// copy creates it. Parity with ESLint is recorded in scratch/oxlint-migration.md.
+// copy creates it. Parity with ESLint is recorded in docs/oxlint-migration.md.
 //
 // oxlint's native `import/*` versions report different findings (resolution, spans, fixes), so they
 // are off, including the two nursery ones a later oxlint could turn on. Four of the rules were `warn`
 // in ESLint while the native rules failed the lint at `error`; they stay `error` here, so code that
-// failed the lint still does (D-018 in scratch/oxlint-migration.md).
+// failed the lint still does (D-018 in docs/oxlint-migration.md).
 const importXPlugin = fileURLToPath(new URL("../../vendor/import-x/index.js", import.meta.url))
 
 export const importXConfig = {

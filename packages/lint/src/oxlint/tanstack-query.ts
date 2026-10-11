@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url"
 // (packages/lint/vendor/tanstack-query, generated — see its README). oxlint has no native versions.
 // Severities are exactly what the ESLint preset (`flat/recommended`) resolved to; parity with ESLint
 // (diagnostics, byte-identical --fix output, identical suggestions for exhaustive-deps) is recorded
-// in scratch/oxlint-migration.md. `no-void-query-fn` is not run: it needs the type checker.
+// in docs/oxlint-migration.md. `no-void-query-fn` is not run: it needs the type checker.
 // `infinite-query-property-order` and `mutation-property-order` are off: they and
 // `perfectionist/sort-objects` reorder the same options, each undoing the other's fix, and
 // perfectionist covers every object. TanStack orders these options for TypeScript inference

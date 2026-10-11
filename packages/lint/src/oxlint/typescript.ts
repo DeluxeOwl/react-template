@@ -2,7 +2,7 @@ import type { OxlintConfig } from "oxlint"
 
 // Base preset shared by every TypeScript workspace.
 // Ported 1:1 from the former `packages/lint/oxlint/typescript.json` (oxlint 1.62). Entries whose
-// comment mentions D-004 were added when upgrading to oxlint 1.86; see `scratch/oxlint-migration.md`.
+// comment mentions D-004 were added when upgrading to oxlint 1.86; see `docs/oxlint-migration.md`.
 export const typescriptConfig = {
     categories: {
         correctness: "error",

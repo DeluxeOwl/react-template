@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url"
 // reserves the `vitest` name for its native plugin, whose versions of these rules report
 // differently. ESLint ran the plugin's `all` config on test files, so every rule is a warning
 // with its default options, listed as ESLint resolved them; parity with ESLint is recorded in
-// scratch/oxlint-migration.md. Two defaults are written differently:
+// docs/oxlint-migration.md. Two defaults are written differently:
 // - expect-expect: ESLint's resolved list repeats "expectTypeOf"/"assertType" because the rule
 //   appends them to its default array on every file (with `typecheck`); the copy adds them once.
 // - require-top-level-describe: its default `maxNumberOfTopLevelDescribes: Infinity` can't be

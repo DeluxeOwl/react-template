@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url"
 // eslint-plugin-react-you-might-not-need-an-effect rules run by oxlint from our vendored copy of the
 // plugin 0.10.0 (packages/lint/vendor/react-you-might-not-need-an-effect, generated — see its
 // README). oxlint has no native versions. Severities are exactly what the ESLint preset
-// (`recommended`) resolved to; parity with ESLint is recorded in scratch/oxlint-migration.md.
+// (`recommended`) resolved to; parity with ESLint is recorded in docs/oxlint-migration.md.
 const youMightNotNeedAnEffectPlugin = fileURLToPath(new URL("../../vendor/react-you-might-not-need-an-effect/index.js", import.meta.url))
 
 export const youMightNotNeedAnEffectConfig = {

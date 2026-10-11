@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url"
 // TypeScript/JavaScript formatter. Options are exactly what the ESLint preset resolved to
 // (`stylistic.configs.customize({ arrowParens, blockSpacing, braceStyle: "1tbs", indent: 4,
 // quotes: "double" })` plus the overrides that used to live in `../index.ts`); parity with ESLint
-// (diagnostics and byte-identical --fix output) is recorded in scratch/oxlint-migration.md.
+// (diagnostics and byte-identical --fix output) is recorded in docs/oxlint-migration.md.
 //
 // oxlint applies one round of fixes per run (ESLint loops up to 10), and `oxlint --fix` exits 0
 // even when its fixes leave new problems behind: use `oxlint-fix` (./fix.ts), which loops.
