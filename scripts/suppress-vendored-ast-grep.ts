@@ -32,7 +32,7 @@ function parseFindings(output: string): Finding[] {
         return result.data
     } catch {
         console.error("ast-grep did not return valid JSON. No files were changed.")
-        process.exit(1)
+        return process.exit(1)
     }
 }
 
@@ -61,7 +61,7 @@ function scan(targets: string[]): Finding[] {
     const findings = parseFindings(result.stdout)
 
     if (result.status === 1 && findings.length === 0) {
-        console.error(result.stderr || "ast-grep failed without reporting findings.")
+        console.error(result.stderr === "" ? "ast-grep failed without reporting findings." : result.stderr)
         process.exit(1)
     }
 

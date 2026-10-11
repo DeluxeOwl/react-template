@@ -8,7 +8,11 @@ import { RuleTester } from "@typescript-eslint/rule-tester"
 import { type Options, enforceNamespaceImportRule } from "./enforce-namespace-import"
 
 RuleTester.afterAll = afterAll
-RuleTester.describe = describe
+RuleTester.describe = (name, callback) => {
+    describe(name, () => {
+        callback()
+    })
+}
 RuleTester.it = it
 
 const ruleTester = new RuleTester({

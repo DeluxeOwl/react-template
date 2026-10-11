@@ -103,7 +103,7 @@ export default function createReactConfig(rootDir: string, options?: ReactConfig
             },
         },
         // Relax only the selected third-party files. Type-safety and return-type rules stay enabled.
-        ...options?.vendoredFiles?.length ? [createVendoredConfig(options.vendoredFiles)] : [],
+        ...options?.vendoredFiles !== undefined && options.vendoredFiles.length > 0 ? [createVendoredConfig(options.vendoredFiles)] : [],
         migratedToOxlint(),
     ])
 }

@@ -15,7 +15,7 @@ export interface ListTodoQueryOutput {
 }
 
 export class ListTodosHandler {
-    private constructor(private state: {
+    private constructor(private readonly state: {
         repo: TodoRepository
     }) {}
 
@@ -23,7 +23,7 @@ export class ListTodosHandler {
         return new ListTodosHandler({ repo })
     }
 
-    handle(ctx: Context, _: ListTodosQuery) {
+    async handle(ctx: Context, _: ListTodosQuery) {
         return Result.pipe(
             this.state.repo.listTodos(ctx),
             Result.andThen((todos) => Result.succeed({

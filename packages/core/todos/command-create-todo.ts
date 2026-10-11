@@ -13,7 +13,7 @@ export interface CreateTodoCommand {
 }
 
 export class CreateTodoHandler {
-    private constructor(private state: {
+    private constructor(private readonly state: {
         repo: TodoRepository
     }) {}
 
@@ -21,10 +21,10 @@ export class CreateTodoHandler {
         return new CreateTodoHandler({ repo })
     }
 
-    handle(ctx: Context, cmd: CreateTodoCommand) {
+    async handle(ctx: Context, cmd: CreateTodoCommand) {
         return Result.pipe(
             Todo.create(cmd.name, cmd.publicId),
-            Result.andThrough((todo) => this.state.repo.upsert(ctx, todo)),
+            Result.andThrough(async (todo) => this.state.repo.upsert(ctx, todo)),
             Result.andThen((todo) => Result.succeed(todo.toDTO())),
         )
     }

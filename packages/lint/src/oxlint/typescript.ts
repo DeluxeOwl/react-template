@@ -121,6 +121,9 @@ export const typescriptConfig = {
         "eslint/one-var":                                     "off",
         "eslint/prefer-destructuring":                        "allow",
         "eslint/prefer-named-capture-group":                  "error",
+        // `typescript/require-await` replaces it: that one accepts an async function that returns a
+        // promise, which `typescript/promise-function-async` asks for.
+        "eslint/require-await":                               "off",
         "eslint/require-unicode-regexp":                      "error",
         "eslint/sort-imports":                                "allow",
         "eslint/sort-keys":                                   "allow",

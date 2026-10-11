@@ -84,7 +84,7 @@ function getPreview(text: string): string {
 }
 
 function parseAstGrepOutput(stdout: string): FunctionInfo[] {
-    if (!stdout.trim()) {
+    if (stdout.trim() === "") {
         return []
     }
 
@@ -94,7 +94,7 @@ function parseAstGrepOutput(stdout: string): FunctionInfo[] {
 
     for (const match of matches) {
         const name = extractFunctionName(match)
-        if (name) {
+        if (name !== null) {
             functions.push({
                 file:    match.file,
                 // 0-indexed to 1-indexed
@@ -121,7 +121,7 @@ async function runAstGrep(params: Readonly<RunASTGrep>): Promise<FunctionInfo[]>
     const args = ["run", "--pattern", pattern, "--lang", lang, "--json", ...dirs]
     const result = await $`ast-grep ${args}`.quiet().nothrow()
 
-    if (result.exitCode !== 0 && result.stderr.trim()) {
+    if (result.exitCode !== 0 && result.stderr.trim() !== "") {
         console.error(`ast-grep failed for pattern "${pattern}":`, result.stderr)
         return []
     }

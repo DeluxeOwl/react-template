@@ -42,8 +42,9 @@ function extractStringsFromLiteral(node: TSESTree.Literal): string[] {
 function extractStringsFromTemplateLiteral(node: TSESTree.TemplateLiteral): string[] {
     const strings: string[] = []
     for (const quasis of node.quasis) {
-        if (quasis.value.cooked) {
-            strings.push(quasis.value.cooked)
+        const cooked = quasis.value.cooked ?? ""
+        if (cooked !== "") {
+            strings.push(cooked)
         }
     }
     for (const expr of node.expressions) {
@@ -89,29 +90,25 @@ function extractStringsFromExpression(node: TSESTree.Expression | TSESTree.JSXEm
     if (node.type === TSESTree.AST_NODE_TYPES.JSXEmptyExpression) {
         return []
     }
-    switch (node.type) {
-        case TSESTree.AST_NODE_TYPES.BinaryExpression: {
-            return extractStringsFromBinaryExpression(node)
-        }
-        case TSESTree.AST_NODE_TYPES.CallExpression: {
-            return extractStringsFromCallExpression(node)
-        }
-        case TSESTree.AST_NODE_TYPES.ConditionalExpression: {
-            return extractStringsFromConditionalExpression(node)
-        }
-        case TSESTree.AST_NODE_TYPES.Literal: {
-            return extractStringsFromLiteral(node)
-        }
-        case TSESTree.AST_NODE_TYPES.LogicalExpression: {
-            return extractStringsFromLogicalExpression(node)
-        }
-        case TSESTree.AST_NODE_TYPES.TemplateLiteral: {
-            return extractStringsFromTemplateLiteral(node)
-        }
-        default: {
-            return []
-        }
+    if (node.type === TSESTree.AST_NODE_TYPES.BinaryExpression) {
+        return extractStringsFromBinaryExpression(node)
     }
+    if (node.type === TSESTree.AST_NODE_TYPES.CallExpression) {
+        return extractStringsFromCallExpression(node)
+    }
+    if (node.type === TSESTree.AST_NODE_TYPES.ConditionalExpression) {
+        return extractStringsFromConditionalExpression(node)
+    }
+    if (node.type === TSESTree.AST_NODE_TYPES.Literal) {
+        return extractStringsFromLiteral(node)
+    }
+    if (node.type === TSESTree.AST_NODE_TYPES.LogicalExpression) {
+        return extractStringsFromLogicalExpression(node)
+    }
+    if (node.type === TSESTree.AST_NODE_TYPES.TemplateLiteral) {
+        return extractStringsFromTemplateLiteral(node)
+    }
+    return []
 }
 
 function hasMarginClass(node: TSESTree.JSXAttribute): boolean {
@@ -141,7 +138,7 @@ function hasMarginStyle(node: TSESTree.JSXAttribute): boolean {
                 } else if (prop.key.type === TSESTree.AST_NODE_TYPES.Literal && typeof prop.key.value === "string") {
                     keyName = prop.key.value
                 }
-                if (keyName
+                if (keyName !== null
                     && (keyName === "margin"
                         || keyName.startsWith("marginBlock")
                         || keyName.startsWith("marginInline")

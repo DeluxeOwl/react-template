@@ -301,7 +301,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expectResultSuccess(await repository.upsert(initialCtx, todo))
 
                         // WHEN
-                        const result = repository.withinTransaction(initialCtx, (ctx, repo) => {
+                        const result = repository.withinTransaction(initialCtx, async (ctx, repo) => {
                             return Result.pipe(
                                 repo.getByID(ctx, id),
                                 Result.andThen(async (t) => {
@@ -347,7 +347,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         expectResultSuccess(await repository.upsert(ctx, todo))
 
                         // WHEN
-                        const result = repository.withinTransaction(ctx, (innerCtx, repo) => {
+                        const result = repository.withinTransaction(ctx, async (innerCtx, repo) => {
                             return Result.pipe(
                                 repo.getByID(innerCtx, id),
                                 Result.andThen(async (t) => {
@@ -384,7 +384,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                         const ctx = Context.create()
 
                         // WHEN
-                        const result = repository.withinTransaction(ctx, (innerCtx, repo) => {
+                        const result = repository.withinTransaction(ctx, async (innerCtx, repo) => {
                             return repo.getByID(innerCtx, "123")
                         })
 

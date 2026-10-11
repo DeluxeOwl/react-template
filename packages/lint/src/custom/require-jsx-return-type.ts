@@ -44,26 +44,21 @@ function isJSXLike(node: null | TSESTree.Node | undefined): boolean {
     if (!node) {
         return false
     }
-    switch (node.type) {
-        case TSESTree.AST_NODE_TYPES.ConditionalExpression: {
-            return isJSXLike(node.consequent) || isJSXLike(node.alternate)
-        }
-        case TSESTree.AST_NODE_TYPES.JSXElement:
-        case TSESTree.AST_NODE_TYPES.JSXFragment: {
-            return true
-        }
-        case TSESTree.AST_NODE_TYPES.LogicalExpression: {
-            return isJSXLike(node.right)
-        }
-        case TSESTree.AST_NODE_TYPES.TSAsExpression:
-        case TSESTree.AST_NODE_TYPES.TSNonNullExpression:
-        case TSESTree.AST_NODE_TYPES.TSSatisfiesExpression: {
-            return isJSXLike(node.expression)
-        }
-        default: {
-            return false
-        }
+    if (node.type === TSESTree.AST_NODE_TYPES.JSXElement || node.type === TSESTree.AST_NODE_TYPES.JSXFragment) {
+        return true
     }
+    if (node.type === TSESTree.AST_NODE_TYPES.ConditionalExpression) {
+        return isJSXLike(node.consequent) || isJSXLike(node.alternate)
+    }
+    if (node.type === TSESTree.AST_NODE_TYPES.LogicalExpression) {
+        return isJSXLike(node.right)
+    }
+    if (node.type === TSESTree.AST_NODE_TYPES.TSAsExpression
+        || node.type === TSESTree.AST_NODE_TYPES.TSNonNullExpression
+        || node.type === TSESTree.AST_NODE_TYPES.TSSatisfiesExpression) {
+        return isJSXLike(node.expression)
+    }
+    return false
 }
 
 function isFunctionNode(node: TSESTree.Node): node is FunctionNode {

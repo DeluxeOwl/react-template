@@ -24,7 +24,7 @@ export class Context {
     }
 }
 
-export function makeCancellable<T>(promise: Promise<T>, signal?: AbortSignal): Promise<T> {
+export async function makeCancellable<T>(promise: Promise<T>, signal?: AbortSignal): Promise<T> {
     if (!signal) {
         return promise
     }
@@ -35,7 +35,7 @@ export function makeCancellable<T>(promise: Promise<T>, signal?: AbortSignal): P
 
     if (signal.aborted) {
         // oxlint-disable-next-line eslint-js/no-restricted-syntax
-        return Promise.reject(getCancelledError())
+        throw getCancelledError()
     }
 
     return new Promise<T>((resolve, reject) => {

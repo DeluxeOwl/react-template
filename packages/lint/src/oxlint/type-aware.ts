@@ -2,20 +2,20 @@ import type { OxlintConfig } from "oxlint"
 
 // Type-aware rules: oxlint runs them through tsgolint (`oxlint-tsgolint`) when `options.typeAware` is on.
 //
-// Type-aware mode turns on every type-aware rule our categories select (55 of these), including
-// rules ESLint never ran. So every type-aware rule oxlint 1.86 has is listed here, and only the ones
-// migrated from ESLint with parity proven (scratch/oxlint-migration.md) are on. The others stay
-// off: ESLint still runs them, or never did. Keep this list complete when upgrading oxlint
-// (`oxlint --rules --format=json`, `type_aware: true`).
+// Type-aware mode turns on every type-aware rule our categories select (55 of these). So every
+// type-aware rule oxlint 1.86 has is listed here, on or off on purpose. Off: the ones ESLint still
+// runs, `non-nullable-type-assertion-style` (it asks for `x!`, which `no-non-null-assertion` warns
+// about) and `prefer-readonly-parameter-types` (`readonly` on nearly every parameter). Keep this
+// list complete when upgrading oxlint (`oxlint --rules --format=json`, `type_aware: true`).
 export const typeAwareConfig = {
     options: {
         typeAware: true,
     },
     rules: {
         "typescript/await-thenable":                         "off",
-        "typescript/consistent-return":                      "off",
+        "typescript/consistent-return":                      "error",
         "typescript/consistent-type-exports":                "off",
-        "typescript/dot-notation":                           "off",
+        "typescript/dot-notation":                           "error",
         "typescript/no-array-delete":                        "off",
         "typescript/no-base-to-string":                      "off",
         "typescript/no-confusing-void-expression":           "off",
@@ -23,21 +23,21 @@ export const typeAwareConfig = {
         "typescript/no-duplicate-type-constituents":         "off",
         "typescript/no-floating-promises":                   "off",
         "typescript/no-for-in-array":                        "error",
-        "typescript/no-generated-empty-object-type":         "off",
+        "typescript/no-generated-empty-object-type":         "error",
         "typescript/no-implied-eval":                        "off",
-        "typescript/no-meaningless-void-operator":           "off",
+        "typescript/no-meaningless-void-operator":           "error",
         "typescript/no-misused-promises":                    "off",
-        "typescript/no-misused-spread":                      "off",
-        "typescript/no-mixed-enums":                         "off",
+        "typescript/no-misused-spread":                      "error",
+        "typescript/no-mixed-enums":                         "error",
         "typescript/no-redundant-type-constituents":         "off",
         "typescript/no-unnecessary-boolean-literal-compare": "off",
         "typescript/no-unnecessary-condition":               "off",
-        "typescript/no-unnecessary-qualifier":               "off",
+        "typescript/no-unnecessary-qualifier":               "error",
         "typescript/no-unnecessary-template-expression":     "off",
-        "typescript/no-unnecessary-type-arguments":          "off",
+        "typescript/no-unnecessary-type-arguments":          "error",
         "typescript/no-unnecessary-type-assertion":          "error",
         "typescript/no-unnecessary-type-conversion":         "off",
-        "typescript/no-unnecessary-type-parameters":         "off",
+        "typescript/no-unnecessary-type-parameters":         "error",
         "typescript/no-unsafe-argument":                     "off",
         "typescript/no-unsafe-assignment":                   "off",
         "typescript/no-unsafe-call":                         "off",
@@ -48,29 +48,30 @@ export const typeAwareConfig = {
         "typescript/no-unsafe-unary-minus":                  "error",
         "typescript/no-useless-default-assignment":          "off",
         "typescript/non-nullable-type-assertion-style":      "off",
-        "typescript/only-throw-error":                       "off",
-        "typescript/prefer-find":                            "off",
-        "typescript/prefer-includes":                        "off",
-        "typescript/prefer-nullish-coalescing":              "off",
-        "typescript/prefer-optional-chain":                  "off",
+        "typescript/only-throw-error":                       "error",
+        "typescript/prefer-find":                            "error",
+        "typescript/prefer-includes":                        "error",
+        "typescript/prefer-nullish-coalescing":              "error",
+        "typescript/prefer-optional-chain":                  "error",
         "typescript/prefer-promise-reject-errors":           "off",
-        "typescript/prefer-readonly":                        "off",
+        "typescript/prefer-readonly":                        "error",
         "typescript/prefer-readonly-parameter-types":        "off",
-        "typescript/prefer-reduce-type-parameter":           "off",
-        "typescript/prefer-regexp-exec":                     "off",
-        "typescript/prefer-return-this-type":                "off",
+        "typescript/prefer-reduce-type-parameter":           "error",
+        "typescript/prefer-regexp-exec":                     "error",
+        "typescript/prefer-return-this-type":                "error",
         "typescript/prefer-string-starts-ends-with":         "off",
-        "typescript/promise-function-async":                 "off",
-        "typescript/related-getter-setter-pairs":            "off",
-        "typescript/require-array-sort-compare":             "off",
+        "typescript/promise-function-async":                 "error",
+        "typescript/related-getter-setter-pairs":            "error",
+        "typescript/require-array-sort-compare":             "error",
         "typescript/require-await":                          "off",
         "typescript/restrict-plus-operands":                 "off",
         "typescript/restrict-template-expressions":          "off",
-        "typescript/return-await":                           "off",
-        "typescript/strict-boolean-expressions":             "off",
-        "typescript/strict-void-return":                     "off",
-        "typescript/switch-exhaustiveness-check":            "off",
+        "typescript/return-await":                           "error",
+        // Numbers and strings too: `{count && <List />}` renders 0 in React.
+        "typescript/strict-boolean-expressions":             ["error", { allowNumber: false, allowString: false }],
+        "typescript/strict-void-return":                     "error",
+        "typescript/switch-exhaustiveness-check":            "error",
         "typescript/unbound-method":                         "off",
-        "typescript/use-unknown-in-catch-callback-variable": "off",
+        "typescript/use-unknown-in-catch-callback-variable": "error",
     },
 } satisfies OxlintConfig

@@ -45,9 +45,9 @@ export const defaultTodoHTTPParams: OptionalTodoHTTPParams = {
 }
 
 export class TodoHTTP {
-    private app: TodoApp
+    private readonly app: TodoApp
     private constructor(
-        private state: TodoHTTPParams,
+        private readonly state: TodoHTTPParams,
     ) {
         this.app = state.app
     }

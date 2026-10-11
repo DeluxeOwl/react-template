@@ -63,7 +63,7 @@ export const preferStateClassRule = RuleCreator(
                 }
 
                 // Rule 1: Constructor must be private
-                if (!constructor.accessibility || constructor.accessibility !== "private") {
+                if (constructor.accessibility !== "private") {
                     context.report({
                         data:      { className },
                         messageId: "noPrivateConstructor",

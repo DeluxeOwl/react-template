@@ -25,7 +25,7 @@ function toCancelledOrDBError(error: unknown): CancelledError | InternalDBError 
 }
 
 export class TodoRepositorySqlite implements TodoRepository {
-    private constructor(private state: {
+    private constructor(private readonly state: {
         db:         DrizzleDB
         isWithinTx: boolean
     }) {}
@@ -37,21 +37,21 @@ export class TodoRepositorySqlite implements TodoRepository {
         })
     }
 
-    delete(ctx: Context, id: string) {
+    async delete(ctx: Context, id: string) {
         return Result.pipe(
             Result.try({
                 catch: (error) => toCancelledOrDBError(error),
-                try:   async () => await makeCancellable(this.state.db.delete(todosTable).where(eq(todosTable.publicId, id)), ctx.signal),
+                try:   async () => makeCancellable(this.state.db.delete(todosTable).where(eq(todosTable.publicId, id)), ctx.signal),
             }),
             Result.andThen((_) => Result.succeed()),
         )
     }
 
-    getByID(ctx: Context, id: string) {
+    async getByID(ctx: Context, id: string) {
         return Result.pipe(
             Result.try({
                 catch: (error) => toCancelledOrDBError(error),
-                try:   async () => await makeCancellable(
+                try:   async () => makeCancellable(
                     this.state.db.select().from(todosTable)
                         .where(eq(todosTable.publicId, id))
                         .limit(1),
@@ -71,11 +71,11 @@ export class TodoRepositorySqlite implements TodoRepository {
         )
     }
 
-    listTodos(ctx: Context) {
+    async listTodos(ctx: Context) {
         return Result.pipe(
             Result.try({
                 catch: (error) => toCancelledOrDBError(error),
-                try:   async () => await makeCancellable(
+                try:   async () => makeCancellable(
                     this.state.db.select().from(todosTable),
                     ctx.signal,
                 ),
@@ -88,12 +88,12 @@ export class TodoRepositorySqlite implements TodoRepository {
         )
     }
 
-    upsert(ctx: Context, todo: Todo) {
+    async upsert(ctx: Context, todo: Todo) {
         const dto = todo.toDTO()
         return Result.pipe(
             Result.try({
                 catch: (error) => toCancelledOrDBError(error),
-                try:   async () => await makeCancellable(
+                try:   async () => makeCancellable(
                     this.state.db.insert(todosTable).values({
                         done:     dto.done,
                         name:     dto.name,
@@ -110,7 +110,7 @@ export class TodoRepositorySqlite implements TodoRepository {
         )
     }
 
-    withinTransaction<T, E>(ctx: Context, fn: (ctx: Context, repo: TodoRepository) => Result.ResultAsync<T, E>): Result.ResultAsync<T, E> {
+    async withinTransaction<T, E>(ctx: Context, fn: (ctx: Context, repo: TodoRepository) => Result.ResultAsync<T, E>): Result.ResultAsync<T, E> {
         if (this.state.isWithinTx) {
             return fn(ctx, this)
         }
@@ -118,7 +118,7 @@ export class TodoRepositorySqlite implements TodoRepository {
         return Result.try({
             // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
             catch: (error) => error as E,
-            try:   () => this.state.db.transaction(async (tx) => {
+            try:   async () => this.state.db.transaction(async (tx) => {
                 const txRepo = new TodoRepositorySqlite({
                     db:         tx,
                     isWithinTx: true,

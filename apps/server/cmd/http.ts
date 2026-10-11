@@ -22,7 +22,7 @@ function main(): void {
     // its own internal routing (rpc/api/spec/scalar), so we hand every request
     // to it directly via the `fetch` handler with the untouched web `Request`.
     const fetchORPC = httpAdapter.fetchORPC()
-    serve({ fetch: (request) => fetchORPC(request), port })
+    serve({ fetch: async (request) => fetchORPC(request), port })
 
     console.info(`Listening on http://localhost:${port}`)
 }

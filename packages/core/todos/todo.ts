@@ -60,7 +60,7 @@ export interface TodoDTO {
 
 export class Todo {
     private constructor(
-        private state: {
+        private readonly state: {
             done: boolean
             id:   string
             name: string

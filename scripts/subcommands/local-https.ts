@@ -270,7 +270,7 @@ async function shutdownAll(processes: readonly ManagedProcess[]): Promise<void> 
 
     // oxlint-disable-next-line eslint-js/no-restricted-syntax -- allSettled is not necessary since tasks dont have deps between them.
     const results = await Promise.allSettled(
-        processes.map((p) => p.stop()),
+        processes.map(async (p) => p.stop()),
     )
 
     clearTimeout(timeout)
@@ -285,7 +285,7 @@ async function shutdownAll(processes: readonly ManagedProcess[]): Promise<void> 
     console.log("All processes stopped successfully")
 }
 
-function waitForSignal(): Promise<void> {
+async function waitForSignal(): Promise<void> {
     return new Promise((resolve) => {
         process.on("SIGINT", () => {
             resolve()
@@ -326,7 +326,7 @@ export async function parseAndRun(
     ipFlag: string | undefined,
     servicesFlag: string,
 ): Promise<void> {
-    const ipResult = ipFlag ? parseIP(ipFlag) : detectLocalIP()
+    const ipResult = ipFlag === undefined || ipFlag === "" ? detectLocalIP() : parseIP(ipFlag)
 
     if (Result.isFailure(ipResult)) {
         console.error(`Error: ${ipResult.error.message} — ${ipResult.error.ip}`)

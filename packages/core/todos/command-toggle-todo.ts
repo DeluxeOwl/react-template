@@ -10,7 +10,7 @@ export interface ToggleTodoCommand {
 }
 
 export class ToggleTodoHandler {
-    private constructor(private state: {
+    private constructor(private readonly state: {
         repo: TodoRepository
     }) {}
 
@@ -18,11 +18,11 @@ export class ToggleTodoHandler {
         return new ToggleTodoHandler({ repo })
     }
 
-    handle(ctx: Context, cmd: ToggleTodoCommand) {
-        return this.state.repo.withinTransaction(ctx, (innerCtx, repo) => {
+    async handle(ctx: Context, cmd: ToggleTodoCommand) {
+        return this.state.repo.withinTransaction(ctx, async (innerCtx, repo) => {
             return Result.pipe(
                 repo.getByID(innerCtx, cmd.id),
-                Result.andThen((todo) => {
+                Result.andThen(async (todo) => {
                     todo.toggle()
                     return repo.upsert(innerCtx, todo)
                 }),

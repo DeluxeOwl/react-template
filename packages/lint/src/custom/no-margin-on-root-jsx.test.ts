@@ -8,7 +8,11 @@ import { RuleTester } from "@typescript-eslint/rule-tester"
 import { noMarginOnRootJSXRule } from "./no-margin-on-root-jsx"
 
 RuleTester.afterAll = afterAll
-RuleTester.describe = describe
+RuleTester.describe = (name, callback) => {
+    describe(name, () => {
+        callback()
+    })
+}
 RuleTester.it = it
 
 const ruleTester = new RuleTester({

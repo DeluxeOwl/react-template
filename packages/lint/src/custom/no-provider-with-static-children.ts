@@ -195,7 +195,7 @@ export const noProviderWithStaticChildrenRule = RuleCreator(
         return {
             "CallExpression": (node: TSESTree.CallExpression) => {
                 const name = getCalleeName(node)
-                if (!name || !HookNamePattern.test(name) || ignoredHooks.includes(name)) {
+                if (name === null || !HookNamePattern.test(name) || ignoredHooks.includes(name)) {
                     return
                 }
                 const enclosing = getEnclosingFunction(node)
