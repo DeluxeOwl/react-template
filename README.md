@@ -208,6 +208,10 @@ The default configuration does not require that plugin.
 `@deluxeowl/lint` is the only built package (ESM via zshy). Changing it requires a version
 bump + a `lint-vX.Y.Z` tag push, which triggers `.github/workflows/publish-lint.yml`.
 
+The move from ESLint and ast-grep to oxlint is recorded in
+[`docs/oxlint-migration.md`](./docs/oxlint-migration.md); what is left is in
+[`docs/follow-up.md`](./docs/follow-up.md).
+
 ---
 
 ## Design decisions
