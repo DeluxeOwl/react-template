@@ -14,23 +14,15 @@
     },
     "kanban-markdown.featuresDirectory": "docs/kanban",
     "editor.codeActionsOnSave": {
-        // Note: this being "never" doesn't clash with dangling comma, let perfectionist eslint handle imports
+        // Note: this being "never" doesn't clash with dangling comma, let perfectionist (oxlint) handle imports
         "source.organizeImports": "never",
         "source.fixAll.ast-grep": "never",
-        "source.fixAll.eslint": "explicit",
         // TS/JS formatting: the @stylistic rules run in oxlint (vendored, packages/lint/vendor/stylistic).
         // One save applies one round of fixes; save again if a fix exposed another (oxlint-fix loops).
         "source.fixAll.oxc": "explicit"
     },
     // Use the same workspace-local ast-grep version as the lint scripts.
     "astGrep.serverPath": "node_modules/.bin/ast-grep",
-    "eslint.validate": [
-        "javascript",
-        "javascriptreact",
-        "typescript",
-        "typescriptreact",
-        "mjs"
-    ],
     "[json]": {
         "editor.tabSize": 4,
         "editor.insertSpaces": true,
@@ -44,28 +36,29 @@
     // This tells vscode to prefer ~/ paths.
     "js/ts.preferences.importModuleSpecifier": "non-relative",
     "js/ts.experimental.useTsgo": true,
-    "eslint.format.enable": true,
+    // JS/TS formatting comes from the @stylistic rules through source.fixAll.oxc. A formatter on save
+    // (VS Code's built-in TypeScript one) would run after it and undo it.
     "[javascript]": {
-        "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+        "editor.formatOnSave": false,
         // Note: this prevents the weird discrepancy with the extension
         "editor.insertSpaces": true
     },
     "[javascriptreact]": {
-        "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+        "editor.formatOnSave": false,
         // Note: this prevents the weird discrepancy with the extension
         "editor.insertSpaces": true
     },
     "[typescript]": {
-        "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+        "editor.formatOnSave": false,
         // Note: this prevents the weird discrepancy with the extension
         "editor.insertSpaces": true
     },
     "[typescriptreact]": {
-        "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+        "editor.formatOnSave": false,
         "editor.insertSpaces": true
     },
     "[mjs]": {
-        "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+        "editor.formatOnSave": false,
         // Note: this prevents the weird discrepancy with the extension
         "editor.insertSpaces": true
     },

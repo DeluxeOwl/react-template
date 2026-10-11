@@ -32,17 +32,19 @@ jobs:
       # packages/lint (@deluxeowl/lint) is a built (Model B) package whose
       # dist/ is gitignored. The root postinstall builds it, but with a warm
       # cache `bun install --frozen-lockfile` reports "no changes" and skips
-      # postinstall, leaving dist/ absent. The lint configs in every other
-      # workspace import @deluxeowl/lint (-> ./dist/index.js), so build it
-      # explicitly before any step that consumes its config.
+      # postinstall, leaving dist/ absent. The oxlint configs in every other
+      # workspace import @deluxeowl/lint/oxlint (-> ./dist/oxlint/index.js), so
+      # build it explicitly before any step that consumes its config.
       - name: build lint package
         run: devbox run -- bun run --filter @deluxeowl/lint build
 
       - name: lint:oxlint
         run: devbox run -- bun run lint:oxlint
 
-      - name: lint:eslint
-        run: devbox run -- bun run lint:eslint
+      # lint:oxlint applies fixes (oxlint-fix). A fix in CI means the pushed
+      # code was not linted, so any change made by the fixers fails the job.
+      - name: fixers changed nothing
+        run: git diff --exit-code
 
       - name: lint:sg
         run: devbox run -- bun run lint:sg

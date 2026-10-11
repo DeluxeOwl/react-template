@@ -24,7 +24,6 @@ questions:
     },
     "scripts": {
         "lint:oxlint": "oxlint-fix .",
-        "lint:eslint": "eslint --fix .",
         "typecheck": "tsc --noEmit",
         "test": "vitest --run --passWithNoTests --reporter=tree"
     },
@@ -42,21 +41,6 @@ import { createOxlintConfig } from "@deluxeowl/lint/oxlint"
 export default createOxlintConfig()
 ```
 
-# `{{ inputs.packageName | kebab }}/eslint.config.ts`
-
-```typescript
-import config from "@deluxeowl/lint"
-import {
-    defineConfig,
-} from "eslint/config"
-
-export default defineConfig([
-    {
-        extends: [config(import.meta.dirname)],
-    },
-])
-```
-
 # `{{ inputs.packageName | kebab }}/tsconfig.json`
 
 ```json
@@ -65,7 +49,6 @@ export default defineConfig([
     "include": [
         "**/*.ts",
         "index.ts",
-        "eslint.config.ts",
         "../../reset.d.ts"
     ],
     "exclude": []

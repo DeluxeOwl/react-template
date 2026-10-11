@@ -7,8 +7,8 @@ import { fileURLToPath } from "node:url"
 // `stylistic-warn` and `correctness-error` configs, with our options, except
 // `enforce-canonical-classes`: Tailwind's canonical form of a class depends on the classes compiled
 // before it in the same process, and oxlint lints files in parallel, in a new process each fix round,
-// so its fixes would differ from ESLint's. That rule stays in ESLint. Parity with ESLint is recorded
-// in scratch/oxlint-migration.md.
+// so its fixes would depend on which files a process compiled first. That rule is not run. Parity
+// with ESLint is recorded in scratch/oxlint-migration.md.
 const betterTailwindcssPlugin = fileURLToPath(new URL("../../vendor/better-tailwindcss/index.js", import.meta.url))
 
 // `settings["better-tailwindcss"]` (see the plugin's docs for the rest). `entryPoint`, the CSS file

@@ -5,9 +5,10 @@ import { fileURLToPath } from "node:url"
 // @eslint-react rules run by oxlint from our vendored copy of @eslint-react/eslint-plugin 5.7.1
 // (packages/lint/vendor/eslint-react, generated — see its README). oxlint has no native versions.
 // Severities and settings are exactly what the ESLint preset (`recommended-typescript`) resolved
-// to; parity with ESLint is recorded in scratch/oxlint-migration.md. Four rules stay in ESLint:
-// `no-leaked-conditional-rendering` needs the type checker, and the fixes of `dom-no-hydrate`,
-// `dom-no-render` and `dom-no-use-form-state` can produce code that oxc rejects.
+// to; parity with ESLint is recorded in scratch/oxlint-migration.md. Four rules are not run:
+// `no-leaked-conditional-rendering` needs the type checker (`typescript/strict-boolean-expressions`
+// with numbers and strings disallowed covers it, see type-aware.ts), and the fixes of
+// `dom-no-hydrate`, `dom-no-render` and `dom-no-use-form-state` can produce code that oxc rejects.
 const eslintReactPlugin = fileURLToPath(new URL("../../vendor/eslint-react/index.js", import.meta.url))
 
 export const eslintReactConfig = {

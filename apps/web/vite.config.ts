@@ -1,4 +1,3 @@
-// oxlint-disable-next-line import/no-nodejs-modules -- This is fine for vite.
 import path from "node:path"
 import { defineConfig } from "vite"
 import babel from "@rolldown/plugin-babel"

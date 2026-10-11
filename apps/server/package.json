@@ -14,7 +14,6 @@
     "scripts": {
         "dev": "bun run --no-clear-screen --watch cmd/http.ts",
         "lint:oxlint": "oxlint-fix .",
-        "lint:eslint": "eslint --fix .",
         "typecheck": "tsc --noEmit",
         "test": "vitest --run --passWithNoTests --reporter=tree",
         "db:generate": "drizzle-kit generate --config ./db/sqlite-drizzle.config.ts",

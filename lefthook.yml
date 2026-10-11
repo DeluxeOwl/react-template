@@ -12,8 +12,6 @@ pre-push:
   jobs:
     - name: lint/oxlint
       run: bun run lint:oxlint
-    - name: lint/eslint
-      run: bun run lint:eslint
     - name: lint/ast-grep
       run: bun run lint:sg
     - name: format/dprint

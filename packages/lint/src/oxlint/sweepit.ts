@@ -5,8 +5,8 @@ import { fileURLToPath } from "node:url"
 // The sweepit rules, run by oxlint from our vendored copy of eslint-plugin-sweepit 0.0.23
 // (packages/lint/vendor/sweepit, generated — see its README). Options are exactly what the ESLint
 // preset used to set; parity with ESLint (diagnostics; the rules have no fixes) is recorded in
-// scratch/oxlint-migration.md. `sweepit/no-array-props` and `sweepit/no-object-props` stay in
-// ESLint (`../react.ts`): they use the TypeScript type checker, which oxlint JS plugins don't get.
+// scratch/oxlint-migration.md. `sweepit/no-array-props` and `sweepit/no-object-props` are not run:
+// they use the TypeScript type checker, which oxlint JS plugins don't get.
 const sweepitPlugin = {
     name:      "sweepit",
     specifier: fileURLToPath(new URL("../../vendor/sweepit/index.js", import.meta.url)),

@@ -12,7 +12,7 @@ import { fileURLToPath } from "node:url"
 //   appends them to its default array on every file (with `typecheck`); the copy adds them once.
 // - require-top-level-describe: its default `maxNumberOfTopLevelDescribes: Infinity` can't be
 //   written in a config (JSON has no Infinity), so the rule's own default applies.
-// Four rules stay in ESLint: prefer-describe-function-title, valid-title and unbound-method use
+// Four rules are not run: prefer-describe-function-title, valid-title and unbound-method use
 // the TypeScript type checker; prefer-importing-vitest-globals' fixes can produce code oxc can't
 // parse, which stops oxlint's fix rounds early.
 const vitestPlugin = fileURLToPath(new URL("../../vendor/vitest/index.js", import.meta.url))

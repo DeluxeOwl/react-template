@@ -2,7 +2,6 @@
     "recommendations": [
         "oxc.oxc-vscode",
         "antfu.file-nesting",
-        "dbaeumer.vscode-eslint",
         "bradlc.vscode-tailwindcss",
         "lokalise.i18n-ally",
         "formulahendry.auto-rename-tag",
