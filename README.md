@@ -87,17 +87,17 @@ live-sync path end to end.
 
 Run from the repo root (inside `devbox shell`).
 
-| Command                  | What it does                                        |
-| ------------------------ | --------------------------------------------------- |
-| `bun run dev`            | Start web + server + https/mDNS (tilt, `Tiltfile`)  |
-| `bun run typecheck`      | `tsc --noEmit` across all workspaces                |
-| `bun run test`           | All tests (Vitest, sequential across workspaces)    |
-| `bun run lint:oxlint`    | oxlint: most rules, and TS/JS formatting            |
-| `bun run lint:duplicate` | jscpd copy-paste detector                           |
-| `bun run format:dprint`  | Format JSON/YAML/Markdown (TS/JS handled by oxlint) |
-| `bun run deadcode`       | knip (unused files/exports/deps)                    |
-| `bun run lint:all`       | Full pre-push gate (lefthook)                       |
-| `bun run generate`       | Scaffold a new package (scaffdog)                   |
+| Command                  | What it does                                                    |
+| ------------------------ | --------------------------------------------------------------- |
+| `bun run dev`            | Start web + server + https/mDNS (tilt, `Tiltfile`)              |
+| `bun run typecheck`      | `tsc --noEmit` across all workspaces                            |
+| `bun run test`           | All tests (Vitest, sequential across workspaces)                |
+| `bun run lint:oxlint`    | oxlint, one run from the root: most rules, and TS/JS formatting |
+| `bun run lint:duplicate` | jscpd copy-paste detector                                       |
+| `bun run format:dprint`  | Format JSON/YAML/Markdown (TS/JS handled by oxlint)             |
+| `bun run deadcode`       | knip (unused files/exports/deps)                                |
+| `bun run lint:all`       | Full pre-push gate (lefthook)                                   |
+| `bun run generate`       | Scaffold a new package (scaffdog)                               |
 
 The full command reference (test filters, per-workspace runs, code-style rules) lives in
 [`AGENTS.md`](./AGENTS.md).
@@ -153,6 +153,43 @@ export default createOxlintConfig()
 
 Lint and format with `oxlint-fix .` (a bin of `@deluxeowl/lint`). It repeats `oxlint --fix`
 until the files stop changing; a single `oxlint --fix` can leave formatting half-done.
+
+### Monorepos
+
+oxlint reads some options, such as type-aware mode, only from the root config, and VS Code lints a
+monorepo from its root. Give the root `createOxlintRootConfig()`, build each workspace's config with
+`nested: true`, and run `oxlint-fix .` once, from the root:
+
+```ts
+// oxlint.config.ts (repo root)
+import { createOxlintRootConfig } from "@deluxeowl/lint/oxlint"
+export default createOxlintRootConfig()
+```
+
+```ts
+// apps/web/oxlint.config.ts
+import { createOxlintReactConfig } from "@deluxeowl/lint/oxlint"
+export default createOxlintReactConfig({ nested: true })
+```
+
+Without `nested: true`, `oxlint` stops with "only supported in the root config", and VS Code skips
+that config without saying so in the editor: its files get only oxlint's default rules.
+
+### VS Code
+
+Install the oxc extension (`oxc.oxc-vscode`). It runs the project's `oxlint`, and its fixes on save
+are also what formats TS/JS:
+
+```jsonc
+// .vscode/settings.json
+"editor.codeActionsOnSave": { "source.fixAll.oxc": "explicit" },
+// The built-in TypeScript formatter would undo those fixes.
+"[typescript]": { "editor.formatOnSave": false },
+"[typescriptreact]": { "editor.formatOnSave": false },
+```
+
+A save applies one round of fixes, where `oxlint-fix` repeats until nothing changes, so a file can
+need a second save. After upgrading `@deluxeowl/lint`, run **Oxc: Restart oxlint Server**.
 
 ### React projects and vendored UI
 

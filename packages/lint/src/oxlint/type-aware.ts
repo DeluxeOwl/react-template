@@ -1,6 +1,8 @@
 import type { OxlintConfig } from "oxlint"
 
 // Type-aware rules: oxlint runs them through tsgolint (`oxlint-tsgolint`) when `options.typeAware` is on.
+// Only a root config may set that option: `nested: true` leaves it out of a config below the root,
+// and `createOxlintRootConfig()` makes the root's.
 //
 // Type-aware mode turns on every type-aware rule our categories select (55 of these). So every
 // type-aware rule oxlint 1.86 has is listed here, on or off on purpose. Off:

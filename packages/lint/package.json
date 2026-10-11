@@ -1,6 +1,6 @@
 {
     "name": "@deluxeowl/lint",
-    "version": "0.6.0",
+    "version": "0.7.0",
     "type": "module",
     "private": false,
     "license": "UNLICENSED",
@@ -28,7 +28,6 @@
     ],
     "scripts": {
         "build": "zshy -p tsconfig.lib.json",
-        "lint:oxlint": "oxlint-fix .",
         "typecheck": "tsc --noEmit -p tsconfig.lib.json && tsc --noEmit -p tsconfig.tooling.json",
         "test": "bun vitest-on-node.ts --run --passWithNoTests --reporter=tree",
         "vendor": "bun scripts/vendor/vendor.ts",

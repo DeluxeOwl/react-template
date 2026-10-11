@@ -11,7 +11,6 @@
         "typescript": "catalog:"
     },
     "scripts": {
-        "lint:oxlint": "oxlint-fix .",
         "typecheck": "tsc --noEmit",
         "test": "vitest --run --passWithNoTests --reporter=tree"
     },

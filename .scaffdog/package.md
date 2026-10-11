@@ -23,7 +23,6 @@ questions:
         "typescript": "catalog:"
     },
     "scripts": {
-        "lint:oxlint": "oxlint-fix .",
         "typecheck": "tsc --noEmit",
         "test": "vitest --run --passWithNoTests --reporter=tree"
     },
@@ -38,7 +37,7 @@ questions:
 ```typescript
 import { createOxlintConfig } from "@deluxeowl/lint/oxlint"
 
-export default createOxlintConfig()
+export default createOxlintConfig({ nested: true })
 ```
 
 # `{{ inputs.packageName | kebab }}/tsconfig.json`

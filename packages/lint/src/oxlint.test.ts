@@ -23,7 +23,7 @@ function fixture(configExpression: string): string {
     })
     writeFileSync(
         path.join(dir, "oxlint.config.ts"),
-        `import { createOxlintConfig, defaultVendoredFiles, createOxlintReactConfig, smoothShadowRestrictions } from ${JSON.stringify(presetsModule)}\n\nexport default ${configExpression}\n`,
+        `import { createOxlintConfig, defaultVendoredFiles, createOxlintRootConfig, createOxlintReactConfig, smoothShadowRestrictions } from ${JSON.stringify(presetsModule)}\n\nexport default ${configExpression}\n`,
     )
 
     return dir
@@ -399,6 +399,59 @@ describe("shared oxlint React presets", () => {
                 ])
                 expect(fixed).toContain("smooth-shadow-lg")
                 expect(fixed).toContain("hover:shadow-2xs")
+            })
+        })
+    })
+})
+
+// A monorepo in a temp dir: the root config, and below it `workspace/` with a config built by
+// `workspaceConfig` and a tsconfig.json for the type-aware rules. `lint` runs from the root, as VS Code does.
+function monorepoFixture(workspaceConfig: string): string {
+    const dir = fixture("createOxlintRootConfig()")
+
+    mkdirSync(path.join(dir, "workspace"))
+    writeFileSync(
+        path.join(dir, "workspace/oxlint.config.ts"),
+        `import { createOxlintConfig } from ${JSON.stringify(presetsModule)}\n\nexport default ${workspaceConfig}\n`,
+    )
+    writeFileSync(path.join(dir, "workspace/tsconfig.json"), JSON.stringify({ compilerOptions: { lib: ["esnext"], strict: true } }))
+
+    return dir
+}
+
+// A floating promise (a type-aware rule) and a 2-space indent (a JS-plugin rule).
+const workspaceSource = "export function load(): void {\n  Promise.resolve(1)\n}\n"
+
+describe("shared oxlint presets in a monorepo", () => {
+    describe("given a root config from createOxlintRootConfig and a workspace config below it", () => {
+        describe("when the workspace config is built with nested: true", () => {
+            it("then a run from the root applies the workspace's rules, type-aware ones included", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const dir = monorepoFixture("createOxlintConfig({ nested: true })")
+
+                // WHEN
+                const result = lint(dir, { "workspace/load.ts": workspaceSource })
+
+                // THEN
+                expect(result.output).toContain("typescript(no-floating-promises)")
+                expect(result.output).toContain("@stylistic(indent)")
+            })
+        })
+
+        describe("when the workspace config keeps the root-only options", () => {
+            it("then oxlint refuses to load it", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const dir = monorepoFixture("createOxlintConfig()")
+
+                // WHEN
+                const result = lint(dir, { "workspace/load.ts": workspaceSource })
+
+                // THEN
+                expect(result.output).toContain("The `options.typeAware` option is only supported in the root config")
             })
         })
     })

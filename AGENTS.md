@@ -39,7 +39,8 @@ bun run --filter @react-template/core vitest run --reporter=verbose -t "then it 
 ### Linting & Formatting
 
 ```sh
-bun run lint:oxlint      # oxlint across all workspaces; also formats TS/JS (fixes until stable)
+bun run lint:oxlint      # oxlint, one run from the root over every workspace; also formats TS/JS (fixes until stable)
+bunx oxlint-fix apps/web # one workspace; run it from the root, whose config turns the type-aware rules on
 bun run format:dprint    # format JSON, YAML, Markdown, Dockerfile (dprint)
 bun run lint:all         # run the full pre-push gate (lefthook)
 ```
@@ -258,4 +259,5 @@ Rules:
 - **Dead code**: `bun run deadcode` (knip) to detect unused exports.
 - **Duplicate code**: `bun run lint:duplicate` or `bun run lint:duplicates` (jscpd / custom script).
 - **Lint package is published**: `packages/lint` (`@deluxeowl/lint`) is the only built (Model B) package — it's built with zshy and published to GitHub Packages. Consumed in-repo via `workspace:*`, from its built `dist/`: run `bun run postinstall` after `bun install` (`.npmrc` turns install scripts off) and after changing the package. Changes to shared lint config require a version bump in `packages/lint/package.json` + a matching `lint-vX.Y.Z` git tag push (triggers the publish workflow).
+- **oxlint configs**: the root `oxlint.config.ts` (`createOxlintRootConfig()`) holds the options only a root config may set, such as type-aware mode, and each workspace's `oxlint.config.ts` sits below it with `nested: true`. oxlint runs from the root, in `lint:oxlint` and in VS Code alike. A workspace config without `nested: true` fails to load, and VS Code then lints its files with oxlint's defaults without saying so. VS Code picks up a rebuilt lint package after **Oxc: Restart oxlint Server**.
 - **CI**: `.github/workflows/ci.yml` runs the full lint/typecheck/test gate on push + PR (guardrails are enforced server-side, not just via lefthook).

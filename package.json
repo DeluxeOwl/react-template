@@ -46,7 +46,7 @@
     "scripts": {
         "postinstall": "bun run --filter @deluxeowl/lint build",
         "dev": "tilt up",
-        "lint:oxlint": "bun run --workspaces lint:oxlint",
+        "lint:oxlint": "oxlint-fix .",
         "format:dprint": "dprint fmt",
         "lint:duplicate": "jscpd -c .jscpd.json",
         "typecheck": "bun run --workspaces typecheck",

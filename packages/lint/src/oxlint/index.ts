@@ -52,6 +52,9 @@ export {
 } from "./better-tailwindcss.ts"
 
 export interface OxlintConfigOptions {
+    // For a config below the root config, such as a monorepo workspace's: leaves out the options only
+    // the root config may set. They go in the root, from `createOxlintRootConfig()`.
+    nested?:         boolean
     // Gitignore-style patterns appended to the preset's `ignorePatterns` (relative to the config file).
     ignorePatterns?: string[]
 }
@@ -103,8 +106,24 @@ export function mergeOxlintConfigs(...configs: OxlintConfig[]): OxlintConfig {
     return Object.fromEntries(Object.entries(merged).filter(([, value]) => value !== undefined)) satisfies OxlintConfig
 }
 
+// The options oxlint reads only from the root config (`options.typeAware`). When a config below the
+// root sets one, `oxlint` stops with an error, and VS Code skips that config and lints its files with
+// oxlint's defaults. A monorepo puts this in its root config and builds the others with `nested: true`.
+export function createOxlintRootConfig(): OxlintConfig {
+    return { options: typeAwareConfig.options }
+}
+
+// `nested`: without the root-only options, see `createOxlintRootConfig`.
+function asNested(config: OxlintConfig, nested: boolean | undefined): OxlintConfig {
+    if (nested !== true) {
+        return config
+    }
+
+    return Object.fromEntries(Object.entries(config).filter(([key]) => key !== "options")) satisfies OxlintConfig
+}
+
 export function createOxlintConfig(options?: OxlintConfigOptions): OxlintConfig {
-    return mergeOxlintConfigs(
+    const config = mergeOxlintConfigs(
         typescriptConfig,
         typescriptEslintConfig,
         eslintCoreConfig,
@@ -120,13 +139,15 @@ export function createOxlintConfig(options?: OxlintConfigOptions): OxlintConfig 
         vitestConfig,
         { ignorePatterns: options?.ignorePatterns ?? [] },
     )
+
+    return asNested(config, options?.nested)
 }
 
 export function createOxlintReactConfig(options?: OxlintReactConfigOptions): OxlintConfig {
     const vendoredFiles = options?.vendoredFiles ?? []
     const vendored: OxlintOverride[] = vendoredFiles.length === 0 ? [] : [{ files: vendoredFiles, rules: vendoredRules }]
 
-    return mergeOxlintConfigs(
+    const config = mergeOxlintConfigs(
         typescriptConfig,
         typescriptEslintConfig,
         eslintCoreConfig,
@@ -152,4 +173,6 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
         createBetterTailwindcssConfig(options?.additionalTailwindRestrictions ?? [], options?.tailwindSettings),
         { ignorePatterns: options?.ignorePatterns ?? [], overrides: vendored },
     )
+
+    return asNested(config, options?.nested)
 }
