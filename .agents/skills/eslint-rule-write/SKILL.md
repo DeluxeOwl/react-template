@@ -1,202 +1,30 @@
 ---
 name: eslint-rule-write
-description: You must load this skill if asked to write eslint rules.
+description: Custom lint rules — our oxlint JS plugin rules (ESLint's rule API) in packages/lint/src/custom, tested with oxlint's RuleTester. Load before writing or changing one.
 ---
 
-Testing Custom ESLint Rules (ESLint v9 + typescript-eslint + Vitest)
+# Custom lint rules
 
-IMPORTANT: We use `@typescript-eslint/rule-tester` — NOT `eslint`'s built-in `RuleTester`.
-The built-in ESLint v9 `RuleTester` expects `RuleDefinition` from `@eslint/core`, which is
-incompatible with the `RuleModule` type returned by `ESLintUtils.RuleCreator` from
-`@typescript-eslint/utils`. Using the wrong one causes type errors about missing context
-methods (`getAncestors`, `getDeclaredVariables`, etc.).
+Our rules live in `packages/lint/src/custom/`, as `<rule>.ts` plus `<rule>.test.ts`. oxlint runs them as the JS plugin `custom` (`src/custom/oxlint-plugin.ts`), and `src/oxlint/custom.ts` sets their severities. They use oxlint's plugin API (`@oxlint/plugins`), which has ESLint's rule shape: `meta` plus `create(context)` returning visitors keyed by node type. The rules in `packages/lint/vendor/` are generated copies of upstream plugins; this skill is for ours.
 
-Writing a custom rule:
+## Steps
 
-1. Create the rule file (e.g., `my-rule.ts`) using `ESLintUtils.RuleCreator` from
-   `@typescript-eslint/utils`. This gives you typed `context`, `node`, and `messageId`.
-   See `no-margin-on-root-jsx.ts` for a full example.
-2. Export the rule as a named constant (e.g., `export const myRule = ...`).
+Run the commands in `packages/lint`.
 
-Writing the test file:
+1. **Dump the AST** of a snippet the rule must report and of one it must accept: `bun run dump-ast tsx '<div className="m-4" />'` (or `ts`; without a code argument it reads stdin, e.g. `< src/file.ts`). It prints the nodes your visitors receive, as oxlint parses them. Done when every node type and property the rule reads appears in a dump.
+2. **Write the rule** with `defineRule` from `@oxlint/plugins`, exported as `<name>Rule`. Register it in `src/custom/oxlint-plugin.ts` and give it a severity in `src/oxlint/custom.ts`. Start from the closest existing rule:
+   - comments, or the whole file: `no-bare-enable-directive.ts`
+   - options (`meta.schema`, `meta.defaultOptions`): `enforce-namespace-import.ts`
+   - autofix (`meta.fixable`, `fix`): `require-jsx-return-type.ts`
+   - variable lookups through scopes: `no-provider-with-static-children.ts`
+   - class names in JSX strings: `no-margin-on-root-jsx.ts`
+3. **Test it** in `<rule>.test.ts`: `createRuleTester("ts" | "tsx")` from `./rule-tester.ts`, then `ruleTester.run(name, rule, { valid, invalid })` at the top level of the file, under the same `oxlint-disable vitest-js/require-hook` comment as the other suites (RuleTester registers its own `describe`/`it`). Invalid cases give `messageId` (plus `data` or `line` where they matter) and `output` when the rule fixes. Done when every branch of the rule has a case, and every near miss has a valid case.
+4. **Check**: `bun run test`, `bun run lint:oxlint`, `bun run typecheck`. Then `bun run build`, because the other workspaces load the built plugin (`dist/custom/oxlint-plugin.js`), and `bun run lint:oxlint` from the repo root to see the rule on real code.
 
-1. Import `RuleTester` from `@typescript-eslint/rule-tester` (NOT from `eslint`).
-2. Import `afterAll`, `describe`, `it` from `vitest` and wire them up:
-   RuleTester.afterAll = afterAll
-   RuleTester.describe = describe
-   RuleTester.it = it
-3. Create a `RuleTester` instance with `languageOptions` (flat config style).
-4. Call `ruleTester.run()` at the TOP LEVEL of the file (or directly inside a `describe`).
-   Do NOT wrap it inside an `it()` block — `@typescript-eslint/rule-tester` generates
-   its own `describe`/`it` blocks internally, and nesting causes vitest errors.
-5. Provide `valid` (code that should pass) and `invalid` (code that should fail) test cases.
-   Use `messageId` strings that match the rule's `meta.messages` keys.
+## Where oxlint differs from ESLint
 
-Example:
-
-```ts
-/* oxlint-disable vitest-js/require-hook */
-import { RuleTester } from "@typescript-eslint/rule-tester"
-import { afterAll, describe, it } from "vitest"
-import tseslint from "typescript-eslint"
-import { myRule } from "./my-rule"
-
-RuleTester.afterAll = afterAll
-RuleTester.describe = describe
-RuleTester.it = it
-
-const ruleTester = new RuleTester({
-  languageOptions: {
-    parser: tseslint.parser,
-    parserOptions: { ecmaVersion: 2020, sourceType: "module", ecmaFeatures: { jsx: true } },
-  },
-})
-
-ruleTester.run("my-rule", myRule, {
-  valid: [{ code: `...` }],
-  invalid: [{ code: `...`, errors: [{ messageId: "myMessageId" }] }],
-})
-```
-
----
-
-## How to get the AST efficiently
-
-When writing custom ESLint rules you need to know the exact node types, property names,
-and tree structure that the parser produces for a given snippet of code. Instead of
-guessing, dump the AST first, then write your visitor against it.
-
-All commands below must be run from **`packages/eslint/`** (the package that has
-`typescript-eslint` installed).
-
-### 1 — Inline snippet (simplest)
-
-Pass the code as a CLI argument:
-
-```bash
-cd packages/eslint
-
-bun -e '
-import tseslint from "typescript-eslint";
-const code = process.argv[1];
-const { ast } = tseslint.parser.parseForESLint(code, {
-  ecmaVersion: 2020,
-  sourceType: "module",
-  ecmaFeatures: { jsx: true },
-});
-console.log(JSON.stringify(ast, (k, v) =>
-  k === "loc" || k === "range" || k === "tokens" || k === "comments" ? undefined : v
-, 2));
-' 'const x: string = "hello"'
-```
-
-The `JSON.stringify` replacer strips `loc`, `range`, `tokens`, and `comments` so you
-only see the structural nodes — much easier to read.
-
-#### Example output
-
-```json
-{
-    "type": "Program",
-    "body": [
-        {
-            "type": "VariableDeclaration",
-            "declarations": [
-                {
-                    "type": "VariableDeclarator",
-                    "id": {
-                        "type": "Identifier",
-                        "name": "x",
-                        "typeAnnotation": {
-                            "type": "TSTypeAnnotation",
-                            "typeAnnotation": { "type": "TSStringKeyword" }
-                        }
-                    },
-                    "init": { "type": "Literal", "value": "hello" }
-                }
-            ],
-            "kind": "const"
-        }
-    ],
-    "sourceType": "module"
-}
-```
-
-### 2 — JSX snippet
-
-Same command, just change the argument. Use single-quotes around the argument so the
-shell doesn't eat the JSX angle brackets:
-
-```bash
-bun -e '
-import tseslint from "typescript-eslint";
-const code = process.argv[1];
-const { ast } = tseslint.parser.parseForESLint(code, {
-  ecmaVersion: 2020,
-  sourceType: "module",
-  ecmaFeatures: { jsx: true },
-});
-console.log(JSON.stringify(ast, (k, v) =>
-  k === "loc" || k === "range" || k === "tokens" || k === "comments" ? undefined : v
-, 2));
-' 'export const Comp = () => <div className="m-4"><span>hi</span></div>'
-```
-
-Look at the output to find the node types you'll target in your rule — for example
-`JSXOpeningElement`, `JSXAttribute`, `JSXIdentifier`, etc.
-
-### 3 — Multiline code via stdin
-
-For longer snippets, pipe them in:
-
-```bash
-echo 'function greet(name: string): JSX.Element {
-  return (
-    <div className="p-4">
-      <h1>Hello {name}</h1>
-    </div>
-  )
-}' | bun -e '
-import tseslint from "typescript-eslint";
-import { readFileSync } from "node:fs";
-const code = readFileSync(0, "utf8");
-const { ast } = tseslint.parser.parseForESLint(code, {
-  ecmaVersion: 2020,
-  sourceType: "module",
-  ecmaFeatures: { jsx: true },
-});
-console.log(JSON.stringify(ast, (k, v) =>
-  k === "loc" || k === "range" || k === "tokens" || k === "comments" ? undefined : v
-, 2));
-'
-```
-
-### 4 — Parse an existing file
-
-Point it at any `.ts` / `.tsx` file in the repo:
-
-```bash
-bun -e '
-import tseslint from "typescript-eslint";
-import { readFileSync } from "node:fs";
-const code = readFileSync(process.argv[1], "utf8");
-const { ast } = tseslint.parser.parseForESLint(code, {
-  ecmaVersion: 2020,
-  sourceType: "module",
-  ecmaFeatures: { jsx: true },
-});
-console.log(JSON.stringify(ast, (k, v) =>
-  k === "loc" || k === "range" || k === "tokens" || k === "comments" ? undefined : v
-, 2));
-' custom/discriminated-union.ts
-```
-
-### Tips
-
-- **Pipe into `less` or `head`** for large outputs: append `| head -100` or `| less`.
-- **Search for a node type** quickly: pipe into `grep -i "JSXAttribute"`.
-- The node `type` strings (e.g. `"JSXOpeningElement"`, `"TSTypeAnnotation"`) map
-  directly to `TSESTree.AST_NODE_TYPES.*` and to the visitor keys you use in your
-  rule's `create()` method.
-- Always dump the AST for **both** your valid and invalid test cases before writing the
-  rule — it removes all guesswork about the tree shape.
+- Node types come from `ESTree` in `@oxlint/plugins`: `ESTree.Node` is the union of all nodes. The package's top-level `Node` is only a span, which is what `report` takes.
+- JSX strings keep their HTML entities: `className="m-&#45;4"` arrives as `m-&#45;4` (ESLint's parser gave `m--4`). Decode with `decodeJsxEntities` before matching, as `no-margin-on-root-jsx.ts` does. A string literal's `raw` can be `null`.
+- oxlint validates options against `meta.schema` and merges `meta.defaultOptions` before `create` runs, but `context.options` is typed as plain JSON: narrow it with a type guard.
+- Rules see syntax only: no type checker, no parser services.
+- RuleTester refuses to run on Bun. `bun run test` starts vitest on Node through `vitest-on-node.ts`, and `dump-ast` runs on Node too.

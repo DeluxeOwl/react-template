@@ -3,8 +3,8 @@
 A **guardrails-as-code** monorepo template for full-stack TypeScript apps. The interesting
 part isn't the stack — it's that the architecture is _enforced_, not just documented:
 errors-as-values, view-only React components, private-constructor domain entities, and a
-shared oRPC contract are all held in place by a four-linter gate (oxlint + ESLint +
-ast-grep + dprint) that runs on every push and in CI.
+shared oRPC contract are all held in place by a three-linter gate (oxlint + ast-grep +
+dprint) that runs on every push and in CI.
 
 ```bash
 bun create github.com/DeluxeOwl/react-template <your-app>
@@ -93,7 +93,6 @@ Run from the repo root (inside `devbox shell`).
 | `bun run typecheck`        | `tsc --noEmit` across all workspaces                |
 | `bun run test`             | All tests (Vitest, sequential across workspaces)    |
 | `bun run lint:oxlint`      | oxlint: most rules, and TS/JS formatting            |
-| `bun run lint:eslint`      | ESLint: the rules oxlint can't run (type-checked)   |
 | `bun run lint:sg`          | ast-grep structural rules                           |
 | `bun run lint:sg:suppress` | Add ast-grep directives to vendored UI              |
 | `bun run lint:sg:check`    | Check vendored UI for missing or unused directives  |
@@ -135,8 +134,9 @@ package appears under `packages/`.
 
 ## Using `@deluxeowl/lint` in another project
 
-The lint config (ESLint factories + custom rules, oxlint presets, ast-grep rules, dprint
-config) is published to **GitHub Packages** so pet projects share the exact same rules.
+The lint config (oxlint presets with our custom rules and the vendored upstream rules,
+ast-grep rules, dprint config) is published to **GitHub Packages** so pet projects share
+the exact same rules.
 
 ```jsonc
 // .npmrc (or bunfig.toml scopes)
@@ -145,13 +145,7 @@ config) is published to **GitHub Packages** so pet projects share the exact same
 ```
 
 ```bash
-bun add -d @deluxeowl/lint eslint oxlint oxlint-tsgolint typescript
-```
-
-```ts
-// eslint.config.ts
-import createConfig from "@deluxeowl/lint"
-export default createConfig(import.meta.dirname)
+bun add -d @deluxeowl/lint oxlint oxlint-tsgolint typescript
 ```
 
 ```ts
@@ -160,22 +154,13 @@ import { createOxlintConfig } from "@deluxeowl/lint/oxlint"
 export default createOxlintConfig()
 ```
 
+Lint and format with `oxlint-fix .` (a bin of `@deluxeowl/lint`). It repeats `oxlint --fix`
+until the files stop changing; a single `oxlint --fix` can leave formatting half-done.
+
 ### React projects and vendored UI
 
-The React factory accepts the base factory options, such as `allowDefaultProject`.
-It also accepts explicit paths for vendored components:
-
-```ts
-import createReactConfig from "@deluxeowl/lint/react"
-
-export default createReactConfig(import.meta.dirname, {
-    vendoredFiles: ["src/components/ui/**", "src/components/hooks/**"],
-})
-```
-
-The vendor override relaxes structural rules only for those files.
-Type-safety rules, explicit return types, and magic-number rules remain enabled.
-The oxlint React preset takes the same opt-in. `defaultVendoredFiles` covers the standard shadcn/ReUI directories:
+React projects use `createOxlintReactConfig()`.
+It accepts explicit paths for vendored components (shadcn, ReUI), and `defaultVendoredFiles` covers their standard directories:
 
 ```ts
 // oxlint.config.ts
@@ -183,26 +168,21 @@ import { defaultVendoredFiles, createOxlintReactConfig } from "@deluxeowl/lint/o
 export default createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })
 ```
 
+The vendor override relaxes structural rules only for those files.
+Type-safety rules, explicit return types, and magic-number rules remain enabled.
 Projects without vendored UI call `createOxlintReactConfig()` without options.
-Both React presets allow Node imports in scripts, configuration files, and tests, but not browser source.
-They reject the `@phosphor-icons/react` barrel. Direct icon imports remain valid.
+The React preset allows Node imports in scripts, configuration files, and tests, but not browser source.
+It rejects the `@phosphor-icons/react` barrel. Direct icon imports remain valid.
 
 ### Tailwind
 
-The better-tailwindcss rules run in oxlint.
-`enforce-canonical-classes` stays in the ESLint React preset: its fixes depend on the classes that one process compiled before.
-Both tools must find the stylesheet that imports Tailwind:
+The better-tailwindcss rules must find the stylesheet that imports Tailwind:
 
 ```ts
 // oxlint.config.ts
 export default createOxlintReactConfig({
     tailwindSettings: { cwd: import.meta.dirname, entryPoint: "index.css" },
 })
-```
-
-```ts
-// eslint.config.ts, next to the React preset
-settings: { "better-tailwindcss": { entryPoint: "index.css" } },
 ```
 
 oxlint resolves `entryPoint` from `cwd`.
