@@ -9,8 +9,8 @@
         "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.server.json",
         "lint:oxlint": "oxlint-fix .",
         "lint:eslint": "eslint --fix .",
-        "format": "eslint --fix .",
-        "lint": "eslint --fix . && oxlint --fix .",
+        "format": "oxlint-fix .",
+        "lint": "eslint --fix . && oxlint-fix .",
         "preview": "vite preview",
         "test": "vitest --run --passWithNoTests --reporter=tree"
     },
