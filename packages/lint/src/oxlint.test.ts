@@ -14,9 +14,6 @@ const scanBinary = path.resolve(import.meta.dirname, "../../../node_modules/.bin
 const presetsModule = path.resolve(import.meta.dirname, "oxlint/index.ts")
 // Tailwind and the app's stylesheet resolve from here; a fixture's temp dir has neither.
 const webDir = path.resolve(import.meta.dirname, "../../../apps/web")
-// runOxlintFix runs oxlint several times (one round of fixes each); slow on a busy machine
-const fixLoopTimeout = 60 * 1000
-
 // `configExpression` is evaluated inside the fixture's `oxlint.config.ts`, e.g. `createOxlintReactConfig()`.
 function fixture(configExpression: string): string {
     const dir = mkdtempSync(path.join(tmpdir(), "lint-oxlint-"))
@@ -263,7 +260,7 @@ describe("shared oxlint React presets", () => {
 
     describe("given formatting that takes two rounds of fixes", () => {
         describe("when fixing with oxlint --fix once, and with runOxlintFix", () => {
-            it("then only runOxlintFix reaches the formatted result, like eslint --fix", { timeout: fixLoopTimeout }, () => {
+            it("then only runOxlintFix reaches the formatted result, like eslint --fix", () => {
                 expect.hasAssertions()
 
                 // GIVEN
@@ -296,7 +293,7 @@ describe("shared oxlint React presets", () => {
 
     describe("given two rules that undo each other's fixes in four rounds", () => {
         describe("when fixing with runOxlintFix", () => {
-            it("then it stops at the first text the file already had, and warns", { timeout: fixLoopTimeout }, () => {
+            it("then it stops at the first text the file already had, and warns", () => {
                 expect.hasAssertions()
 
                 // GIVEN
@@ -330,7 +327,7 @@ describe("shared oxlint React presets", () => {
 
     describe("given React projects with and without shadow-plugin", () => {
         describe("when adding smooth-shadow restrictions", () => {
-            it("then it keeps the color and RTL restrictions and restricts shadows only when opted in", { timeout: fixLoopTimeout }, () => {
+            it("then it keeps the color and RTL restrictions and restricts shadows only when opted in", () => {
                 expect.hasAssertions()
 
                 // GIVEN
