@@ -194,7 +194,6 @@ export const requireJSXReturnTypeRule = defineRule({
             "ArrowFunctionExpression": collect,
             "FunctionDeclaration":     collect,
             "FunctionExpression":      collect,
-            // oxlint-disable-next-line typescript-eslint-js/naming-convention
             "Program:exit":            () => {
                 for (const node of candidates) {
                     if (jsxReturning.has(node)) {

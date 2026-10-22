@@ -31,7 +31,6 @@ export const vendoredRules = {
     "custom/no-object-spread-in-component":                      "off",
     "custom/no-switch-in-component":                             "off",
     "custom/no-ternary-assignment-in-component":                 "off",
-    "custom/prefer-discriminated-union":                         "off",
     "custom/use-abort-controller-for-multiple-listeners":        "off",
     "eslint-js/no-restricted-syntax":                            "off",
     "jsx-a11y/anchor-has-content":                               "off",

@@ -288,7 +288,6 @@ export const noLogicInMapCallbackRule = defineRule({
         const calls = new Set<ESTree.Node>()
 
         return {
-            // oxlint-disable-next-line typescript-eslint-js/naming-convention
             "Program:exit": () => {
                 for (const node of [...calls].toSorted((a, b) => a.range[0] - b.range[0])) {
                     context.report({ messageId: "logicInMap", node })

@@ -137,7 +137,6 @@ export const useAbortControllerForMultipleListenersRule = defineRule({
                     addStatementsAround(node, withListener)
                 }
             },
-            // oxlint-disable-next-line typescript-eslint-js/naming-convention
             "Program:exit": () => {
                 const reported = [...withListener].filter((statement) => isReported(statement))
 

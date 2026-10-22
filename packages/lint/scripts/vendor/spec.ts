@@ -49,7 +49,6 @@ interface RuleFilesLayout {
 
 export type Layout = BundleLayout | PackagesLayout | PluginLayout | RuleFilesLayout
 
-// oxlint-disable-next-line custom/prefer-discriminated-union -- `layout` is the discriminated union; the optional fields apply to every layout
 export interface PluginSpec {
     // packages/lint/vendor/<dir>
     dir:              string

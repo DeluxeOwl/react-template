@@ -2,7 +2,6 @@ import { definePlugin } from "@oxlint/plugins"
 
 import { preferStateClassRule } from "./prefer-state-class.ts"
 import { noMarginOnRootJSXRule } from "./no-margin-on-root-jsx.ts"
-import { preferDiscriminatedUnionRule } from "./discriminated-union.ts"
 import { requireJSXReturnTypeRule } from "./require-jsx-return-type.ts"
 import { noBareEnableDirectiveRule } from "./no-bare-enable-directive.ts"
 import { enforceNamespaceImportRule } from "./enforce-namespace-import.ts"
@@ -40,7 +39,6 @@ export default definePlugin({
         "no-provider-with-static-children":            noProviderWithStaticChildrenRule,
         "no-switch-in-component":                      noSwitchInComponentRule,
         "no-ternary-assignment-in-component":          noTernaryAssignmentInComponentRule,
-        "prefer-discriminated-union":                  preferDiscriminatedUnionRule,
         "prefer-state-class":                          preferStateClassRule,
         "require-jsx-return-type":                     requireJSXReturnTypeRule,
         "use-abort-controller-for-multiple-listeners": useAbortControllerForMultipleListenersRule,

@@ -114,7 +114,7 @@
     },
     "packages/lint": {
       "name": "@deluxeowl/lint",
-      "version": "0.7.1",
+      "version": "0.8.0",
       "bin": {
         "oxlint-fix": "./bin/oxlint-fix.js",
       },

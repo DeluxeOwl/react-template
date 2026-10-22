@@ -254,6 +254,64 @@ describe("shared oxlint React presets", () => {
         })
     })
 
+    describe("given handler maps keyed by names that require quotes", () => {
+        describe("when applying the base and React presets", () => {
+            it("then it allows quoted arrow handlers, function expressions, and methods", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const base = fixture("createOxlintConfig()")
+                const react = fixture("createOxlintReactConfig()")
+                const source = `export const handlers = {
+    "account/closed": function (closed: string): string { return closed },
+    "account/opened": async (opened: string): Promise<string> => Promise.resolve(opened),
+    "account/suspended"(suspended: string): string { return suspended },
+}
+`
+
+                // WHEN
+                const baseResult = lint(base, { "src/handlers.ts": source })
+                const reactResult = lint(react, { "src/handlers.ts": source })
+
+                // THEN
+                const { diagnostics: baseDiagnostics } = JSON.parse(baseResult.stdout) as { diagnostics: JsonDiagnostic[] }
+                const { diagnostics: reactDiagnostics } = JSON.parse(reactResult.stdout) as { diagnostics: JsonDiagnostic[] }
+
+                expect(baseDiagnostics.filter((diagnostic) => diagnostic.code === "typescript-eslint-js(naming-convention)")).toStrictEqual([])
+                expect(reactDiagnostics.filter((diagnostic) => diagnostic.code === "typescript-eslint-js(naming-convention)")).toStrictEqual([])
+            })
+
+            it("then it still checks ordinary method names and quoted handlers' parameters", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const dir = fixture("createOxlintConfig()")
+                const source = `export const handlers = {
+    "account/opened": (Opened: string): string => Opened,
+    account_closed: (): void => {},
+    "account_suspended"(): void {},
+}
+`
+
+                // WHEN
+                const { stdout } = lint(dir, { "src/handlers.ts": source })
+
+                // THEN
+                const { diagnostics } = JSON.parse(stdout) as { diagnostics: JsonDiagnostic[] }
+                const messages = diagnostics
+                    .filter((diagnostic) => diagnostic.code === "typescript-eslint-js(naming-convention)")
+                    .map((diagnostic) => diagnostic.message)
+
+                expect(messages).toHaveLength(3)
+                expect(messages).toStrictEqual(expect.arrayContaining([
+                    expect.stringContaining("Opened"),
+                    expect.stringContaining("account_closed"),
+                    expect.stringContaining("account_suspended"),
+                ]))
+            })
+        })
+    })
+
     describe("given prefix- and suffix-named CQRS handlers", () => {
         describe("when applying the base preset", () => {
             it("then it infers handler errors without relaxing other exported functions", () => {

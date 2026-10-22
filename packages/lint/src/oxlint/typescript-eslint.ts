@@ -5,8 +5,8 @@ import { fileURLToPath } from "node:url"
 // typescript-eslint rules run by oxlint from our vendored copy of @typescript-eslint/eslint-plugin
 // 8.59.1 (packages/lint/vendor/typescript-eslint, generated — see its README), under the alias
 // `typescript-eslint-js` (oxlint reserves `@typescript-eslint`). Options and the two file exemptions
-// are exactly what the ESLint preset resolved to; parity with ESLint (diagnostics and byte-identical
-// --fix output) is recorded in docs/oxlint-migration.md. oxlint's native counterparts differ in
+// originated in the ESLint preset; migration parity (diagnostics and byte-identical --fix output)
+// is recorded in docs/oxlint-migration.md. oxlint's native counterparts differ in
 // spans, fixes and coverage, so the ones our categories switch on are turned off here.
 const typescriptEslintPlugin = fileURLToPath(new URL("../../vendor/typescript-eslint/index.js", import.meta.url))
 
@@ -84,6 +84,12 @@ export const typescriptEslintConfig = {
             {
                 format:   null,
                 selector: "property",
+            },
+            // Handler maps and visitor keys are methods when their values are functions, not properties.
+            {
+                format:    null,
+                modifiers: ["requiresQuotes"],
+                selector:  "objectLiteralMethod",
             },
             // 4. Global Default: Apply to all other identifiers (variables, functions, classes, etc.).
             // Enforcing camelCase and PascalCase automatically rejects snake_case and UPPER_SNAKE_CASE.

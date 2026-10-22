@@ -79,7 +79,6 @@ export function createViewOnlyRule(spec: ViewOnlyRuleSpec): Rule {
                 "JSXFragment": (node) => {
                     addComponentsAround(node, components)
                 },
-                // oxlint-disable-next-line typescript-eslint-js/naming-convention
                 "Program:exit": () => {
                     const found = [...candidates()].filter((node) => isInside(node, components))
 
