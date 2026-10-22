@@ -1,6 +1,6 @@
 {
     "name": "@deluxeowl/lint",
-    "version": "0.8.0",
+    "version": "0.9.0",
     "type": "module",
     "private": false,
     "license": "UNLICENSED",
@@ -39,6 +39,7 @@
         "@babel/parser": "^7.29.0",
         "@eslint/css-tree": "^4.0.3",
         "@oxlint/plugins": "1.86.0",
+        "@praha/byethrow-oxlint": "^0.12.0",
         "@typescript-eslint/scope-manager": "^8.59.1",
         "@typescript-eslint/types": "^8.59.1",
         "@typescript-eslint/typescript-estree": "^8.59.1",

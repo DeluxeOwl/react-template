@@ -313,7 +313,7 @@ export function runRepositoryTests(repoTests: SetupRepositoryTests): void {
                             )
                         })
 
-                        const t = await Result.unwrap(result)
+                        const t = expectResultSuccess(await result)
 
                         // THEN
                         expect(t).toBeInstanceOf(Todo)

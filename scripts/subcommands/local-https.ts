@@ -222,7 +222,7 @@ function spawnManagedProcess(params: {
     })
 }
 
-async function startCaddy(caddyfile: string): Promise<Result.Result<ManagedProcess, ProcessStartError>> {
+async function startCaddy(caddyfile: string): Result.ResultAsync<ManagedProcess, ProcessStartError> {
     const tmpDir = mkdtempSync(path.join(tmpdir(), "caddy-"))
     const tmpPath = path.join(tmpDir, "Caddyfile")
     await writeFile(tmpPath, caddyfile)

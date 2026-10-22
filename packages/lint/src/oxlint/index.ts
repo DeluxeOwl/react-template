@@ -5,6 +5,7 @@ import { vitestConfig } from "./vitest.ts"
 import { unicornConfig } from "./unicorn.ts"
 import { importXConfig } from "./import-x.ts"
 import { vendoredRules } from "./vendored.ts"
+import { byethrowConfig } from "./byethrow.ts"
 import { stylisticConfig } from "./stylistic.ts"
 import { importZodConfig } from "./import-zod.ts"
 import { typeAwareConfig } from "./type-aware.ts"
@@ -30,6 +31,7 @@ export { reactConfig } from "./react.ts"
 export { vitestConfig } from "./vitest.ts"
 export { unicornConfig } from "./unicorn.ts"
 export { importXConfig } from "./import-x.ts"
+export { byethrowConfig } from "./byethrow.ts"
 export { stylisticConfig } from "./stylistic.ts"
 export { importZodConfig } from "./import-zod.ts"
 export { typeAwareConfig } from "./type-aware.ts"
@@ -139,6 +141,7 @@ export function createOxlintConfig(options?: OxlintConfigOptions): OxlintConfig 
         typeAwareConfig,
         sweepitConfig,
         unicornConfig,
+        byethrowConfig,
         vitestConfig,
         { ignorePatterns: options?.ignorePatterns ?? [] },
     )
@@ -166,6 +169,7 @@ export function createOxlintReactConfig(options?: OxlintReactConfigOptions): Oxl
         sweepitConfig,
         sweepitReactConfig,
         unicornConfig,
+        byethrowConfig,
         vitestConfig,
         tanstackQueryConfig,
         youMightNotNeedAnEffectConfig,

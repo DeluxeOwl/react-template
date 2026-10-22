@@ -25,7 +25,7 @@ export function expectResultFailureInstance<T, E extends Error>(
 }
 
 export async function expectResultSuccessAsync<T, E>(
-    result: Promise<Result.Result<T, E>>,
+    result: Result.ResultAsync<T, E>,
 ): Promise<T> {
     await expect(Result.unwrap(result)).resolves.not.toThrow()
 

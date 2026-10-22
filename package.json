@@ -11,7 +11,7 @@
         "catalog": {
             "zod": "^4.4.3",
             "ts-pattern": "^5.9.0",
-            "@praha/byethrow": "^0.11.1",
+            "@praha/byethrow": "^0.12.0",
             "@praha/error-factory": "^1.4.1",
             "@orpc/contract": "^1.14.1",
             "@orpc/server": "^1.14.1",
@@ -29,7 +29,7 @@
     "type": "module",
     "devDependencies": {
         "@deluxeowl/lint": "workspace:*",
-        "@praha/byethrow-docs": "^0.11.1",
+        "@praha/byethrow-docs": "^0.12.0",
         "@total-typescript/ts-reset": "^0.6.1",
         "dprint": "^0.54.0",
         "jscpd": "^4.0.9",

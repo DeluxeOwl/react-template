@@ -67,6 +67,24 @@ function restrictedClassMessages(stdout: string): string[] {
         .map((diagnostic) => diagnostic.message)
 }
 
+function byethrowRuleNames(stdout: string): string[] {
+    const { diagnostics } = JSON.parse(stdout) as { diagnostics: JsonDiagnostic[] }
+
+    return diagnostics
+        .filter((diagnostic) => diagnostic.code.startsWith("byethrow("))
+        .map((diagnostic) => diagnostic.code)
+        .toSorted()
+}
+
+function byethrowMatcherFiles(stdout: string): string[] {
+    const { diagnostics } = JSON.parse(stdout) as { diagnostics: { code: string, filename: string }[] }
+
+    return diagnostics
+        .filter((diagnostic) => diagnostic.code === "byethrow(prefer-result-matchers)")
+        .map((diagnostic) => diagnostic.filename)
+        .toSorted()
+}
+
 function namingConventionMessages(stdout: string): string[] {
     const { diagnostics } = JSON.parse(stdout) as { diagnostics: JsonDiagnostic[] }
 
@@ -314,6 +332,107 @@ describe("shared oxlint React presets", () => {
                     expect.stringContaining("account_suspended"),
                 ]))
                 expect(reactMessages).toStrictEqual(baseMessages)
+            })
+        })
+    })
+
+    describe("given byethrow usage in TypeScript code", () => {
+        describe("when applying the base and React presets", () => {
+            it("then it reports every recommended non-test rule in both presets", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const base = fixture("createOxlintConfig()")
+                const react = fixture("createOxlintReactConfig()")
+                const source = `import { R } from "@praha/byethrow"
+
+export type Ambiguous = R.Result<unknown, Error>
+export type Async = Promise<R.Result<string, never>>
+export type MaybeAsync = R.Result<string, never> | R.ResultAsync<string, never>
+export const isNotFailure = (result: R.Result<string, never>): boolean => !R.isFailure(result)
+export const throwing = R.map(() => { throw new Error("failure") })
+export const catching = R.map(() => { try { return 1 } catch { return 0 } })
+`
+
+                // WHEN
+                const baseRules = byethrowRuleNames(lint(base, { "src/result.ts": source }).stdout)
+                const reactRules = byethrowRuleNames(lint(react, { "src/result.ts": source }).stdout)
+
+                // THEN
+                expect(baseRules).toStrictEqual([
+                    "byethrow(consistent-namespace)",
+                    "byethrow(no-ambiguous-error-type)",
+                    "byethrow(no-ambiguous-success-type)",
+                    "byethrow(no-negated-type-guards)",
+                    "byethrow(no-throw-in-callback)",
+                    "byethrow(no-try-catch-in-callback)",
+                    "byethrow(prefer-result-async)",
+                    "byethrow(prefer-result-maybe-async)",
+                ])
+                expect(reactRules).toStrictEqual(baseRules)
+            })
+
+            it("then it accepts concrete Result types and callbacks that return errors", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const base = fixture("createOxlintConfig()")
+                const react = fixture("createOxlintReactConfig()")
+                const source = `import { Result } from "@praha/byethrow"
+
+interface ReadError { message: string }
+export type Read = Result.Result<string, ReadError>
+export type AsyncRead = Result.ResultAsync<string, ReadError>
+export type MaybeAsyncRead = Result.ResultMaybeAsync<string, ReadError>
+export const isFailure = (result: Read): boolean => Result.isFailure(result)
+export const fail = Result.andThen(() => Result.fail({ message: "failure" }))
+`
+
+                // WHEN
+                const baseRules = byethrowRuleNames(lint(base, { "src/result.ts": source }).stdout)
+                const reactRules = byethrowRuleNames(lint(react, { "src/result.ts": source }).stdout)
+
+                // THEN
+                expect(baseRules).toStrictEqual([])
+                expect(reactRules).toStrictEqual([])
+            })
+        })
+    })
+
+    describe("given Result unwrapping in tests and application code", () => {
+        describe("when applying the base and React presets", () => {
+            it("then it prefers Result matchers only in the recommended test file patterns", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const base = fixture("createOxlintConfig()")
+                const react = fixture("createOxlintReactConfig()")
+                const source = `import { Result } from "@praha/byethrow"
+
+export const value = Result.unwrap(Result.succeed(1))
+`
+                const files = {
+                    "src/__tests__/result.ts":    source,
+                    "src/result.test-d.ts":       source,
+                    "src/result.test.ts":         source,
+                    "src/result.test.tsx":        source,
+                    "src/result.ts":              source,
+                    "src/result.tsx":             source,
+                    "src/test-helpers/result.ts": source,
+                }
+
+                // WHEN
+                const baseFiles = byethrowMatcherFiles(lint(base, files).stdout)
+                const reactFiles = byethrowMatcherFiles(lint(react, files).stdout)
+
+                // THEN
+                expect(baseFiles).toStrictEqual([
+                    "src/__tests__/result.ts",
+                    "src/result.test-d.ts",
+                    "src/result.test.ts",
+                    "src/result.test.tsx",
+                ])
+                expect(reactFiles).toStrictEqual(baseFiles)
             })
         })
     })
