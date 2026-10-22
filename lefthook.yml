@@ -1,3 +1,6 @@
+colors: false
+no_tty: true
+
 commit-msg:
   commands:
     "lint commit message":
@@ -15,8 +18,11 @@ pre-push:
     - name: format/dprint
       run: bun run format:dprint
     - name: lint/duplicate-code
+      # jscpd's colors dependency ignores NO_COLOR.
+      env:
+        FORCE_COLOR: "0"
       run: bun run lint:duplicate
     - name: typecheck
       run: bun run typecheck
     - name: deadcode
-      run: bun run deadcode
+      run: bun run deadcode --no-progress
