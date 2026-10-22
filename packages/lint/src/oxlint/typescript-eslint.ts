@@ -85,7 +85,7 @@ export const typescriptEslintConfig = {
                 format:   null,
                 selector: "property",
             },
-            // Handler maps and visitor keys are methods when their values are functions, not properties.
+            // 3b. Methods: exempt keys that require quotes. Function-valued handlers and visitors are not properties.
             {
                 format:    null,
                 modifiers: ["requiresQuotes"],

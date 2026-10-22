@@ -67,6 +67,14 @@ function restrictedClassMessages(stdout: string): string[] {
         .map((diagnostic) => diagnostic.message)
 }
 
+function namingConventionMessages(stdout: string): string[] {
+    const { diagnostics } = JSON.parse(stdout) as { diagnostics: JsonDiagnostic[] }
+
+    return diagnostics
+        .filter((diagnostic) => diagnostic.code === "typescript-eslint-js(naming-convention)")
+        .map((diagnostic) => diagnostic.message)
+}
+
 describe("shared oxlint React presets", () => {
     describe("given Node imports in tooling, tests, and browser code", () => {
         describe("when applying the React preset", () => {
@@ -254,7 +262,7 @@ describe("shared oxlint React presets", () => {
         })
     })
 
-    describe("given handler maps keyed by names that require quotes", () => {
+    describe("given handler maps with quoted event keys", () => {
         describe("when applying the base and React presets", () => {
             it("then it allows quoted arrow handlers, function expressions, and methods", () => {
                 expect.hasAssertions()
@@ -274,18 +282,16 @@ describe("shared oxlint React presets", () => {
                 const reactResult = lint(react, { "src/handlers.ts": source })
 
                 // THEN
-                const { diagnostics: baseDiagnostics } = JSON.parse(baseResult.stdout) as { diagnostics: JsonDiagnostic[] }
-                const { diagnostics: reactDiagnostics } = JSON.parse(reactResult.stdout) as { diagnostics: JsonDiagnostic[] }
-
-                expect(baseDiagnostics.filter((diagnostic) => diagnostic.code === "typescript-eslint-js(naming-convention)")).toStrictEqual([])
-                expect(reactDiagnostics.filter((diagnostic) => diagnostic.code === "typescript-eslint-js(naming-convention)")).toStrictEqual([])
+                expect(namingConventionMessages(baseResult.stdout)).toStrictEqual([])
+                expect(namingConventionMessages(reactResult.stdout)).toStrictEqual([])
             })
 
             it("then it still checks ordinary method names and quoted handlers' parameters", () => {
                 expect.hasAssertions()
 
                 // GIVEN
-                const dir = fixture("createOxlintConfig()")
+                const base = fixture("createOxlintConfig()")
+                const react = fixture("createOxlintReactConfig()")
                 const source = `export const handlers = {
     "account/opened": (Opened: string): string => Opened,
     account_closed: (): void => {},
@@ -294,20 +300,20 @@ describe("shared oxlint React presets", () => {
 `
 
                 // WHEN
-                const { stdout } = lint(dir, { "src/handlers.ts": source })
+                const baseResult = lint(base, { "src/handlers.ts": source })
+                const reactResult = lint(react, { "src/handlers.ts": source })
 
                 // THEN
-                const { diagnostics } = JSON.parse(stdout) as { diagnostics: JsonDiagnostic[] }
-                const messages = diagnostics
-                    .filter((diagnostic) => diagnostic.code === "typescript-eslint-js(naming-convention)")
-                    .map((diagnostic) => diagnostic.message)
+                const baseMessages = namingConventionMessages(baseResult.stdout)
+                const reactMessages = namingConventionMessages(reactResult.stdout)
 
-                expect(messages).toHaveLength(3)
-                expect(messages).toStrictEqual(expect.arrayContaining([
+                expect(baseMessages).toHaveLength(3)
+                expect(baseMessages).toStrictEqual(expect.arrayContaining([
                     expect.stringContaining("Opened"),
                     expect.stringContaining("account_closed"),
                     expect.stringContaining("account_suspended"),
                 ]))
+                expect(reactMessages).toStrictEqual(baseMessages)
             })
         })
     })
