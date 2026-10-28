@@ -84,13 +84,15 @@
     "peerDependencies": {
         "oxlint": "~1.86.0",
         "oxlint-tsgolint": ">=7.0.2003",
-        "typescript": ">=5.9"
+        "typescript": ">=5.9 <7"
     },
     "devDependencies": {
         "@types/node": "^25.6.0",
         "esbuild": "0.25.12",
         "vitest": "^4.1.5",
-        "zshy": "^0.7.3"
+        "zshy": "^0.7.3",
+        "@typescript/native": "npm:typescript@^7.0.2",
+        "typescript": "npm:@typescript/typescript6@^6.0.2"
     },
     "exports": {
         "./oxlint": {

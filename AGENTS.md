@@ -252,6 +252,14 @@ Rules:
 ## Tooling Notes
 
 - **Package manager**: Bun 1.3.3. Use `bun add`, never `npm install`.
+- **TypeScript is installed twice, on purpose**: the `typescript` catalog entry is TypeScript 7 (the
+  native compiler, `tsc`), and two workspaces additionally alias `typescript` to
+  `npm:@typescript/typescript6`, the package Microsoft publishes for this. TypeScript 7.0 ships
+  _no_ programmatic compiler API, and `packages/lint`'s build (zshy) and the vendored oxlint plugin
+  bundles call that API at runtime; `scripts/subcommands/find-duplicate-functions.ts` parses with it
+  too. Those workspaces still get TypeScript 7's `tsc` from their own `@typescript/native`
+  devDependency. Do not "deduplicate" this: without the alias the build fails with
+  `Cannot read properties of undefined (reading 'readFile')`.
 - **Dev environment**: Nix/devbox (`devbox shell` before any commands).
 - **Git hooks**: Lefthook runs `lint:all` on pre-push and commit-lint on commit-msg.
 - **Commit messages** must be lowercase: `feat: add todo pagination`, not `Feat: Add Todo Pagination`.
