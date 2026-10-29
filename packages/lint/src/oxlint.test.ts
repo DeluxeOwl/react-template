@@ -85,6 +85,27 @@ function byethrowMatcherFiles(stdout: string): string[] {
         .toSorted()
 }
 
+const BannedStateMessage = "This codebase bans useState, prefer useReducer and thinking in exhaustive state machines."
+
+interface BannedStateDiagnostic {
+    filename: string
+    message:  string
+    severity: string
+}
+
+function bannedStateDiagnostics(stdout: string): BannedStateDiagnostic[] {
+    const { diagnostics } = JSON.parse(stdout) as { diagnostics: (BannedStateDiagnostic & JsonDiagnostic)[] }
+
+    return diagnostics
+        .filter((diagnostic) => diagnostic.code === "custom(no-use-state)")
+        .map(({
+            filename, message, severity,
+        }) => ({
+            filename, message, severity,
+        }))
+        .toSorted((first, second) => first.filename.localeCompare(second.filename))
+}
+
 function namingConventionMessages(stdout: string): string[] {
     const { diagnostics } = JSON.parse(stdout) as { diagnostics: JsonDiagnostic[] }
 
@@ -94,6 +115,75 @@ function namingConventionMessages(stdout: string): string[] {
 }
 
 describe("shared oxlint React presets", () => {
+    describe("given useState references in .ts and .tsx files", () => {
+        describe("when applying the base and React presets", () => {
+            it("then it bans useState in both .ts and .tsx files with the required error", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const base = fixture("createOxlintConfig()")
+                const react = fixture("createOxlintReactConfig()")
+                const files = {
+                    "src/use-counter.ts": "export const state = useState(0)\n",
+                    "src/view.tsx":       "export const state = useState(0)\n",
+                }
+
+                // WHEN
+                const baseResult = lint(base, files)
+                const reactResult = lint(react, files)
+
+                // THEN
+                const expected = [
+                    {
+                        filename: "src/use-counter.ts",
+                        message:  BannedStateMessage,
+                        severity: "error",
+                    },
+                    {
+                        filename: "src/view.tsx",
+                        message:  BannedStateMessage,
+                        severity: "error",
+                    },
+                ]
+
+                expect(bannedStateDiagnostics(baseResult.stdout)).toStrictEqual(expected)
+                expect(bannedStateDiagnostics(reactResult.stdout)).toStrictEqual(expected)
+                expect(baseResult.status).toBe(1)
+                expect(reactResult.status).toBe(1)
+            })
+        })
+    })
+
+    describe("given useState in generated UI code", () => {
+        describe("when opting into the vendored preset", () => {
+            it("then it keeps the useState ban enabled", () => {
+                expect.hasAssertions()
+
+                // GIVEN
+                const dir = fixture("createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })")
+                const source = "export const state = React.useState(0)\n"
+
+                // WHEN
+                const result = lint(dir, { "src/components/ui/state.ts": source, "src/components/ui/state.tsx": source })
+
+                // THEN
+                expect(bannedStateDiagnostics(result.stdout)).toStrictEqual([
+                    {
+                        filename: "src/components/ui/state.ts",
+                        message:  BannedStateMessage,
+                        severity: "error",
+                    },
+                    {
+                        filename: "src/components/ui/state.tsx",
+                        message:  BannedStateMessage,
+                        severity: "error",
+                    },
+                ])
+                expect(result.status).toBe(1)
+            })
+        })
+    })
+
     describe("given Node imports in tooling, tests, and browser code", () => {
         describe("when applying the React preset", () => {
             it("then it allows Node only in scripts, config files, and tests", () => {
@@ -222,7 +312,7 @@ describe("shared oxlint React presets", () => {
 
                 // GIVEN
                 const dir = fixture("createOxlintReactConfig({ vendoredFiles: defaultVendoredFiles })")
-                const source = "export function Card(): React.ReactNode {\n    const [isOpen] = useState(false)\n    return <div><span>{String(isOpen)}</span></div>\n}\n"
+                const source = "export function Card(): React.ReactNode {\n    const [isOpen] = useReducer(reduce, false)\n    return <div><span>{String(isOpen)}</span></div>\n}\n"
 
                 // WHEN
                 const { stdout } = lint(dir, { "src/components/ui/card.tsx": source, "src/features/card.tsx": source })

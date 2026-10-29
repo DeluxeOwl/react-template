@@ -17,9 +17,9 @@ import {
  *
  * Examples that MATCH (bad):
  *   function Parent() {
- *       const [count, setCount] = useState(0)
+ *       const [count, dispatch] = useReducer(reduce, 0)
  *       return (
- *           <Ctx.Provider value={{ count, setCount }}>
+ *           <Ctx.Provider value={{ count, dispatch }}>
  *               <TreeOfChildren />
  *           </Ctx.Provider>
  *       )
@@ -32,8 +32,8 @@ import {
  *
  * Examples that do NOT match (good):
  *   function CountProvider({ children }) {
- *       const [count, setCount] = useState(0)
- *       return <Ctx.Provider value={{ count, setCount }}>{children}</Ctx.Provider>
+ *       const [count, dispatch] = useReducer(reduce, 0)
+ *       return <Ctx.Provider value={{ count, dispatch }}>{children}</Ctx.Provider>
  *   }
  *
  *   function Parent() {
@@ -99,7 +99,7 @@ function getEnclosingFunction(node: ESTree.Node): FunctionNode | null {
     return null
 }
 
-/** `useState(...)` and `React.useState(...)` both resolve to "useState". */
+/** `useReducer(...)` and `React.useReducer(...)` both resolve to "useReducer". */
 function getCalleeName(node: ESTree.CallExpression): null | string {
     const { callee } = node
 

@@ -90,7 +90,7 @@ function collectDeclarationsContaining(types: readonly string[]): () => Collecto
     }
 }
 
-// `useState(0)`, also inside callbacks. Not `React.useState(0)` or `useState<number>(0)` (plain-call.ts).
+// `useReducer(reduce, 0)`, also inside callbacks. Not `React.useReducer(reduce, 0)` or `useReducer<number, [number]>(reduce, 0)` (plain-call.ts).
 export const noBuiltinHooksInComponentRule = createViewOnlyRule({
     collect: (sourceCode) => collectEach((add) => ({
         CallExpression: (node) => {
@@ -178,7 +178,7 @@ export const noTernaryAssignmentInComponentRule = createViewOnlyRule({
 
 // `use` and a capital letter at the start of a call, as ast-grep's `regex: ^use[A-Z]` on the call's
 // text: `useQuery<T>()`, `useFoo?.()`, `useStore.getState()` and tagged templates count,
-// `React.useState()` and `(useState)()` don't.
+// `React.useReducer()` and `(useReducer)()` don't.
 const HookCallStart = /^use[A-Z]/u
 
 // Two hook declarations in a component are fine; the third and every later one are reported.

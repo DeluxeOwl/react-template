@@ -2,12 +2,12 @@ import type { ESTree, SourceCode } from "@oxlint/plugins"
 
 /*
  * The view-only and AbortController rules were ast-grep rules until @deluxeowl/lint 0.5.0. Their
- * call patterns, such as `useState($$$)` and `$ARR.filter($$$)`, matched a call only in its plain
+ * call patterns, such as `useReducer($$$)` and `$ARR.filter($$$)`, matched a call only in its plain
  * form. These helpers keep that, so the rules flag the same calls as before:
  *
- *   xs?.filter(f)          no: optional chaining (also `useState?.(0)`)
- *   useState<number>(0)    no: type arguments
- *   (useState)(0)          no: parentheses around the callee
+ *   xs?.filter(f)          no: optional chaining (also `useReducer?.(reduce, 0)`)
+ *   useReducer<number, [number]>(reduce, 0)    no: type arguments
+ *   (useReducer)(reduce, 0)          no: parentheses around the callee
  *   xs // why
  *       .filter(f)         no: a comment between the callee's parts or before the `(`
  *   xs.filter(/* c *\/ f)  yes: comments among the arguments don't matter

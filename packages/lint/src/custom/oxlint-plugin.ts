@@ -1,5 +1,6 @@
 import { definePlugin } from "@oxlint/plugins"
 
+import { noUseStateRule } from "./no-use-state.ts"
 import { preferStateClassRule } from "./prefer-state-class.ts"
 import { noMarginOnRootJSXRule } from "./no-margin-on-root-jsx.ts"
 import { requireJSXReturnTypeRule } from "./require-jsx-return-type.ts"
@@ -39,6 +40,7 @@ export default definePlugin({
         "no-provider-with-static-children":            noProviderWithStaticChildrenRule,
         "no-switch-in-component":                      noSwitchInComponentRule,
         "no-ternary-assignment-in-component":          noTernaryAssignmentInComponentRule,
+        "no-use-state":                                noUseStateRule,
         "prefer-state-class":                          preferStateClassRule,
         "require-jsx-return-type":                     requireJSXReturnTypeRule,
         "use-abort-controller-for-multiple-listeners": useAbortControllerForMultipleListenersRule,

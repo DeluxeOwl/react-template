@@ -15,6 +15,8 @@ export default defineConfig({
         }),
         autoImport({
             dts:     "auto-imports.d.ts",
+            dtsMode: "overwrite",
+            ignore:  ["useState"],
             imports: [
                 "react",
                 "react-router-dom",

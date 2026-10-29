@@ -81,7 +81,7 @@ describe("no-builtin-hooks-in-component", () => {
     ruleTester.run("no-builtin-hooks-in-component", noBuiltinHooksInComponentRule, {
         invalid: [
             {
-                code:   inComponent("const [count] = useState(0)"),
+                code:   inComponent("const [count] = useReducer(reduce, 0)"),
                 errors: [
                     {
                         column: 20, line: 2, messageId: "viewOnly",
@@ -103,22 +103,22 @@ describe("no-builtin-hooks-in-component", () => {
             },
             { code: inComponent("const [s, act] = useActionState(f, 0); const o = useOptimistic(s); const e = useEffectEvent(f)"), errors: [error, error, error] },
             // Inside a callback in the component.
-            { code: inComponent("const make = () => useState(0)"), errors: [error] },
-            { code: inComponent("const [value] = useState(/* initial */ 0)"), errors: [error] },
+            { code: inComponent("const make = () => useReducer(reduce, 0)"), errors: [error] },
+            { code: inComponent("const [value] = useReducer(reduce, /* initial */ 0)"), errors: [error] },
         ],
         valid: [
             inComponent("const data = useSuspenseQuery(options)"),
             inComponent("const value = use(promise)"),
-            // Calls the old pattern `useState($$$)` didn't match.
-            inComponent("const [count] = React.useState(0)"),
-            inComponent("const [count] = useState<number>(0)"),
+            // Calls the old pattern `useReducer($$$)` didn't match.
+            inComponent("const [count] = React.useReducer(reduce, 0)"),
+            inComponent("const [count] = useReducer<number, [number]>(reduce, 0)"),
             inComponent("const ref = useRef<HTMLDivElement>(null)"),
-            inComponent("const [count] = useState?.(0)"),
-            inComponent("const [count] = (useState)(0)"),
-            inComponent("const [count] = useState /* why */ (0)"),
+            inComponent("const [count] = useReducer?.(reduce, 0)"),
+            inComponent("const [count] = (useReducer)(reduce, 0)"),
+            inComponent("const [count] = useReducer /* why */ (reduce, 0)"),
             // Not a component.
-            "function useCounter() { const [count] = useState(0); return count }",
-            "const Card = () => { const [count] = useState(0); return <div>{count}</div> }",
+            "function useCounter() { const [count] = useReducer(reduce, 0); return count }",
+            "const Card = () => { const [count] = useReducer(reduce, 0); return <div>{count}</div> }",
         ],
     })
 })
@@ -307,7 +307,7 @@ describe("no-multiple-hooks-in-component", () => {
             { code: inComponent("const a = useA(); const b = useB(); const c = useC(); const d = useD()"), errors: [error, error] },
             { code: inComponent("const a = useA(); const x = 1; let b = useB(); save(); let c = useC()"), errors: [error] },
             // Builtin hooks count, and so do the calls the other rules' patterns miss.
-            { code: inComponent("const [count] = useState<number>(0); const store = useStore.getState(); const value = useValue?.()"), errors: [error] },
+            { code: inComponent("const [count] = useReducer<number, [number]>(reduce, 0); const store = useStore.getState(); const value = useValue?.()"), errors: [error] },
             { code: inComponent("const a = useA(); const b = format(useB()); const onSave = () => useC()"), errors: [error] },
             { code: inComponent("const a = useA(); const b = useB(); const styles = useStyles`color: red`"), errors: [error] },
             { code: "function Card() { const a = useA(); const b = useB(); const c = useC(); return <div><span /></div> }", errors: [error] },
@@ -319,7 +319,7 @@ describe("no-multiple-hooks-in-component", () => {
             inComponent("const a = useA(), b = useB(), c = useC()"),
             inComponent("const a = useA(); const b = useB(); useEffect(() => {}, [])"),
             inComponent("const a = useA(); const b = useB(); var c = useC()"),
-            inComponent("const a = useA(); const b = useB(); const [c] = React.useState(0); const d = (useD)(); const e = user.load(); const f = useless()"),
+            inComponent("const a = useA(); const b = useB(); const [c] = React.useReducer(reduce, 0); const d = (useD)(); const e = user.load(); const f = useless()"),
             inComponent("const a = useA(); const b = useB(); if (ready) { const c = useC() }"),
             // Not components: a wrapper without nested JSX, and a custom hook.
             `const Provider = () => {

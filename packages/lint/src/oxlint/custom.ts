@@ -18,6 +18,7 @@ export const customConfig = {
         "custom/no-bare-enable-directive":         ["error"],
         "custom/no-margin-on-root-jsx":            ["error"],
         "custom/no-provider-with-static-children": ["error"],
+        "custom/no-use-state":                     ["error"],
         "custom/prefer-state-class":               ["error"],
         "custom/require-jsx-return-type":          ["error"],
     },

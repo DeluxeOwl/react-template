@@ -169,7 +169,8 @@ Components must be "view-only" — enforced on `.tsx` files by the `custom/*` ox
 - No IIFEs inside JSX.
 - Use `useSuspenseQuery` / `useLiveSuspenseQuery` — **not** `useQuery`.
 - Always declare explicit `React.ReactNode` return type.
-- `useState`, `useEffect`, etc. are auto-imported via `unplugin-auto-import` — do not import them manually.
+- Use `useReducer` with typed actions and exhaustive transitions for local state. `custom/no-use-state` bans `useState` across source files.
+- `useReducer`, `useEffect`, etc. are auto-imported via `unplugin-auto-import` — do not import them manually.
 
 ```ts
 // Good

@@ -11,6 +11,7 @@ import {
 
 import { cn } from "~/ui/lib/utils"
 import { api, isKnownORPCError } from "~/api"
+import { todoInputReducer } from "~/todo-input-reducer"
 
 const queryClient = new QueryClient()
 
@@ -83,9 +84,16 @@ type MutationParams<T> = T extends UseMutationOptions<infer TData, infer TError,
     : never
 type CreateMutation = MutationParams<ReturnType<typeof api.todos.create.mutationOptions>>
 
-function TodoInput(): React.ReactNode {
-    // oxlint-disable-next-line custom/no-builtin-hooks-in-component
-    const [text, setText] = useState("")
+interface TodoInputView {
+    errorClassName:          string
+    text:                    string
+    errorMessage:            React.ReactNode
+    handleTextChange:        React.ChangeEventHandler<HTMLInputElement>
+    handleTodoSubmitKeyDown: React.KeyboardEventHandler<HTMLInputElement>
+}
+
+function useTodoInput(): TodoInputView {
+    const [text, dispatch] = useReducer(todoInputReducer, "")
 
     const mutation = useMutation<void, CreateMutation["error"], CreateMutation["variables"]>({
         mutationFn: async ({ name }) => {
@@ -98,22 +106,40 @@ function TodoInput(): React.ReactNode {
         mutationKey: api.todos.create.mutationKey(),
     })
 
+    function handleTextChange(event: React.ChangeEvent<HTMLInputElement>): void {
+        dispatch({ text: event.currentTarget.value, type: "textChanged" })
+    }
+
+    function handleTodoSubmitKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
+        if (event.key === "Enter") {
+            mutation.mutate({ name: text })
+            dispatch({ type: "submitted" })
+        }
+    }
+
+    return {
+        errorClassName: mutation.isError ? "h-10" : "invisible h-10",
+        errorMessage:   isDefinedError(mutation.error) && mutation.error.message,
+        handleTextChange,
+        handleTodoSubmitKeyDown,
+        text,
+    }
+}
+
+function TodoInput(): React.ReactNode {
+    const {
+        errorClassName, errorMessage, handleTextChange, handleTodoSubmitKeyDown, text,
+    } = useTodoInput()
+
     return (
         <div className="flex flex-col gap-2">
             <input
                 className="border"
-                onChange={(e) => {
-                    setText(e.currentTarget.value)
-                }}
-                onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                        mutation.mutate({ name: text })
-                        setText("")
-                    }
-                }}
+                onChange={handleTextChange}
+                onKeyDown={handleTodoSubmitKeyDown}
                 type="text"
                 value={text} />
-            <div className={mutation.isError ? "h-10" : "invisible h-10"}>{isDefinedError(mutation.error) && mutation.error.message}</div>
+            <div className={errorClassName}>{errorMessage}</div>
         </div>
     )
 }
